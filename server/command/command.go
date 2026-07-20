@@ -16,29 +16,15 @@ type Command interface {
 	Handle(args *model.CommandArgs) (*model.CommandResponse, error)
 }
 
-const (
-	helloCommandTrigger = "hello"
-	learnCommandTrigger = "learn"
-)
+const learnCommandTrigger = "learn"
 
-// Register all your slash commands in the NewCommandHandler function.
 func NewCommandHandler(client *pluginapi.Client) Command {
-	if err := client.SlashCommand.Register(&model.Command{
-		Trigger:          helloCommandTrigger,
-		AutoComplete:     true,
-		AutoCompleteDesc: "Say hello to someone",
-		AutoCompleteHint: "[@username]",
-		AutocompleteData: model.NewAutocompleteData(helloCommandTrigger, "[@username]", "Username to say hello to"),
-	}); err != nil {
-		client.Log.Error("Failed to register command", "error", err)
-	}
-
 	if err := client.SlashCommand.Register(&model.Command{
 		Trigger:          learnCommandTrigger,
 		AutoComplete:     true,
-		AutoCompleteDesc: "Open micro-learning guides",
+		AutoCompleteDesc: "Mattermost Academy",
 		AutoCompleteHint: "",
-		AutocompleteData: model.NewAutocompleteData(learnCommandTrigger, "", "Open the AI Quick Start guide"),
+		AutocompleteData: model.NewAutocompleteData(learnCommandTrigger, "", "Mattermost Academy"),
 	}); err != nil {
 		client.Log.Error("Failed to register command", "error", err)
 	}
@@ -48,7 +34,6 @@ func NewCommandHandler(client *pluginapi.Client) Command {
 	}
 }
 
-// ExecuteCommand hook calls this method to execute the commands that were registered in the NewCommandHandler function.
 func (c *Handler) Handle(args *model.CommandArgs) (*model.CommandResponse, error) {
 	fields := strings.Fields(args.Command)
 	if len(fields) == 0 {
@@ -57,10 +42,9 @@ func (c *Handler) Handle(args *model.CommandArgs) (*model.CommandResponse, error
 			Text:         "Empty command",
 		}, nil
 	}
+
 	trigger := strings.TrimPrefix(fields[0], "/")
 	switch trigger {
-	case helloCommandTrigger:
-		return c.executeHelloCommand(args), nil
 	case learnCommandTrigger:
 		return c.executeLearnCommand(args), nil
 	default:
@@ -71,45 +55,31 @@ func (c *Handler) Handle(args *model.CommandArgs) (*model.CommandResponse, error
 	}
 }
 
-func (c *Handler) executeHelloCommand(args *model.CommandArgs) *model.CommandResponse {
-	if len(strings.Fields(args.Command)) < 2 {
-		return &model.CommandResponse{
-			ResponseType: model.CommandResponseTypeEphemeral,
-			Text:         "Please specify a username",
-		}
-	}
-	username := strings.Fields(args.Command)[1]
-	return &model.CommandResponse{
-		Text: "Hello, " + username,
-	}
-}
-
 func (c *Handler) executeLearnCommand(args *model.CommandArgs) *model.CommandResponse {
 	siteURL := ""
 	if cfg := c.client.Configuration.GetConfig(); cfg.ServiceSettings.SiteURL != nil {
 		siteURL = strings.TrimRight(*cfg.ServiceSettings.SiteURL, "/")
 	}
 
+	fallback := &model.CommandResponse{
+		ResponseType: model.CommandResponseTypeEphemeral,
+		Text:         "Click **Mattermost Academy** in the channel header or App Bar to open the guide.",
+	}
+
 	team, err := c.client.Team.Get(args.TeamId)
 	if err != nil || team == nil {
-		return &model.CommandResponse{
-			ResponseType: model.CommandResponseTypeEphemeral,
-			Text:         "Click **Learn** in the channel header to open the AI Quick Start guide.",
-		}
+		return fallback
 	}
 
 	channel, err := c.client.Channel.Get(args.ChannelId)
 	if err != nil || channel == nil {
-		return &model.CommandResponse{
-			ResponseType: model.CommandResponseTypeEphemeral,
-			Text:         "Click **Learn** in the channel header to open the AI Quick Start guide.",
-		}
+		return fallback
 	}
 
 	// Opens the in-channel learning overlay without leaving Channels chrome.
 	learnURL := fmt.Sprintf("%s/%s/channels/%s?learn=1", siteURL, team.Name, channel.Name)
 	return &model.CommandResponse{
 		ResponseType: model.CommandResponseTypeEphemeral,
-		Text:         fmt.Sprintf("Open the [AI Quick Start guide](%s)", learnURL),
+		Text:         fmt.Sprintf("Open [Mattermost Academy](%s)", learnURL),
 	}
 }

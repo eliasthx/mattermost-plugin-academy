@@ -22,8 +22,8 @@ export default class Plugin {
         registry.registerChannelHeaderButtonAction(
             <LearnIcon/>,
             () => toggleLearning(),
-            'Learn',
-            'Open learning guides',
+            'Mattermost Academy',
+            'Mattermost Academy',
         );
     }
 }

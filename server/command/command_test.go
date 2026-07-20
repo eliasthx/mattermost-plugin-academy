@@ -28,20 +28,6 @@ func setupTest() *env {
 	}
 }
 
-func TestHelloCommand(t *testing.T) {
-	assert := assert.New(t)
-	env := setupTest()
-
-	cmdHandler := NewCommandHandler(env.client)
-
-	args := &model.CommandArgs{
-		Command: "/hello world",
-	}
-	response, err := cmdHandler.Handle(args)
-	assert.Nil(err)
-	assert.Equal("Hello, world", response.Text)
-}
-
 func TestLearnCommand(t *testing.T) {
 	assert := assert.New(t)
 	env := setupTest()
@@ -71,5 +57,5 @@ func TestLearnCommand(t *testing.T) {
 	assert.Nil(err)
 	assert.Equal(model.CommandResponseTypeEphemeral, response.ResponseType)
 	assert.Contains(response.Text, "http://localhost:8065/es-test/channels/off-topic?learn=1")
-	assert.Contains(response.Text, "AI Quick Start")
+	assert.Contains(response.Text, "Mattermost Academy")
 }

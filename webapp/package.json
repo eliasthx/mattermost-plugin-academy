@@ -1,4 +1,5 @@
 {
+  "name": "mattermost-academy",
   "private": true,
   "scripts": {
     "build": "webpack --mode=production",

@@ -227,7 +227,7 @@ export default function LearningOverlay() {
 
     return (
         <div
-            className='MicroLearningOverlay'
+            className='MattermostAcademyOverlay'
             style={{
                 position: 'fixed',
                 top: bounds.top,
@@ -254,7 +254,7 @@ export default function LearningOverlay() {
                 }}
             >
                 <iframe
-                    title='AI Quick Start'
+                    title='Mattermost Academy'
                     src={MODULE_PATH}
                     style={iframeStyle}
                     allow='clipboard-write'

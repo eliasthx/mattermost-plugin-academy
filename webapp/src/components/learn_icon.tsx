@@ -7,9 +7,10 @@ import manifest from 'manifest';
 
 import {isLearningOpen, subscribeLearning} from 'learning_state';
 
+const ICON_URL = `/plugins/${manifest.id}/public/academy-icon.png`;
+
 /**
- * Book icon for the Learn control (channel header / app bar).
- * Applies Mattermost's App Bar active styles while Learning is open.
+ * Same pattern as Agents: 24×24 circular <img> fills the App Bar circle.
  */
 export default function LearnIcon() {
     const [, setTick] = useState(0);
@@ -31,9 +32,17 @@ export default function LearnIcon() {
     }, [active]);
 
     return (
-        <i
-            className={active ? 'icon fa fa-book app-bar__old-icon--active' : 'icon fa fa-book'}
-            style={active ? {color: 'rgba(var(--sidebar-text-rgb), 1)'} : undefined}
+        <img
+            src={ICON_URL}
+            alt=''
+            width={24}
+            height={24}
+            style={{
+                display: 'block',
+                width: 24,
+                height: 24,
+                borderRadius: '50%',
+            }}
         />
     );
 }

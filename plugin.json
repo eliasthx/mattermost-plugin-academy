@@ -1,10 +1,10 @@
 {
-    "id": "com.mattermost.plugin-starter-template",
-    "name": "Micro Learning",
-    "description": "Interactive micro-learning guides for Mattermost end users.",
-    "homepage_url": "https://github.com/mattermost/mattermost-plugin-starter-template",
-    "support_url": "https://github.com/mattermost/mattermost-plugin-starter-template/issues",
-    "icon_path": "assets/starter-template-icon.svg",
+    "id": "com.mattermost.academy",
+    "name": "Mattermost Academy",
+    "description": "Interactive learning guides for Mattermost end users.",
+    "homepage_url": "https://github.com/esethna/mm-academy",
+    "support_url": "https://github.com/esethna/mm-academy/issues",
+    "icon_path": "assets/plugin-icon.png",
     "min_server_version": "6.2.1",
     "server": {
         "executables": {
