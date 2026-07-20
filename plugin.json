@@ -19,8 +19,16 @@
         "bundle_path": "webapp/dist/main.js"
     },
     "settings_schema": {
-        "header": "",
+        "header": "Configure Mattermost Academy for your workspace.",
         "footer": "",
-        "settings": []
+        "settings": [
+            {
+                "key": "EnableProfileBadges",
+                "display_name": "Show Academy badges on profiles:",
+                "type": "bool",
+                "help_text": "When enabled, completed guide badges appear on user profile popovers.",
+                "default": "true"
+            }
+        ]
     }
 }

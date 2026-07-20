@@ -1,0 +1,89 @@
+.AcademyBadges {
+    display: flex;
+    flex-direction: column;
+}
+
+// Match Mattermost profile-popover section labels (Local Time, custom attributes).
+.user-profile-popover .AcademyBadges__heading {
+    display: block;
+    margin: 0 0 4px;
+    color: var(--center-channel-color);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 16px;
+}
+
+.AcademyBadges__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.AcademyBadges__badge {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #FFBC1F;
+    cursor: pointer;
+}
+
+.AcademyBadges__badge:hover {
+    background: rgba(var(--center-channel-color-rgb), 0.08);
+}
+
+.AcademyBadges__badge:active {
+    background: rgba(var(--center-channel-color-rgb), 0.16);
+}
+
+.AcademyBadges__badge:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--center-channel-bg), 0 0 0 4px var(--button-bg);
+}
+
+.AcademyBadges__seal {
+    position: absolute;
+    inset: 3px;
+    width: calc(100% - 6px);
+    height: calc(100% - 6px);
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+}
+
+.AcademyBadges__icon.material-symbols-outlined {
+    position: relative;
+    z-index: 1;
+    margin-top: -6px;
+    font-size: 17px;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    line-height: 1;
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Mattermost sets .tooltip { max-width: 220px } and .tooltip-inner { max-width: 100% }. */
+.tooltip.AcademyBadges__tooltip-root {
+    max-width: none;
+}
+
+.tooltip.AcademyBadges__tooltip-root .tooltip-inner {
+    max-width: none;
+}
+
+.AcademyBadges__tooltip {
+    text-align: center;
+    white-space: nowrap;
+}
+
+.AcademyBadges__tooltip > div + div {
+    margin-top: 2px;
+}

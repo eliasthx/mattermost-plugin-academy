@@ -4,6 +4,7 @@
 type Listener = () => void;
 
 let open = false;
+let guideSrc = '';
 const listeners = new Set<Listener>();
 
 function emit() {
@@ -14,8 +15,14 @@ export function isLearningOpen() {
     return open;
 }
 
-export function openLearning() {
+export function getLearningSrc() {
+    return guideSrc;
+}
+
+export function openLearning(src = '') {
+    guideSrc = src;
     if (open) {
+        emit();
         return;
     }
     open = true;
@@ -27,12 +34,16 @@ export function closeLearning() {
         return;
     }
     open = false;
+    guideSrc = '';
     emit();
 }
 
 export function toggleLearning() {
-    open = !open;
-    emit();
+    if (open) {
+        closeLearning();
+        return;
+    }
+    openLearning();
 }
 
 export function subscribeLearning(listener: Listener) {

@@ -110,6 +110,12 @@ func (s *Store) Get(userID, guideID string) (Record, error) {
 	return rec, nil
 }
 
+// Completion is a public summary of a finished guide (no module-level detail).
+type Completion struct {
+	GuideID     string `json:"guideId"`
+	CompletedAt int64  `json:"completedAt"`
+}
+
 // ListForUser returns progress for all guides for a user (prefix scan).
 func (s *Store) ListForUser(userID string) (map[string]Record, error) {
 	prefix := keyPrefix + userID + ":"
@@ -143,6 +149,31 @@ func (s *Store) ListForUser(userID string) (map[string]Record, error) {
 			break
 		}
 	}
+	return out, nil
+}
+
+// ListCompletionsForUser returns only guides the user has ever completed.
+func (s *Store) ListCompletionsForUser(userID string) ([]Completion, error) {
+	records, err := s.ListForUser(userID)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]Completion, 0)
+	for guideID, rec := range records {
+		if !rec.EverCompleted {
+			continue
+		}
+		out = append(out, Completion{
+			GuideID:     guideID,
+			CompletedAt: rec.CompletedAt,
+		})
+	}
+	sort.Slice(out, func(i, j int) bool {
+		if out[i].CompletedAt == out[j].CompletedAt {
+			return out[i].GuideID < out[j].GuideID
+		}
+		return out[i].CompletedAt < out[j].CompletedAt
+	})
 	return out, nil
 }
 
@@ -246,10 +277,16 @@ func writeError(w http.ResponseWriter, status int, msg string) {
 //	GET  /api/v1/progress
 //	GET  /api/v1/progress/{guideId}
 //	PUT  /api/v1/progress/{guideId}
+//	GET  /api/v1/users/{userId}/completions
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	userID := userIDFromRequest(r)
 	if userID == "" {
 		writeError(w, http.StatusUnauthorized, "unauthorized")
+		return
+	}
+
+	if strings.HasPrefix(r.URL.Path, "/api/v1/users/") {
+		h.serveUserCompletions(w, r)
 		return
 	}
 
@@ -306,12 +343,53 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	writeError(w, http.StatusNotFound, "not found")
 }
 
+// serveUserCompletions handles GET /api/v1/users/{userId}/completions.
+func (h *Handler) serveUserCompletions(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	path := strings.TrimPrefix(r.URL.Path, "/api/v1/users/")
+	parts := strings.Split(strings.Trim(path, "/"), "/")
+	if len(parts) != 2 || parts[1] != "completions" {
+		writeError(w, http.StatusNotFound, "not found")
+		return
+	}
+
+	targetUserID := parts[0]
+	if !validUserID(targetUserID) {
+		writeError(w, http.StatusBadRequest, "invalid user id")
+		return
+	}
+
+	completions, err := h.store.ListCompletionsForUser(targetUserID)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to list completions")
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"completions": completions})
+}
+
 func validGuideID(id string) bool {
 	if id == "" || len(id) > 128 {
 		return false
 	}
 	for _, r := range id {
 		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '-' || r == '_' {
+			continue
+		}
+		return false
+	}
+	return true
+}
+
+func validUserID(id string) bool {
+	if id == "" || len(id) > 64 {
+		return false
+	}
+	for _, r := range id {
+		if (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') {
 			continue
 		}
 		return false

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"encoding/json"
 	"reflect"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -17,13 +19,50 @@ import (
 //
 // If you add non-reference types to your configuration struct, be sure to rewrite Clone as a deep
 // copy appropriate for your types.
-type configuration struct{}
+type configuration struct {
+	// EnableProfileBadges controls profile-popover badges. Nil means unset → default on.
+	// Uses Truthy because Mattermost plugin defaults are JSON strings ("true"/"false").
+	EnableProfileBadges *Truthy
+}
+
+// Truthy unmarshals Mattermost plugin bools from either a JSON boolean or "true"/"false" string.
+type Truthy bool
+
+func (t *Truthy) UnmarshalJSON(data []byte) error {
+	switch strings.ToLower(strings.Trim(string(data), `"`)) {
+	case "true", "1":
+		*t = true
+	case "false", "0", "null", "":
+		*t = false
+	default:
+		return errors.Errorf("invalid bool value %s", string(data))
+	}
+	return nil
+}
+
+func (t Truthy) MarshalJSON() ([]byte, error) {
+	return json.Marshal(bool(t))
+}
 
 // Clone shallow copies the configuration. Your implementation may require a deep copy if
 // your configuration has reference types.
 func (c *configuration) Clone() *configuration {
+	if c == nil {
+		return &configuration{}
+	}
 	clone := *c
+	if c.EnableProfileBadges != nil {
+		v := *c.EnableProfileBadges
+		clone.EnableProfileBadges = &v
+	}
 	return &clone
+}
+
+func (c *configuration) profileBadgesEnabled() bool {
+	if c == nil || c.EnableProfileBadges == nil {
+		return true
+	}
+	return bool(*c.EnableProfileBadges)
 }
 
 // getConfiguration retrieves the active configuration under lock, making it safe to use

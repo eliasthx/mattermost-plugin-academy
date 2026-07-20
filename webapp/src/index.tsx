@@ -6,6 +6,7 @@ import type {Store} from 'redux';
 
 import type {GlobalState} from '@mattermost/types/store';
 
+import AcademyBadges from 'components/academy_badges';
 import LearningOverlay from 'components/learning_overlay';
 import LearnIcon from 'components/learn_icon';
 import manifest from 'manifest';
@@ -18,6 +19,8 @@ export default class Plugin {
     public async initialize(registry: PluginRegistry, _store: Store<GlobalState>) {
         // RootComponent hosts the overlay; when open it expands over sidebar + center.
         registry.registerRootComponent(LearningOverlay);
+
+        registry.registerPopoverUserAttributesComponent(AcademyBadges);
 
         registry.registerChannelHeaderButtonAction(
             <LearnIcon/>,

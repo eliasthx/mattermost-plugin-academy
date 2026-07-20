@@ -5,9 +5,9 @@ import React, {useEffect, useState} from 'react';
 
 import manifest from 'manifest';
 
-import {isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
+import {getLearningSrc, isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
 
-const MODULE_PATH = `/plugins/${manifest.id}/public/guides/guide-browser.html`;
+const CATALOG_PATH = `/plugins/${manifest.id}/public/guides/guide-browser.html`;
 
 // Below menus (1100), modals (1050), popovers (1200), and global header (99).
 // Above normal channel content and the RHS (~12–20) so --elevation-1 can cast
@@ -121,6 +121,7 @@ export default function LearningOverlay() {
     }, []);
 
     const open = isLearningOpen();
+    const iframeSrc = getLearningSrc() || CATALOG_PATH;
 
     useEffect(() => {
         if (!open) {
@@ -254,8 +255,9 @@ export default function LearningOverlay() {
                 }}
             >
                 <iframe
+                    key={iframeSrc}
                     title='Mattermost Academy'
-                    src={MODULE_PATH}
+                    src={iframeSrc}
                     style={iframeStyle}
                     allow='clipboard-write'
                 />

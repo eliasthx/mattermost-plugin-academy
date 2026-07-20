@@ -4,6 +4,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"strings"
 	"sync"
@@ -48,9 +49,29 @@ func (p *Plugin) ExecuteCommand(_ *plugin.Context, args *model.CommandArgs) (*mo
 // ServeHTTP handles plugin HTTP routes (progress API). Static public/ files are
 // served by the Mattermost server separately.
 func (p *Plugin) ServeHTTP(_ *plugin.Context, w http.ResponseWriter, r *http.Request) {
-	if strings.HasPrefix(r.URL.Path, "/api/v1/progress") {
+	if r.URL.Path == "/api/v1/settings" {
+		p.serveSettings(w, r)
+		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/api/v1/progress") || strings.HasPrefix(r.URL.Path, "/api/v1/users/") {
 		p.progressHandler.ServeHTTP(w, r)
 		return
 	}
 	http.NotFound(w, r)
+}
+
+func (p *Plugin) serveSettings(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	if r.Header.Get("Mattermost-User-Id") == "" {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]any{
+		"enableProfileBadges": p.getConfiguration().profileBadgesEnabled(),
+	})
 }
