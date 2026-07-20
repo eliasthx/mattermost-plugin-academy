@@ -7,7 +7,7 @@ import manifest from 'manifest';
 
 import {isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
 
-const MODULE_PATH = `/plugins/${manifest.id}/public/modules/ai-quick-start.html`;
+const MODULE_PATH = `/plugins/${manifest.id}/public/guides/guide-browser.html`;
 
 // Below menus (1100), modals (1050), popovers (1200), and global header (99).
 // Above normal channel content and the RHS (~12–20) so --elevation-1 can cast
