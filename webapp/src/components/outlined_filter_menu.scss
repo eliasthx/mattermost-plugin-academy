@@ -1,0 +1,152 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+.AcademyOutlinedFilter {
+    position: relative;
+    display: inline-block;
+    margin-inline-end: 8px;
+    vertical-align: top;
+
+    &.is-disabled {
+        pointer-events: none;
+    }
+
+    .inputWithMenu {
+        cursor: pointer;
+
+        .Input_container {
+            width: auto;
+        }
+
+        .Input_fieldset {
+            min-width: 140px;
+            background: var(--center-channel-bg, #fff);
+        }
+
+        .Input.form-control {
+            width: 120px;
+            min-width: 120px;
+            cursor: pointer;
+            background: transparent !important;
+        }
+
+        &--wide .Input.form-control {
+            width: 140px;
+            min-width: 140px;
+        }
+
+        .icon-chevron-down {
+            color: rgba(var(--center-channel-color-rgb), 0.56);
+            font-size: 18px;
+            line-height: 1;
+        }
+    }
+
+    &.is-open .inputWithMenu .Input_fieldset {
+        border-color: var(--button-bg);
+        box-shadow: inset 0 0 0 1px var(--button-bg);
+
+        .Input_legend {
+            color: var(--button-bg);
+        }
+    }
+
+    &__menu {
+        position: absolute;
+        z-index: 1000;
+        top: calc(100% + 4px);
+        left: 0;
+        min-width: 220px;
+        max-height: 320px;
+        overflow: auto;
+        padding: 8px 0;
+        border: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
+        border-radius: 4px;
+        background: var(--center-channel-bg, #fff);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    &__item {
+        display: flex;
+        width: 100%;
+        align-items: flex-start;
+        padding: 8px 16px;
+        border: none;
+        margin: 0;
+        background: transparent;
+        color: var(--center-channel-color);
+        cursor: pointer;
+        gap: 10px;
+        text-align: left;
+
+        &:hover:not(.is-disabled) {
+            background: rgba(var(--center-channel-color-rgb), 0.08);
+        }
+
+        &.is-disabled {
+            cursor: default;
+            opacity: 0.5;
+        }
+    }
+
+    &__leading {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        height: 20px;
+
+        .icon-checkbox-marked {
+            color: var(--button-bg);
+        }
+
+        .icon-checkbox-blank-outline {
+            color: rgba(var(--center-channel-color-rgb), 0.24);
+        }
+    }
+
+    &__labels {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    &__label {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    &__sublabel {
+        color: rgba(var(--center-channel-color-rgb), 0.56);
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    &__trailing {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        height: 20px;
+        margin-left: 8px;
+
+        .icon-check {
+            color: var(--button-bg);
+        }
+    }
+
+    &__separator {
+        height: 1px;
+        margin: 8px 0;
+        background: rgba(var(--center-channel-color-rgb), 0.08);
+    }
+
+    &__footer {
+        padding: 4px 16px 8px;
+        color: rgba(var(--center-channel-color-rgb), 0.56);
+        font-size: 12px;
+        line-height: 16px;
+        max-width: 250px;
+        text-wrap: wrap;
+    }
+}

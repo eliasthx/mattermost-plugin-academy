@@ -6,6 +6,8 @@ import type {Store} from 'redux';
 
 import type {GlobalState} from '@mattermost/types/store';
 
+import AdminGuideCompletionsSection from 'components/admin_guide_completions_section';
+import AdminProfileBadgesSection from 'components/admin_profile_badges_section';
 import AcademyBadges from 'components/academy_badges';
 import LearningOverlay from 'components/learning_overlay';
 import LearnIcon from 'components/learn_icon';
@@ -21,6 +23,9 @@ export default class Plugin {
         registry.registerRootComponent(LearningOverlay);
 
         registry.registerPopoverUserAttributesComponent(AcademyBadges);
+
+        registry.registerAdminConsoleCustomSection('ProfileBadges', AdminProfileBadgesSection);
+        registry.registerAdminConsoleCustomSection('GuideCompletions', AdminGuideCompletionsSection);
 
         registry.registerChannelHeaderButtonAction(
             <LearnIcon/>,

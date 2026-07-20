@@ -19,15 +19,29 @@
         "bundle_path": "webapp/dist/main.js"
     },
     "settings_schema": {
-        "header": "Configure Mattermost Academy for your workspace.",
+        "header": "Interactive learning guides for Mattermost end users.",
         "footer": "",
-        "settings": [
+        "sections": [
             {
-                "key": "EnableProfileBadges",
-                "display_name": "Show Academy badges on profiles:",
-                "type": "bool",
-                "help_text": "When enabled, completed guide badges appear on user profile popovers.",
-                "default": "true"
+                "key": "ProfileBadges",
+                "custom": true,
+                "fallback": true,
+                "settings": [
+                    {
+                        "key": "EnableProfileBadges",
+                        "display_name": "Show Academy badges on profiles:",
+                        "type": "bool",
+                        "help_text": "When enabled, completed guide badges appear on user profile popovers.",
+                        "default": "true"
+                    }
+                ]
+            },
+            {
+                "key": "GuideCompletions",
+                "title": "Guide completions",
+                "subtitle": "See how many users finish Academy guides over time, filter by guide, and export results",
+                "custom": true,
+                "settings": []
             }
         ]
     }

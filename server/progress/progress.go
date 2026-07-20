@@ -116,6 +116,13 @@ type Completion struct {
 	CompletedAt int64  `json:"completedAt"`
 }
 
+// CompletionEvent is one user's guide completion, used for admin reporting/export.
+type CompletionEvent struct {
+	UserID      string `json:"userId"`
+	GuideID     string `json:"guideId"`
+	CompletedAt int64  `json:"completedAt"`
+}
+
 // ListForUser returns progress for all guides for a user (prefix scan).
 func (s *Store) ListForUser(userID string) (map[string]Record, error) {
 	prefix := keyPrefix + userID + ":"

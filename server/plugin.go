@@ -53,6 +53,10 @@ func (p *Plugin) ServeHTTP(_ *plugin.Context, w http.ResponseWriter, r *http.Req
 		p.serveSettings(w, r)
 		return
 	}
+	if strings.HasPrefix(r.URL.Path, "/api/v1/admin/") {
+		p.progressHandler.ServeAdminHTTP(w, r)
+		return
+	}
 	if strings.HasPrefix(r.URL.Path, "/api/v1/progress") || strings.HasPrefix(r.URL.Path, "/api/v1/users/") {
 		p.progressHandler.ServeHTTP(w, r)
 		return
