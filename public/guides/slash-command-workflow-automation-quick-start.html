@@ -80,7 +80,7 @@ body {
 .header-inner {
   position: relative; z-index: 1;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 24px;
+  padding: 12px 12px 12px 24px;
   border-bottom: 1px solid rgba(255,255,255,0.12);
 }
 .mm-logo { display: flex; align-items: center; gap: 10px; }
@@ -104,6 +104,26 @@ body {
   letter-spacing: 0.06em; text-transform: uppercase;
   padding: 4px 10px; border-radius: var(--radius-sm);
 }
+.header-right {
+  display: flex; align-items: center; gap: 10px;
+}
+.header-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; padding: 0;
+  border: none; border-radius: var(--radius-sm);
+  background: transparent; color: rgba(255,255,255,0.85);
+  cursor: pointer; flex-shrink: 0;
+  transition: background 0.12s, color 0.12s;
+}
+.header-close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+.header-close:active {
+  background: rgba(255,255,255,0.22);
+  color: #fff;
+}
+.header-close:focus-visible {
+  outline: 2px solid var(--sky); outline-offset: 2px;
+}
+.header-close .material-symbols-outlined { font-size: 20px; line-height: 1; }
 .header-bottom { position: relative; z-index: 1; padding: 12px 24px 14px; }
 .header-bottom h1 {
   font-family: var(--font-display); font-weight: 700;
@@ -442,9 +462,14 @@ kbd {
           <span class="mm-logo-sub">Academy: Workflow Automation &amp; slash commands</span>
         </div>
       </div>
-      <div class="header-tag">
-        <span class="material-symbols-outlined" style="font-size:12px;">schedule</span>
-        ~10 min · 5 modules
+      <div class="header-right">
+        <div class="header-tag">
+          <span class="material-symbols-outlined" style="font-size:12px;">schedule</span>
+          ~10 min · 5 modules
+        </div>
+        <button type="button" class="header-close" id="academy-close" aria-label="Close Mattermost Academy">
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        </button>
       </div>
     </div>
     <div class="header-bottom">
@@ -1159,6 +1184,19 @@ kbd {
   }
 
   loadProgress();
+</script>
+<script>
+  (function () {
+    var btn = document.getElementById('academy-close');
+    if (!btn) return;
+    if (window.parent === window) {
+      btn.hidden = true;
+      return;
+    }
+    btn.addEventListener('click', function () {
+      window.parent.postMessage({ type: 'mm-academy-close' }, location.origin);
+    });
+  })();
 </script>
 </body>
 </html>

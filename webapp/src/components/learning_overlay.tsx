@@ -5,7 +5,9 @@ import React, {useEffect, useState} from 'react';
 
 import manifest from 'manifest';
 
-import {getLearningSrc, isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
+import {closeLearning, getLearningSrc, isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
+
+const CLOSE_MESSAGE_TYPE = 'mm-academy-close';
 
 const CATALOG_PATH = `/plugins/${manifest.id}/public/guides/guide-browser.html`;
 
@@ -118,6 +120,19 @@ export default function LearningOverlay() {
         if (params.get('learn') === '1') {
             openLearning();
         }
+    }, []);
+
+    useEffect(() => {
+        const onMessage = (event: MessageEvent) => {
+            if (event.origin !== window.location.origin) {
+                return;
+            }
+            if (event.data?.type === CLOSE_MESSAGE_TYPE) {
+                closeLearning();
+            }
+        };
+        window.addEventListener('message', onMessage);
+        return () => window.removeEventListener('message', onMessage);
     }, []);
 
     const open = isLearningOpen();
