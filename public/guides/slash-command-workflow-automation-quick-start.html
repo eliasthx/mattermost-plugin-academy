@@ -459,7 +459,7 @@ kbd {
         <div class="progress-pip" id="pip-3"></div>
         <div class="progress-pip" id="pip-4"></div>
       </div>
-      <div class="progress-label" id="prog-label">0/5 complete</div>
+      <div class="progress-label" id="prog-label">0 / 5&#160;&#160;Complete</div>
     </div>
   </div>
 
@@ -1131,7 +1131,7 @@ kbd {
 
   function updateProgress() {
     const label = document.getElementById('prog-label');
-    if (label) label.textContent = completed.size + '/' + TOTAL + ' complete';
+    if (label) label.textContent = completed.size + ' / ' + TOTAL + '\u00a0\u00a0Complete';
   }
 
   function updatePips(active) {

@@ -301,7 +301,7 @@ body {
         <div class="progress-pip" id="pip-0"></div>
         <div class="progress-pip" id="pip-1"></div>
       </div>
-      <div class="progress-label" id="prog-label">0 / 2 Complete</div>
+      <div class="progress-label" id="prog-label">0 / 2&#160;&#160;Complete</div>
     </div>
   </div>
 
@@ -407,13 +407,13 @@ body {
       if (complete) {
         guidesComplete += 1;
         statusEl.classList.add('done');
-        statusEl.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Complete';
+        statusEl.innerHTML = '<span class="material-symbols-outlined">check_circle</span> ' + total + ' / ' + total + '\u00a0\u00a0Complete';
       } else if (doneCount > 0) {
         statusEl.classList.remove('done');
-        statusEl.textContent = doneCount + '/' + total + ' complete';
+        statusEl.textContent = doneCount + ' / ' + total + '\u00a0\u00a0Complete';
       } else {
         statusEl.classList.remove('done');
-        statusEl.textContent = '0/' + total + ' complete';
+        statusEl.textContent = '0 / ' + total + '\u00a0\u00a0Complete';
       }
     });
 
@@ -426,7 +426,7 @@ body {
 
     const label = document.getElementById('prog-label');
     if (label) {
-      label.textContent = guidesComplete + ' / ' + guideTotal + ' Complete';
+      label.textContent = guidesComplete + ' / ' + guideTotal + '\u00a0\u00a0Complete';
     }
   }
 
