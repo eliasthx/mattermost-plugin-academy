@@ -298,8 +298,8 @@ body {
     </div>
     <div class="progress-strip">
       <div class="progress-modules" id="prog-pips">
-        <div class="progress-pip" id="pip-ai-quick-start" data-guide-id="ai-quick-start" title="AI Quick Start"></div>
-        <div class="progress-pip" id="pip-slash-command-workflow-automation-quick-start" data-guide-id="slash-command-workflow-automation-quick-start" title="Slash Commands &amp; Workflow Automation"></div>
+        <div class="progress-pip" id="pip-0"></div>
+        <div class="progress-pip" id="pip-1"></div>
       </div>
       <div class="progress-label" id="prog-label">0 / 2 Complete</div>
     </div>
@@ -404,12 +404,6 @@ body {
       const doneCount = moduleIds.filter((id) => completed.has(id)).length;
       const complete = isGuideComplete(rec, moduleIds);
 
-      const pip = document.querySelector('.progress-pip[data-guide-id="' + guideId + '"]');
-      if (pip) {
-        pip.classList.remove('active');
-        pip.classList.toggle('done', complete);
-      }
-
       if (complete) {
         guidesComplete += 1;
         statusEl.classList.add('done');
@@ -421,6 +415,13 @@ body {
         statusEl.classList.remove('done');
         statusEl.textContent = '0/' + total + ' complete';
       }
+    });
+
+    // Fill bars left-to-right by completed-guide count (not one bar per guide).
+    const pips = document.querySelectorAll('#prog-pips .progress-pip');
+    pips.forEach((pip, i) => {
+      pip.classList.remove('active');
+      pip.classList.toggle('done', i < guidesComplete);
     });
 
     const label = document.getElementById('prog-label');
