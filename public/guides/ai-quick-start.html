@@ -371,44 +371,44 @@ body {
         <div class="progress-pip" id="pip-5"></div>
         <div class="progress-pip" id="pip-6"></div>
       </div>
-      <div class="progress-label" id="prog-label">0 / 7 Complete</div>
+      <div class="progress-label" id="prog-label">0/7 complete</div>
     </div>
   </div>
 
   <div class="body-layout">
     <nav class="sidebar" aria-label="Module navigation">
       <div class="sidebar-label">Modules</div>
-      <button class="nav-btn active" data-idx="0" onclick="goTo(0)">
+      <button class="nav-btn active" data-idx="0" onclick="goTo(0)" data-module-id="ai-chat">
         <div class="nav-icon"><span class="material-symbols-outlined">smart_toy</span></div>
         <div class="nav-text"><div class="nav-title">AI Chat</div><div class="nav-time">~2 min</div></div>
         <span class="nav-check ms-filled material-symbols-outlined" id="chk-0">check_circle</span>
       </button>
-      <button class="nav-btn" data-idx="1" onclick="goTo(1)">
+      <button class="nav-btn" data-idx="1" onclick="goTo(1)" data-module-id="summarize-threads">
         <div class="nav-icon"><span class="material-symbols-outlined">summarize</span></div>
         <div class="nav-text"><div class="nav-title">Summarize Threads</div><div class="nav-time">~2 min</div></div>
         <span class="nav-check ms-filled material-symbols-outlined" id="chk-1">check_circle</span>
       </button>
-      <button class="nav-btn" data-idx="2" onclick="goTo(2)">
+      <button class="nav-btn" data-idx="2" onclick="goTo(2)" data-module-id="summarize-channels">
         <div class="nav-icon"><span class="material-symbols-outlined">mark_chat_unread</span></div>
         <div class="nav-text"><div class="nav-title">Summarize Channels</div><div class="nav-time">~1 min</div></div>
         <span class="nav-check ms-filled material-symbols-outlined" id="chk-2">check_circle</span>
       </button>
-      <button class="nav-btn" data-idx="3" onclick="goTo(3)">
+      <button class="nav-btn" data-idx="3" onclick="goTo(3)" data-module-id="summarize-calls">
         <div class="nav-icon"><span class="material-symbols-outlined">videocam</span></div>
         <div class="nav-text"><div class="nav-title">Summarize Calls</div><div class="nav-time">~2 min</div></div>
         <span class="nav-check ms-filled material-symbols-outlined" id="chk-3">check_circle</span>
       </button>
-      <button class="nav-btn" data-idx="4" onclick="goTo(4)">
+      <button class="nav-btn" data-idx="4" onclick="goTo(4)" data-module-id="ai-search">
         <div class="nav-icon"><span class="material-symbols-outlined">manage_search</span></div>
         <div class="nav-text"><div class="nav-title">AI Search</div><div class="nav-time">~1 min</div></div>
         <span class="nav-check ms-filled material-symbols-outlined" id="chk-4">check_circle</span>
       </button>
-      <button class="nav-btn" data-idx="5" onclick="goTo(5)">
+      <button class="nav-btn" data-idx="5" onclick="goTo(5)" data-module-id="rewrite-with-ai">
         <div class="nav-icon"><span class="material-symbols-outlined">draw</span></div>
         <div class="nav-text"><div class="nav-title">Rewrite with AI</div><div class="nav-time">~1 min</div></div>
         <span class="nav-check ms-filled material-symbols-outlined" id="chk-5">check_circle</span>
       </button>
-      <button class="nav-btn" data-idx="6" onclick="goTo(6)">
+      <button class="nav-btn" data-idx="6" onclick="goTo(6)" data-module-id="custom-agents">
         <div class="nav-icon"><span class="material-symbols-outlined">tune</span></div>
         <div class="nav-text"><div class="nav-title">Custom Agents</div><div class="nav-time">~1 min</div></div>
         <span class="nav-check ms-filled material-symbols-outlined" id="chk-6">check_circle</span>
@@ -1100,6 +1100,76 @@ Maintain a concise, facts-only interaction model aligned with SOC workflows; exp
   const TOTAL = 7;
   const completed = new Set();
 
+  const GUIDE_ID = 'ai-quick-start';
+  const MODULE_IDS = ['ai-chat', 'summarize-threads', 'summarize-channels', 'summarize-calls', 'ai-search', 'rewrite-with-ai', 'custom-agents'];
+  const PLUGIN_BASE = (location.pathname.match(/^(\/plugins\/[^/]+)/) || [])[1] || '';
+  const PROGRESS_API = PLUGIN_BASE + '/api/v1/progress/' + GUIDE_ID;
+
+  function moduleIdForIndex(idx) {
+    return MODULE_IDS[idx] || null;
+  }
+
+  function indexForModuleId(id) {
+    return MODULE_IDS.indexOf(id);
+  }
+
+  async function loadProgress() {
+    if (!PLUGIN_BASE) return;
+    try {
+      const res = await fetch(PROGRESS_API, {
+        credentials: 'same-origin',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const ids = data.completedModuleIds || [];
+      ids.forEach((id) => {
+        const idx = indexForModuleId(id);
+        if (idx < 0) return;
+        completed.add(idx);
+        const chk = document.getElementById('chk-' + idx);
+        if (chk) chk.classList.add('visible');
+      });
+      updateProgress();
+      if (completed.size === TOTAL) {
+        showDone();
+        return;
+      }
+      const next = firstUnfinished();
+      if (next >= 0) {
+        goTo(next);
+      } else {
+        updatePips(-1);
+      }
+    } catch (e) {
+      /* offline / not logged in — keep local-only session */
+    }
+  }
+
+  async function saveProgress() {
+    if (!PLUGIN_BASE) return;
+    try {
+      const completedModuleIds = Array.from(completed)
+        .map(moduleIdForIndex)
+        .filter(Boolean);
+      await fetch(PROGRESS_API, {
+        method: 'PUT',
+        credentials: 'same-origin',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({
+          completedModuleIds: completedModuleIds,
+          moduleIds: MODULE_IDS,
+        }),
+      });
+    } catch (e) {
+      /* ignore save failures; UI already updated */
+    }
+  }
+
+
   function goTo(idx) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('visible'));
     document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
@@ -1149,6 +1219,7 @@ Maintain a concise, facts-only interaction model aligned with SOC workflows; exp
     if (chk) chk.classList.add('visible');
     updateProgress();
     updateActionButton(idx);
+    void saveProgress();
     if (completed.size === TOTAL) {
       showDone();
       return;
@@ -1185,7 +1256,7 @@ Maintain a concise, facts-only interaction model aligned with SOC workflows; exp
 
   function updateProgress() {
     const label = document.getElementById('prog-label');
-    if (label) label.textContent = completed.size + ' / 7 Complete';
+    if (label) label.textContent = completed.size + '/' + TOTAL + ' complete';
   }
 
   function updatePips(active) {
@@ -1214,6 +1285,7 @@ Maintain a concise, facts-only interaction model aligned with SOC workflows; exp
     // Keep completion state; just reopen module 1 for review
     goTo(0);
   }
+  loadProgress();
 </script>
 </body>
 </html>

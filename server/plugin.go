@@ -5,6 +5,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/mattermost/mattermost/server/public/model"
@@ -12,14 +13,16 @@ import (
 	"github.com/mattermost/mattermost/server/public/pluginapi"
 
 	"github.com/esethna/mm-academy/server/command"
+	"github.com/esethna/mm-academy/server/progress"
 )
 
 // Plugin implements the interface expected by the Mattermost server.
 type Plugin struct {
 	plugin.MattermostPlugin
 
-	client        *pluginapi.Client
-	commandClient command.Command
+	client          *pluginapi.Client
+	commandClient   command.Command
+	progressHandler *progress.Handler
 
 	configurationLock sync.RWMutex
 	configuration     *configuration
@@ -29,6 +32,7 @@ type Plugin struct {
 func (p *Plugin) OnActivate() error {
 	p.client = pluginapi.NewClient(p.API, p.Driver)
 	p.commandClient = command.NewCommandHandler(p.client)
+	p.progressHandler = progress.NewHandler(progress.NewStore(p.client))
 	return nil
 }
 
@@ -39,4 +43,14 @@ func (p *Plugin) ExecuteCommand(_ *plugin.Context, args *model.CommandArgs) (*mo
 		return nil, model.NewAppError("ExecuteCommand", "plugin.command.execute_command.app_error", nil, err.Error(), http.StatusInternalServerError)
 	}
 	return response, nil
+}
+
+// ServeHTTP handles plugin HTTP routes (progress API). Static public/ files are
+// served by the Mattermost server separately.
+func (p *Plugin) ServeHTTP(_ *plugin.Context, w http.ResponseWriter, r *http.Request) {
+	if strings.HasPrefix(r.URL.Path, "/api/v1/progress") {
+		p.progressHandler.ServeHTTP(w, r)
+		return
+	}
+	http.NotFound(w, r)
 }

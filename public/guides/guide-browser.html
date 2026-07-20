@@ -247,6 +247,27 @@ body {
 }
 .guide-cta .material-symbols-outlined { font-size: 16px; }
 .guide-card:hover .guide-cta { color: #1C58D9; }
+
+.guide-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.guide-status.done {
+  color: #1e6b45;
+}
+.guide-status .material-symbols-outlined { font-size: 14px; }
+.guide-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
+}
+
 .header-bottom p { white-space: normal; }
 
   </style>
@@ -277,10 +298,10 @@ body {
     </div>
     <div class="progress-strip">
       <div class="progress-modules" id="prog-pips">
-        <div class="progress-pip active" id="pip-0"></div>
-        <div class="progress-pip" id="pip-1"></div>
+        <div class="progress-pip" id="pip-ai-quick-start" data-guide-id="ai-quick-start" title="AI Quick Start"></div>
+        <div class="progress-pip" id="pip-slash-command-workflow-automation-quick-start" data-guide-id="slash-command-workflow-automation-quick-start" title="Slash Commands &amp; Workflow Automation"></div>
       </div>
-      <div class="progress-label" id="prog-label">2 guides</div>
+      <div class="progress-label" id="prog-label">0 / 2 Complete</div>
     </div>
   </div>
 
@@ -291,7 +312,7 @@ body {
     </div>
     <div class="catalog-label">Available guides</div>
     <div class="guide-grid" id="guide-grid">
-      <a class="guide-card" href="ai-quick-start.html" data-audiences="end-user">
+      <a class="guide-card" href="ai-quick-start.html" data-audiences="end-user" data-guide-id="ai-quick-start" data-module-count="7" data-module-ids="ai-chat,summarize-threads,summarize-channels,summarize-calls,ai-search,rewrite-with-ai,custom-agents">
         <div class="guide-card-top">
           <div class="guide-icon" aria-hidden="true">
             <span class="material-symbols-outlined">smart_toy</span>
@@ -303,10 +324,13 @@ body {
         </div>
         <h2>AI Quick Start</h2>
         <p>Put AI to work inside Mattermost — chat, summaries, calls, search, rewrites, and custom agents.</p>
-        <span class="guide-cta">Open guide <span class="material-symbols-outlined">arrow_forward</span></span>
+        <div class="guide-card-footer">
+          <span class="guide-status" data-progress-status>Not started</span>
+          <span class="guide-cta">Open guide <span class="material-symbols-outlined">arrow_forward</span></span>
+        </div>
       </a>
 
-      <a class="guide-card" href="slash-command-workflow-automation-quick-start.html" data-audiences="end-user admin">
+      <a class="guide-card" href="slash-command-workflow-automation-quick-start.html" data-audiences="end-user admin" data-guide-id="slash-command-workflow-automation-quick-start" data-module-count="5" data-module-ids="slash-command-basics,built-in-commands,scheduled-messages,workflow-automations,playbook-triggers">
         <div class="guide-card-top">
           <div class="guide-icon" aria-hidden="true">
             <span class="material-symbols-outlined">terminal</span>
@@ -318,7 +342,10 @@ body {
         </div>
         <h2>Slash Commands &amp; Workflow Automation</h2>
         <p>Slash commands, scheduled messages, and Playbook automations — become a Mattermost power user.</p>
-        <span class="guide-cta">Open guide <span class="material-symbols-outlined">arrow_forward</span></span>
+        <div class="guide-card-footer">
+          <span class="guide-status" data-progress-status>Not started</span>
+          <span class="guide-cta">Open guide <span class="material-symbols-outlined">arrow_forward</span></span>
+        </div>
       </a>
     </div>
     <p class="catalog-empty" id="catalog-empty">No guides match this filter.</p>
@@ -330,6 +357,7 @@ body {
   const cards = Array.from(document.querySelectorAll('.guide-card'));
   const empty = document.getElementById('catalog-empty');
   let active = 'end-user';
+  const PLUGIN_BASE = (location.pathname.match(/^(\/plugins\/[^/]+)/) || [])[1] || '';
 
   function applyFilter() {
     let visible = 0;
@@ -354,7 +382,67 @@ body {
     });
   });
 
+  function isGuideComplete(rec, moduleIds) {
+    if (rec && rec.everCompleted) return true;
+    if (!moduleIds.length) return false;
+    const completed = new Set((rec && rec.completedModuleIds) || []);
+    return moduleIds.every((id) => completed.has(id));
+  }
+
+  function renderProgress(guides) {
+    let guidesComplete = 0;
+    const guideTotal = cards.length;
+
+    cards.forEach((card) => {
+      const guideId = card.getAttribute('data-guide-id');
+      const moduleIds = (card.getAttribute('data-module-ids') || '').split(',').filter(Boolean);
+      const total = moduleIds.length || parseInt(card.getAttribute('data-module-count') || '0', 10);
+      const statusEl = card.querySelector('[data-progress-status]');
+      if (!guideId || !statusEl) return;
+      const rec = (guides && guides[guideId]) || null;
+      const completed = new Set((rec && rec.completedModuleIds) || []);
+      const doneCount = moduleIds.filter((id) => completed.has(id)).length;
+      const complete = isGuideComplete(rec, moduleIds);
+
+      const pip = document.querySelector('.progress-pip[data-guide-id="' + guideId + '"]');
+      if (pip) {
+        pip.classList.remove('active');
+        pip.classList.toggle('done', complete);
+      }
+
+      if (complete) {
+        guidesComplete += 1;
+        statusEl.classList.add('done');
+        statusEl.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Complete';
+      } else if (doneCount > 0) {
+        statusEl.classList.remove('done');
+        statusEl.textContent = doneCount + '/' + total + ' complete';
+      } else {
+        statusEl.classList.remove('done');
+        statusEl.textContent = '0/' + total + ' complete';
+      }
+    });
+
+    const label = document.getElementById('prog-label');
+    if (label) {
+      label.textContent = guidesComplete + ' / ' + guideTotal + ' Complete';
+    }
+  }
+
+  async function loadAllProgress() {
+    if (!PLUGIN_BASE) return;
+    try {
+      const res = await fetch(PLUGIN_BASE + '/api/v1/progress', { credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+      if (!res.ok) return;
+      const data = await res.json();
+      renderProgress(data.guides || {});
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
   applyFilter();
+  loadAllProgress();
 })();
 </script>
 </body>
