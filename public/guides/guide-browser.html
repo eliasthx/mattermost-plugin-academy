@@ -407,7 +407,7 @@ body {
       if (complete) {
         guidesComplete += 1;
         statusEl.classList.add('done');
-        statusEl.innerHTML = '<span class="material-symbols-outlined">check_circle</span> ' + total + ' / ' + total + '\u00a0\u00a0Complete';
+        statusEl.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Complete';
       } else if (doneCount > 0) {
         statusEl.classList.remove('done');
         statusEl.textContent = doneCount + ' / ' + total + '\u00a0\u00a0Complete';
