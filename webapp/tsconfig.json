@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "baseUrl": "./src",
+    "paths": {
+      "*": ["./src/*"]
+    },
     "lib": [
       "dom",
       "dom.iterable",
@@ -20,7 +22,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "experimentalDecorators": true,
-    "jsx": "react"
+    "jsx": "react",
+    "ignoreDeprecations": "6.0"
   },
   "include": [
     "src",

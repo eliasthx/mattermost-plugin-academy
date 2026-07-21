@@ -1,8 +1,9 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 
+import {AcademyGuideBadgeTooltipHost} from 'components/academy_badge_tooltip';
 import {CATALOG_FILE, guidePublicURL} from 'guides';
 import {closeLearning, getLearningSrc, isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
 
@@ -111,6 +112,7 @@ export default function LearningOverlay() {
     const [bounds, setBounds] = useState<Bounds | null>(null);
     const [resizingRhs, setResizingRhs] = useState(false);
     const [rhsOpen, setRhsOpen] = useState(false);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
 
     useEffect(() => subscribeLearning(() => setTick((n) => n + 1)), []);
 
@@ -240,42 +242,49 @@ export default function LearningOverlay() {
         ? 'var(--radius-l, 12px) 0 0 var(--radius-l, 12px)'
         : 'var(--radius-l, 12px)';
 
-    return (
-        <div
-            className='MattermostAcademyOverlay'
-            style={{
-                position: 'fixed',
-                top: bounds.top,
-                left: bounds.left,
-                width: bounds.width,
-                height: bounds.height,
-                zIndex: OVERLAY_Z_INDEX,
-                borderRadius,
-                background: 'var(--center-channel-bg, #fff)',
-                boxShadow: 'var(--elevation-1, 0 2px 3px 0 rgba(0, 0, 0, 0.08))',
-                // While dragging the RHS, let mouse events pass through so the
-                // resize isn't stolen by this overlay / iframe.
-                pointerEvents: resizingRhs ? 'none' : 'auto',
-            }}
-        >
+return (
+        <>
             <div
+                className='MattermostAcademyOverlay'
                 style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    width: '100%',
-                    height: '100%',
-                    overflow: 'hidden',
-                    borderRadius: 'inherit',
+                    position: 'fixed',
+                    top: bounds.top,
+                    left: bounds.left,
+                    width: bounds.width,
+                    height: bounds.height,
+                    zIndex: OVERLAY_Z_INDEX,
+                    borderRadius,
+                    background: 'var(--center-channel-bg, #fff)',
+                    boxShadow: 'var(--elevation-1, 0 2px 3px 0 rgba(0, 0, 0, 0.08))',
+                    // While dragging the RHS, let mouse events pass through so the
+                    // resize isn't stolen by this overlay / iframe.
+                    pointerEvents: resizingRhs ? 'none' : 'auto',
                 }}
             >
-                <iframe
-                    key={iframeSrc}
-                    title='Mattermost Academy'
-                    src={iframeSrc}
-                    style={iframeStyle}
-                    allow='clipboard-write'
-                />
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        width: '100%',
+                        height: '100%',
+                        overflow: 'hidden',
+                        borderRadius: 'inherit',
+                    }}
+                >
+                    <iframe
+                        key={iframeSrc}
+                        ref={iframeRef}
+                        title='Mattermost Academy'
+                        src={iframeSrc}
+                        style={iframeStyle}
+                        allow='clipboard-write'
+                    />
+                </div>
             </div>
-        </div>
+            <AcademyGuideBadgeTooltipHost
+                iframeRef={iframeRef}
+                resetKey={iframeSrc}
+            />
+        </>
     );
 }

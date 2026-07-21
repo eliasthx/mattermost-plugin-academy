@@ -4,7 +4,7 @@
 import manifest from 'manifest';
 
 /** Bump when guide HTML changes so iframe navigations skip stale browser cache. */
-export const GUIDE_ASSET_VERSION = '4';
+export const GUIDE_ASSET_VERSION = '7';
 
 /** Catalog metadata for Academy guides (icons match guide-browser.html). */
 export type GuideMeta = {

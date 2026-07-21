@@ -51,9 +51,9 @@
 
 .AcademyBadges__seal {
     position: absolute;
-    inset: 3px;
-    width: calc(100% - 6px);
-    height: calc(100% - 6px);
+    inset: 1.5px;
+    width: calc(100% - 3px);
+    height: calc(100% - 3px);
     object-fit: contain;
     pointer-events: none;
     user-select: none;
@@ -62,8 +62,8 @@
 .AcademyBadges__icon.material-symbols-outlined {
     position: relative;
     z-index: 1;
-    margin-top: -6px;
-    font-size: 17px;
+    margin-top: -5px;
+    font-size: 15px;
     font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
     line-height: 1;
     user-select: none;

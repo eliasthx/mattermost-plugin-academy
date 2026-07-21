@@ -2,10 +2,11 @@
 // See LICENSE.txt for license information.
 
 import React, {useEffect, useState} from 'react';
-import {OverlayTrigger, Tooltip} from 'react-bootstrap';
+import {OverlayTrigger} from 'react-bootstrap';
 
 import type {UserProfile} from '@mattermost/types/users';
 
+import {AcademyBadgeTooltip, formatBadgeEarnedAt} from 'components/academy_badge_tooltip';
 import {GUIDES, guidePublicURL} from 'guides';
 import {openLearning} from 'learning_state';
 import manifest from 'manifest';
@@ -36,17 +37,6 @@ function ensureMaterialSymbolsFont() {
     link.rel = 'stylesheet';
     link.href = MATERIAL_SYMBOLS_HREF;
     document.head.appendChild(link);
-}
-
-function formatCompletedAt(unixSeconds: number): string {
-    if (!unixSeconds) {
-        return '';
-    }
-    return new Date(unixSeconds * 1000).toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
 }
 
 const BADGE_SEAL_URL = `/plugins/${manifest.id}/public/Badge.svg`;
@@ -142,17 +132,13 @@ export default function AcademyBadges(props: Props) {
         if (!meta) {
             return null;
         }
-        const dateLabel = formatCompletedAt(c.completedAt);
+        const dateLabel = formatBadgeEarnedAt(c.completedAt);
         const tooltip = (
-            <Tooltip
+            <AcademyBadgeTooltip
                 id={`academy-badge-${c.guideId}`}
-                className='AcademyBadges__tooltip-root'
-            >
-                <div className='AcademyBadges__tooltip'>
-                    <div>{meta.title}</div>
-                    {dateLabel && <div>{`Completed ${dateLabel}`}</div>}
-                </div>
-            </Tooltip>
+                title={meta.title}
+                dateLabel={dateLabel || undefined}
+            />
         );
 
         return (
@@ -166,7 +152,7 @@ export default function AcademyBadges(props: Props) {
                     type='button'
                     className='AcademyBadges__badge'
                     role='listitem'
-                    aria-label={`${meta.title}${dateLabel ? `, completed ${dateLabel}` : ''}. Open guide.`}
+                    aria-label={`${meta.title}${dateLabel ? `, earned ${dateLabel}` : ''}. Open guide.`}
                     onClick={() => {
                         props.hide?.();
                         openLearning(guidePublicURL(meta.file));

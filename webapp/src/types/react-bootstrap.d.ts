@@ -15,6 +15,16 @@ declare module 'react-bootstrap' {
 
     export class OverlayTrigger extends React.Component<OverlayTriggerProps> {}
 
+    export type OverlayProps = {
+        show?: boolean;
+        target?: HTMLElement | (() => HTMLElement | null) | null;
+        placement?: string;
+        container?: HTMLElement | (() => HTMLElement);
+        children: React.ReactElement;
+    };
+
+    export class Overlay extends React.Component<OverlayProps> {}
+
     export type TooltipProps = {
         id: string;
         children?: React.ReactNode;
