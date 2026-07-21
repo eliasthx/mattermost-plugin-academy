@@ -1,6 +1,11 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import manifest from 'manifest';
+
+/** Bump when guide HTML changes so iframe navigations skip stale browser cache. */
+export const GUIDE_ASSET_VERSION = '4';
+
 /** Catalog metadata for Academy guides (icons match guide-browser.html). */
 export type GuideMeta = {
     title: string;
@@ -22,3 +27,10 @@ export const GUIDES: Record<string, GuideMeta> = {
         file: 'slash-command-workflow-automation-quick-start.html',
     },
 };
+
+export const CATALOG_FILE = 'guide-browser.html';
+
+/** Plugin URL for a guide HTML file, with cache-busting query. */
+export function guidePublicURL(file: string) {
+    return `/plugins/${manifest.id}/public/guides/${file}?v=${GUIDE_ASSET_VERSION}`;
+}

@@ -6,7 +6,7 @@ import {OverlayTrigger, Tooltip} from 'react-bootstrap';
 
 import type {UserProfile} from '@mattermost/types/users';
 
-import {GUIDES} from 'guides';
+import {GUIDES, guidePublicURL} from 'guides';
 import {openLearning} from 'learning_state';
 import manifest from 'manifest';
 
@@ -47,10 +47,6 @@ function formatCompletedAt(unixSeconds: number): string {
         month: 'short',
         day: 'numeric',
     });
-}
-
-function guidePath(file: string) {
-    return `/plugins/${manifest.id}/public/guides/${file}`;
 }
 
 const BADGE_SEAL_URL = `/plugins/${manifest.id}/public/Badge.svg`;
@@ -173,7 +169,7 @@ export default function AcademyBadges(props: Props) {
                     aria-label={`${meta.title}${dateLabel ? `, completed ${dateLabel}` : ''}. Open guide.`}
                     onClick={() => {
                         props.hide?.();
-                        openLearning(guidePath(meta.file));
+                        openLearning(guidePublicURL(meta.file));
                     }}
                 >
                     <img

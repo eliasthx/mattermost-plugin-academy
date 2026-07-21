@@ -3,13 +3,12 @@
 
 import React, {useEffect, useState} from 'react';
 
-import manifest from 'manifest';
-
+import {CATALOG_FILE, guidePublicURL} from 'guides';
 import {closeLearning, getLearningSrc, isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
 
 const CLOSE_MESSAGE_TYPE = 'mm-academy-close';
 
-const CATALOG_PATH = `/plugins/${manifest.id}/public/guides/guide-browser.html`;
+const CATALOG_PATH = guidePublicURL(CATALOG_FILE);
 
 // Below menus (1100), modals (1050), popovers (1200), and global header (99).
 // Above normal channel content and the RHS (~12–20) so --elevation-1 can cast
