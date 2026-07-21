@@ -1,11 +1,11 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {CATALOG_FILE, guidePublicURL} from 'guides';
+import {closeLearning, getLearningSrc, isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
 import React, {useEffect, useRef, useState} from 'react';
 
 import {AcademyGuideBadgeTooltipHost} from 'components/academy_badge_tooltip';
-import {CATALOG_FILE, guidePublicURL} from 'guides';
-import {closeLearning, getLearningSrc, isLearningOpen, openLearning, subscribeLearning} from 'learning_state';
 
 const CLOSE_MESSAGE_TYPE = 'mm-academy-close';
 
@@ -238,11 +238,9 @@ export default function LearningOverlay() {
     // When RHS is open, square off the right edge; keep left corners rounded.
     // Shadow lives on the outer shell so overflow clipping on the inner shell
     // does not hide Mattermost's elevation (same token as #channel_view).
-    const borderRadius = rhsOpen
-        ? 'var(--radius-l, 12px) 0 0 var(--radius-l, 12px)'
-        : 'var(--radius-l, 12px)';
+    const borderRadius = rhsOpen ? 'var(--radius-l, 12px) 0 0 var(--radius-l, 12px)' : 'var(--radius-l, 12px)';
 
-return (
+    return (
         <>
             <div
                 className='MattermostAcademyOverlay'
@@ -256,6 +254,7 @@ return (
                     borderRadius,
                     background: 'var(--center-channel-bg, #fff)',
                     boxShadow: 'var(--elevation-1, 0 2px 3px 0 rgba(0, 0, 0, 0.08))',
+
                     // While dragging the RHS, let mouse events pass through so the
                     // resize isn't stolen by this overlay / iframe.
                     pointerEvents: resizingRhs ? 'none' : 'auto',
