@@ -9,11 +9,12 @@ import type {GlobalState} from '@mattermost/types/store';
 import AdminGuideCompletionsSection from 'components/admin_guide_completions_section';
 import AdminProfileBadgesSection from 'components/admin_profile_badges_section';
 import AcademyBadges from 'components/academy_badges';
+import AcademyHelpMenuItem from 'components/academy_help_menu_item';
 import LearningOverlay from 'components/learning_overlay';
 import LearnIcon from 'components/learn_icon';
 import manifest from 'manifest';
 
-import {toggleLearning} from 'learning_state';
+import {openLearning, toggleLearning} from 'learning_state';
 
 import type {PluginRegistry} from 'types/mattermost-webapp';
 
@@ -32,6 +33,11 @@ export default class Plugin {
             () => toggleLearning(),
             'Mattermost Academy',
             'Mattermost Academy',
+        );
+
+        registry.registerUserGuideDropdownMenuAction(
+            <AcademyHelpMenuItem/>,
+            () => openLearning(),
         );
     }
 }

@@ -1,0 +1,28 @@
+// Hide Mattermost's hardcoded plugin icon; we render our own grad cap.
+button.style--none:has(.AcademyHelpMenuItem) > i.icon-thumbs-up-down {
+    display: none;
+}
+
+.AcademyHelpMenuItem {
+    display: inline-flex;
+    align-items: center;
+}
+
+// Match MenuItem span.icon spacing (28px wide, 16px glyph, 12px pad-right).
+.AcademyHelpMenuItem__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    width: 28px;
+    height: 16px;
+    padding-right: 12px;
+    align-items: center;
+    justify-content: flex-start;
+    color: rgba(var(--center-channel-color-rgb), 0.64);
+
+    svg {
+        display: block;
+        width: 16px;
+        height: 16px;
+    }
+}
