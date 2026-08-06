@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 320" role="img" aria-label="Playbook run checklist with three tasks">
+  <defs>
+    <style>
+      .pc-title { font: 700 16px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #1B1D22; }
+      .pc-heading { font: 700 14px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #1B1D22; }
+      .pc-section { font: 600 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+      .pc-meta { font: 400 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #989AA3; }
+      .pc-task { font: 500 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+      .pc-pill { font: 400 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #5E6169; }
+      .pc-initial { font: 600 8px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #FFFFFF; }
+    </style>
+  </defs>
+
+  <!-- Card -->
+  <rect x="0.5" y="0.5" width="439" height="319" rx="10" fill="#FFFFFF" stroke="#E2E2E2"/>
+
+  <!-- Run title -->
+  <text class="pc-title" x="20" y="32">INC 1282 Server Outage</text>
+
+  <!-- Tasks heading -->
+  <text class="pc-heading" x="20" y="68">Tasks</text>
+
+  <!-- Checklist section header -->
+  <path d="M22 88 L28 94 L22 100" fill="none" stroke="#5E6169" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text class="pc-section" x="36" y="98">Triage and Containment</text>
+  <text class="pc-meta" x="360" y="98">0 / 3 done</text>
+
+  <!-- Item 1 -->
+  <rect x="22" y="118" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#C5C5C5" stroke-width="1.5"/>
+  <text class="pc-task" x="48" y="131">Acknowledge PagerDuty alert</text>
+  <rect x="48" y="140" width="108" height="22" rx="11" fill="#F2F3F4"/>
+  <circle cx="59" cy="151" r="7" fill="#1C58D9"/>
+  <text class="pc-initial" x="59" y="154" text-anchor="middle">AT</text>
+  <text class="pc-pill" x="72" y="155">Alex Turner</text>
+  <rect x="164" y="140" width="100" height="22" rx="11" fill="#F2F3F4"/>
+  <rect x="174" y="147" width="10" height="10" rx="1.5" fill="none" stroke="#5E6169" stroke-width="1.2"/>
+  <path d="M176 147 V145.5 M182 147 V145.5" stroke="#5E6169" stroke-width="1.2" stroke-linecap="round"/>
+  <text class="pc-pill" x="190" y="155">Due in 1 hour</text>
+
+  <!-- Item 2 -->
+  <rect x="22" y="182" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#C5C5C5" stroke-width="1.5"/>
+  <text class="pc-task" x="48" y="195">Confirm outage impact</text>
+  <rect x="48" y="204" width="118" height="22" rx="11" fill="#F2F3F4"/>
+  <circle cx="59" cy="215" r="7" fill="#3DB887"/>
+  <text class="pc-initial" x="59" y="218" text-anchor="middle">ER</text>
+  <text class="pc-pill" x="72" y="219">Ethan Rogers</text>
+  <rect x="174" y="204" width="86" height="22" rx="11" fill="#F2F3F4"/>
+  <rect x="184" y="211" width="10" height="10" rx="1.5" fill="none" stroke="#5E6169" stroke-width="1.2"/>
+  <path d="M186 211 V209.5 M192 211 V209.5" stroke="#5E6169" stroke-width="1.2" stroke-linecap="round"/>
+  <text class="pc-pill" x="200" y="219">Due today</text>
+
+  <!-- Item 3 -->
+  <rect x="22" y="246" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#C5C5C5" stroke-width="1.5"/>
+  <text class="pc-task" x="48" y="259">Notify impacted teams</text>
+  <rect x="48" y="268" width="118" height="22" rx="11" fill="#F2F3F4"/>
+  <circle cx="59" cy="279" r="7" fill="#3DB887"/>
+  <text class="pc-initial" x="59" y="282" text-anchor="middle">ER</text>
+  <text class="pc-pill" x="72" y="283">Ethan Rogers</text>
+  <rect x="174" y="268" width="86" height="22" rx="11" fill="#F2F3F4"/>
+  <rect x="184" y="275" width="10" height="10" rx="1.5" fill="none" stroke="#5E6169" stroke-width="1.2"/>
+  <path d="M186 275 V273.5 M192 275 V273.5" stroke="#5E6169" stroke-width="1.2" stroke-linecap="round"/>
+  <text class="pc-pill" x="200" y="283">Due today</text>
+</svg>

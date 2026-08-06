@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 168" role="img" aria-label="Message composer with Schedule message menu open">
+  <defs>
+    <style>
+      .sm-msg { font: 400 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+      .sm-title { font: 700 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+      .sm-opt { font: 400 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+    </style>
+    <filter id="sm-shadow" x="-8%" y="-8%" width="116%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <!-- Schedule message menu -->
+  <g filter="url(#sm-shadow)">
+    <rect x="232" y="0.5" width="200" height="110" rx="6" fill="#FFFFFF" stroke="#E2E2E2"/>
+  </g>
+  <text class="sm-title" x="248" y="26">Schedule message</text>
+  <text class="sm-opt" x="248" y="54">Monday at 9:00 AM</text>
+  <line x1="248" y1="70" x2="416" y2="70" stroke="#E2E2E2" stroke-width="1"/>
+  <text class="sm-opt" x="248" y="94">Choose a custom time</text>
+
+  <!-- One-row composer -->
+  <rect x="0.5" y="123.5" width="439" height="43" rx="8" fill="#FFFFFF" stroke="#E2E2E2"/>
+  <text class="sm-msg" x="16" y="150">Don't forget — sprint retro is at 3pm today</text>
+
+  <!-- Send button: plane + dropdown -->
+  <rect x="360" y="131" width="68" height="28" rx="4" fill="#1C58D9"/>
+  <path d="M374 138 L392 145 L374 152 L378 145 Z" fill="#FFFFFF"/>
+  <line x1="400" y1="137" x2="400" y2="153" stroke="#FFFFFF" stroke-width="1" opacity="0.35"/>
+  <path d="M408 141 L413 146 L418 141" fill="none" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

@@ -1,43 +1,62 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import manifest from 'manifest';
+import {navigateToAcademy} from 'navigation';
 import React from 'react';
 import type {Store} from 'redux';
 
 import type {GlobalState} from '@mattermost/types/store';
 
-import AdminGuideCompletionsSection from 'components/admin_guide_completions_section';
-import AdminProfileBadgesSection from 'components/admin_profile_badges_section';
 import AcademyBadges from 'components/academy_badges';
 import AcademyHelpMenuItem from 'components/academy_help_menu_item';
-import LearningOverlay from 'components/learning_overlay';
+import AdminGuideCompletionsSection from 'components/admin_guide_completions_section';
+import AdminProfileBadgesSection from 'components/admin_profile_badges_section';
+import App from 'components/app';
+import {AcademyProductIcon, ACADEMY_ICON_URL} from 'components/icons';
 import LearnIcon from 'components/learn_icon';
-import manifest from 'manifest';
-
-import {openLearning, toggleLearning} from 'learning_state';
 
 import type {PluginRegistry} from 'types/mattermost-webapp';
 
 export default class Plugin {
+    // store reserved for future product↔channels integration
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async initialize(registry: PluginRegistry, _store: Store<GlobalState>) {
-        // RootComponent hosts the overlay; when open it expands over sidebar + center.
-        registry.registerRootComponent(LearningOverlay);
+        registry.registerProduct(
+            '/academy',
+            <AcademyProductIcon/>,
+            'Academy',
+            '/academy',
+            App,
+            () => null,
+            () => null,
+            false,
+        );
+
+        if (registry.registerAppBarComponent) {
+            registry.registerAppBarComponent(
+                ACADEMY_ICON_URL,
+                () => navigateToAcademy(),
+                'Mattermost Academy',
+                null as never,
+            );
+        }
+
+        registry.registerChannelHeaderButtonAction(
+            <LearnIcon/>,
+            () => navigateToAcademy(),
+            'Mattermost Academy',
+            'Mattermost Academy',
+        );
 
         registry.registerPopoverUserAttributesComponent(AcademyBadges);
 
         registry.registerAdminConsoleCustomSection('ProfileBadges', AdminProfileBadgesSection);
         registry.registerAdminConsoleCustomSection('GuideCompletions', AdminGuideCompletionsSection);
 
-        registry.registerChannelHeaderButtonAction(
-            <LearnIcon/>,
-            () => toggleLearning(),
-            'Mattermost Academy',
-            'Mattermost Academy',
-        );
-
         registry.registerUserGuideDropdownMenuAction(
             <AcademyHelpMenuItem/>,
-            () => openLearning(),
+            () => navigateToAcademy(),
         );
     }
 }

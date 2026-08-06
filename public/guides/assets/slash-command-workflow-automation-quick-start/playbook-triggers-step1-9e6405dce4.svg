@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 280" role="img" aria-label="Channel Actions: keyword trigger to run a playbook">
+  <defs>
+    <style>
+      .ca-title { font: 700 15px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+      .ca-desc { font: 400 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #989AA3; }
+      .ca-label { font: 400 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #989AA3; }
+      .ca-heading { font: 600 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+      .ca-body { font: 400 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+      .ca-placeholder { font: 400 12px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #989AA3; }
+    </style>
+  </defs>
+
+  <!-- Modal -->
+  <rect x="0.5" y="0.5" width="439" height="279" rx="8" fill="#FFFFFF" stroke="#E2E2E2"/>
+
+  <!-- Header -->
+  <path d="M28 16 L22 26 H27 L25 34 L32 22 H27 L28 16 Z" fill="#5A5A5A"/>
+  <text class="ca-title" x="40" y="28">Channel Actions</text>
+  <path d="M410 20 L420 30 M420 20 L410 30" stroke="#989AA3" stroke-width="1.5" stroke-linecap="round"/>
+  <text class="ca-desc" x="22" y="50">Channel actions allow you to automate activities for this channel</text>
+
+  <!-- Trigger card -->
+  <rect x="16" y="68" width="408" height="192" rx="6" fill="#FFFFFF" stroke="#E2E2E2"/>
+
+  <text class="ca-label" x="32" y="92">Trigger</text>
+  <text class="ca-heading" x="32" y="114">When a message with these keywords is posted</text>
+
+  <!-- Keyword input -->
+  <rect x="32" y="128" width="376" height="36" rx="4" fill="#FFFFFF" stroke="#C5C5C5"/>
+  <text class="ca-placeholder" x="44" y="150">Type a keyword or phrase, then press Enter on your keyboard</text>
+
+  <!-- Playbook toggle row -->
+  <text class="ca-body" x="32" y="192">Prompt to run a playbook</text>
+  <rect x="376" y="178" width="32" height="18" rx="9" fill="#1C58D9"/>
+  <circle cx="399" cy="187" r="7" fill="#FFFFFF"/>
+
+  <!-- Playbook select -->
+  <rect x="32" y="208" width="376" height="36" rx="4" fill="#FFFFFF" stroke="#C5C5C5"/>
+  <text class="ca-placeholder" x="44" y="230">Select a playbook</text>
+  <path d="M388 222 L394 228 L400 222" fill="none" stroke="#989AA3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

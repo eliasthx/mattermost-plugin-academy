@@ -46,7 +46,7 @@ func (c *Handler) Handle(args *model.CommandArgs) (*model.CommandResponse, error
 	trigger := strings.TrimPrefix(fields[0], "/")
 	switch trigger {
 	case learnCommandTrigger:
-		return c.executeLearnCommand(args), nil
+		return c.executeLearnCommand(), nil
 	default:
 		return &model.CommandResponse{
 			ResponseType: model.CommandResponseTypeEphemeral,
@@ -55,7 +55,7 @@ func (c *Handler) Handle(args *model.CommandArgs) (*model.CommandResponse, error
 	}
 }
 
-func (c *Handler) executeLearnCommand(args *model.CommandArgs) *model.CommandResponse {
+func (c *Handler) executeLearnCommand() *model.CommandResponse {
 	siteURL := ""
 	if cfg := c.client.Configuration.GetConfig(); cfg.ServiceSettings.SiteURL != nil {
 		siteURL = strings.TrimRight(*cfg.ServiceSettings.SiteURL, "/")
@@ -63,21 +63,14 @@ func (c *Handler) executeLearnCommand(args *model.CommandArgs) *model.CommandRes
 
 	fallback := &model.CommandResponse{
 		ResponseType: model.CommandResponseTypeEphemeral,
-		Text:         "Click **Mattermost Academy** in the channel header or App Bar to open the guide.",
+		Text:         "Open **Mattermost Academy** from the product switcher or App Bar.",
 	}
 
-	team, err := c.client.Team.Get(args.TeamId)
-	if err != nil || team == nil {
+	if siteURL == "" {
 		return fallback
 	}
 
-	channel, err := c.client.Channel.Get(args.ChannelId)
-	if err != nil || channel == nil {
-		return fallback
-	}
-
-	// Opens the in-channel learning overlay without leaving Channels chrome.
-	learnURL := fmt.Sprintf("%s/%s/channels/%s?learn=1", siteURL, team.Name, channel.Name)
+	learnURL := fmt.Sprintf("%s/academy", siteURL)
 	return &model.CommandResponse{
 		ResponseType: model.CommandResponseTypeEphemeral,
 		Text:         fmt.Sprintf("Open [Mattermost Academy](%s)", learnURL),

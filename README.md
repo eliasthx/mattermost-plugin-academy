@@ -1,12 +1,14 @@
 # Mattermost Academy
 
-A Mattermost plugin that opens interactive learning guides (starting with **AI Quick Start**) in an overlay inside Channels.
+A Mattermost plugin that provides interactive learning guides as a full-screen product (like Boards / Playbooks / Weave).
 
 ## Features
 
-- **Mattermost Academy** button in the channel header / App Bar
-- `/learn` slash command — posts an ephemeral link that opens the guide
-- Full-bleed HTML learning modules served from `public/modules/`
+- **Academy** entry in the product switcher
+- App Bar / channel header button opens the full-screen Academy product
+- `/learn` slash command — posts an ephemeral link to `/academy`
+- React catalog, guides, and lessons with real URL routing under `/academy`
+- Profile badges and admin completion reporting
 
 ## Requirements
 
@@ -37,9 +39,20 @@ Produces `dist/com.mattermost.academy-*.tar.gz` for manual upload in **System Co
 
 | Path | Purpose |
 |------|---------|
-| `webapp/` | App Bar button, overlay, iframe shell |
-| `public/modules/` | Learning HTML modules |
+| `webapp/` | Product UI, catalog/guides/lessons, badges, admin sections |
+| `webapp/src/content/` | Guide/module content (TypeScript) |
+| `public/guides/assets/` | Lesson images and UI mock SVGs |
 | `server/command/` | `/learn` slash command |
+| `server/progress/` | Progress / completion API |
 | `plugin.json` | Plugin id, name, and bundle paths |
 
 Plugin id: `com.mattermost.academy`
+
+## Product routes
+
+| Path | Page |
+|------|------|
+| `/academy` | Guide catalog |
+| `/academy/guides/:guideId` | Redirect to first incomplete module |
+| `/academy/guides/:guideId/modules/:moduleId` | Lesson |
+| `/academy/guides/:guideId/done` | Completion / badge |
