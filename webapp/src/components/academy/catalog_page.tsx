@@ -3,12 +3,13 @@
 
 import {fetchAllProgress} from 'client/progress';
 import type {ProgressRecord} from 'client/progress';
-import {GUIDE_LIST, routes} from 'content';
+import {GUIDE_LIST} from 'content';
 import type {Audience} from 'content/types';
 import React, {useEffect, useMemo, useState} from 'react';
-import {Link} from 'react-router-dom';
 
+import GuideCard, {guideCardCta} from 'components/academy/guide_card';
 import {AcademyIcon, ACADEMY_ICON_URL} from 'components/icons';
+import {navigateToChannels} from 'navigation';
 
 type Filter = 'all' | Audience;
 
@@ -58,6 +59,17 @@ export default function CatalogPage() {
                     aria-hidden={true}
                 />
                 <div className='academy-header__content'>
+                    <button
+                        type='button'
+                        className='academy-header__back'
+                        onClick={() => navigateToChannels()}
+                    >
+                        <AcademyIcon
+                            name='arrow-left'
+                            size={16}
+                        />
+                        {'Back to channels'}
+                    </button>
                     <div className='academy-header__title-row'>
                         <img
                             className='academy-header__brand-icon'
@@ -109,47 +121,13 @@ export default function CatalogPage() {
                         <div className='academy-catalog__grid'>
                             {guides.map((guide) => {
                                 const done = completedCount(progress[guide.id], guide.modules.length);
-                                const pct = guide.modules.length ? Math.round((done / guide.modules.length) * 100) : 0;
-                                let cta = 'Start';
-                                if (progress[guide.id]?.everCompleted) {
-                                    cta = 'Review';
-                                } else if (done > 0) {
-                                    cta = 'Continue';
-                                }
                                 return (
-                                    <Link
+                                    <GuideCard
                                         key={guide.id}
-                                        className='academy-card'
-                                        to={routes.guide(guide.id)}
-                                    >
-                                        <span className='academy-card__icon'>
-                                            <AcademyIcon
-                                                name={guide.icon}
-                                                size={32}
-                                            />
-                                        </span>
-                                        <h2 className='academy-card__title'>{guide.title}</h2>
-                                        <p className='academy-card__desc'>{guide.description}</p>
-                                        <div className='academy-card__footer'>
-                                            <span>{`${done} / ${guide.modules.length} modules`}</span>
-                                            <span className='academy-card__cta'>
-                                                {cta}
-                                                <AcademyIcon
-                                                    name='chevron-right'
-                                                    size={16}
-                                                />
-                                            </span>
-                                        </div>
-                                        <div
-                                            className='academy-card__progress'
-                                            aria-hidden={true}
-                                        >
-                                            <div
-                                                className='academy-card__progress-bar'
-                                                style={{width: `${pct}%`}}
-                                            />
-                                        </div>
-                                    </Link>
+                                        guide={guide}
+                                        done={done}
+                                        cta={guideCardCta(done, progress[guide.id]?.everCompleted)}
+                                    />
                                 );
                             })}
                         </div>

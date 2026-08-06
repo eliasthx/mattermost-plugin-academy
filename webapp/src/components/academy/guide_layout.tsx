@@ -10,6 +10,7 @@ import {AcademyIcon} from 'components/icons';
 
 function GuideShell({children}: {children: React.ReactNode}) {
     const {guide, completed} = useGuideContext();
+    const doneCount = Math.min(completed.size, guide.modules.length);
 
     return (
         <div className='academy-app__body'>
@@ -39,6 +40,9 @@ function GuideShell({children}: {children: React.ReactNode}) {
                         <h1 className='academy-header__title'>{guide.heroTitle}</h1>
                     </div>
                     <p className='academy-header__subtitle'>{guide.subtitle}</p>
+                    <p className='academy-header__progress'>
+                        {`${doneCount} / ${guide.modules.length} modules complete`}
+                    </p>
                 </div>
             </header>
 
@@ -48,7 +52,7 @@ function GuideShell({children}: {children: React.ReactNode}) {
                     aria-label='Module navigation'
                 >
                     <div className='academy-guide__nav-heading'>{'Modules'}</div>
-                    {guide.modules.map((mod) => {
+                    {guide.modules.map((mod, index) => {
                         const done = completed.has(mod.id);
                         return (
                             <NavLink
@@ -58,23 +62,20 @@ function GuideShell({children}: {children: React.ReactNode}) {
                                 activeClassName='academy-guide__nav-btn--active'
                                 title={mod.navTitle}
                             >
-                                <span className='academy-guide__nav-icon'>
-                                    <AcademyIcon
-                                        name={mod.icon}
-                                        size={16}
-                                    />
+                                <span className='academy-guide__nav-num'>
+                                    {done ? (
+                                        <AcademyIcon
+                                            name='check'
+                                            size={12}
+                                        />
+                                    ) : (
+                                        index + 1
+                                    )}
                                 </span>
                                 <span className='academy-guide__nav-label'>{mod.navTitle}</span>
-                                <span className='academy-guide__nav-trailing'>
-                                    {mod.minutes ? (
-                                        <span className='academy-guide__nav-meta'>{`~${mod.minutes} min`}</span>
-                                    ) : null}
-                                    <AcademyIcon
-                                        name='check-circle-outline'
-                                        className='academy-guide__nav-check'
-                                        size={14}
-                                    />
-                                </span>
+                                {mod.minutes ? (
+                                    <span className='academy-guide__nav-meta'>{`~${mod.minutes} min`}</span>
+                                ) : null}
                             </NavLink>
                         );
                     })}

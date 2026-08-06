@@ -8,6 +8,7 @@ import AiSummarizeIcon from '@mattermost/compass-icons/components/ai-summarize';
 import ArrowLeftIcon from '@mattermost/compass-icons/components/arrow-left';
 import BookOutlineIcon from '@mattermost/compass-icons/components/book-outline';
 import CheckIcon from '@mattermost/compass-icons/components/check';
+import CheckCircleIcon from '@mattermost/compass-icons/components/check-circle';
 import CheckCircleOutlineIcon from '@mattermost/compass-icons/components/check-circle-outline';
 import ChevronRightIcon from '@mattermost/compass-icons/components/chevron-right';
 import ClockSendOutlineIcon from '@mattermost/compass-icons/components/clock-send-outline';
@@ -56,6 +57,7 @@ const ICONS: Record<string, IconComponent> = {
     'open-in-new': OpenInNewIcon,
     'content-copy': ContentCopyIcon,
     'check-circle-outline': CheckCircleOutlineIcon,
+    'check-circle': CheckCircleIcon,
     check: CheckIcon,
     'book-outline': BookOutlineIcon,
     'chevron-right': ChevronRightIcon,
@@ -84,8 +86,11 @@ export function AcademyProductIcon({size = 24, className}: {size?: number; class
             aria-hidden={true}
             focusable='false'
         >
-            <path d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3z'/>
-            <path d='M5 13.18v4.32C5 19.8 8.13 21 12 21s7-1.2 7-3.5v-4.32l-7 3.82-7-3.82z'/>
+            {/* Glyph fills the viewBox more than Compass icons; scale down for optical match. */}
+            <g transform='translate(12 12) scale(0.82) translate(-12 -12)'>
+                <path d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3z'/>
+                <path d='M5 13.18v4.32C5 19.8 8.13 21 12 21s7-1.2 7-3.5v-4.32l-7 3.82-7-3.82z'/>
+            </g>
         </svg>
     );
 }

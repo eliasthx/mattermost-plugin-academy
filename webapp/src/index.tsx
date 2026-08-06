@@ -10,6 +10,8 @@ import type {GlobalState} from '@mattermost/types/store';
 
 import AcademyBadges from 'components/academy_badges';
 import AcademyHelpMenuItem from 'components/academy_help_menu_item';
+import AcademyRHS from 'components/academy_rhs';
+import AcademyRHSTitle from 'components/academy_rhs_title';
 import AdminGuideCompletionsSection from 'components/admin_guide_completions_section';
 import AdminProfileBadgesSection from 'components/admin_profile_badges_section';
 import App from 'components/app';
@@ -19,9 +21,7 @@ import LearnIcon from 'components/learn_icon';
 import type {PluginRegistry} from 'types/mattermost-webapp';
 
 export default class Plugin {
-    // store reserved for future product↔channels integration
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async initialize(registry: PluginRegistry, _store: Store<GlobalState>) {
+    public async initialize(registry: PluginRegistry, store: Store<GlobalState>) {
         registry.registerProduct(
             '/academy',
             <AcademyProductIcon/>,
@@ -33,10 +33,15 @@ export default class Plugin {
             false,
         );
 
+        const {toggleRHSPlugin} = registry.registerRightHandSidebarComponent(
+            AcademyRHS,
+            <AcademyRHSTitle/>,
+        );
+
         if (registry.registerAppBarComponent) {
             registry.registerAppBarComponent(
                 ACADEMY_ICON_URL,
-                () => navigateToAcademy(),
+                () => store.dispatch(toggleRHSPlugin),
                 'Mattermost Academy',
                 null as never,
             );
