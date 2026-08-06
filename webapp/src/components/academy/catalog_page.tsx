@@ -92,28 +92,29 @@ export default function CatalogPage() {
 
             <div className='academy-catalog'>
                 <div className='academy-catalog__content'>
-                    <div
-                        className='academy-catalog__filters'
-                        role='group'
-                        aria-label='Filter guides by audience'
-                    >
-                        {([
-                            ['all', 'All'],
-                            ['end-user', 'End users'],
-                            ['admin', 'Admins'],
-                        ] as Array<[Filter, string]>).map(([id, label]) => (
-                            <button
-                                key={id}
-                                type='button'
-                                className={`academy-catalog__chip${filter === id ? ' academy-catalog__chip--active' : ''}`}
-                                onClick={() => setFilter(id)}
-                            >
-                                {label}
-                            </button>
-                        ))}
+                    <div className='academy-catalog__toolbar'>
+                        <div className='academy-catalog__label'>{'Available guides'}</div>
+                        <div
+                            className='academy-catalog__filters'
+                            role='group'
+                            aria-label='Filter guides by audience'
+                        >
+                            {([
+                                ['all', 'All'],
+                                ['end-user', 'End users'],
+                                ['admin', 'Admins'],
+                            ] as Array<[Filter, string]>).map(([id, label]) => (
+                                <button
+                                    key={id}
+                                    type='button'
+                                    className={`academy-catalog__chip${filter === id ? ' academy-catalog__chip--active' : ''}`}
+                                    onClick={() => setFilter(id)}
+                                >
+                                    {label}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-
-                    <div className='academy-catalog__label'>{'Available guides'}</div>
 
                     {guides.length === 0 ? (
                         <p className='academy-catalog__empty'>{'No guides match this filter.'}</p>

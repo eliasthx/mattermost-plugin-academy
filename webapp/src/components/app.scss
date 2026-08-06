@@ -264,11 +264,18 @@
         padding: 40px;
     }
 
+    &__toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px 16px;
+        margin-bottom: 18px;
+    }
+
     &__filters {
         display: flex;
         flex-wrap: wrap;
         gap: 8px;
-        margin-bottom: 18px;
     }
 
     &__chip {
@@ -301,7 +308,7 @@
     }
 
     &__label {
-        margin: 0 0 12px;
+        margin: 0;
         font-size: 12px;
         font-weight: 700;
         letter-spacing: 0.04em;
