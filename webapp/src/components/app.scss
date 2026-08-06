@@ -15,7 +15,7 @@
     color: var(--center-channel-color, #3d3c40);
     background: var(--center-channel-bg, #fff);
     font-size: 14px;
-    line-height: 1.45;
+    line-height: 20px;
 
     a {
         color: var(--link-color, #1c58d9);
@@ -77,7 +77,11 @@
     color: var(--sidebar-text, #fff);
 
     &__content {
-        padding: 16px 24px 18px;
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 48px;
     }
 
     &__back {
@@ -115,7 +119,14 @@
     flex: 1;
     min-height: 0;
     overflow: auto;
-    padding: 24px;
+
+    &__content {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 48px;
+    }
 
     &__filters {
         display: flex;
