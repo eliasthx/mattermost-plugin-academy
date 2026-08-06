@@ -20,12 +20,20 @@ function GuideShell({children}: {children: React.ReactNode}) {
                         to={routes.catalog}
                     >
                         <AcademyIcon
-                            name='arrow_back'
+                            name='arrow-left'
                             size={16}
                         />
                         {'All guides'}
                     </Link>
-                    <h1 className='academy-header__title'>{guide.heroTitle}</h1>
+                    <div className='academy-header__title-row'>
+                        <span className='academy-header__icon'>
+                            <AcademyIcon
+                                name={guide.icon}
+                                size={28}
+                            />
+                        </span>
+                        <h1 className='academy-header__title'>{guide.heroTitle}</h1>
+                    </div>
                     <p className='academy-header__subtitle'>{guide.subtitle}</p>
                 </div>
             </header>
@@ -35,7 +43,7 @@ function GuideShell({children}: {children: React.ReactNode}) {
                     className='academy-guide__nav'
                     aria-label='Module navigation'
                 >
-                    <div className='academy-guide__nav-label'>{'Modules'}</div>
+                    <div className='academy-guide__nav-heading'>{'Modules'}</div>
                     {guide.modules.map((mod) => {
                         const done = completed.has(mod.id);
                         return (
@@ -44,20 +52,25 @@ function GuideShell({children}: {children: React.ReactNode}) {
                                 to={routes.module(guide.id, mod.id)}
                                 className={`academy-guide__nav-btn${done ? ' academy-guide__nav-btn--done' : ''}`}
                                 activeClassName='academy-guide__nav-btn--active'
+                                title={mod.navTitle}
                             >
-                                <AcademyIcon
-                                    name={mod.icon}
-                                    size={18}
-                                />
-                                <span>{mod.navTitle}</span>
-                                {mod.minutes ? (
-                                    <span className='academy-guide__nav-meta'>{`~${mod.minutes} min`}</span>
-                                ) : null}
-                                <AcademyIcon
-                                    name='check_circle'
-                                    className='academy-guide__nav-check'
-                                    size={16}
-                                />
+                                <span className='academy-guide__nav-icon'>
+                                    <AcademyIcon
+                                        name={mod.icon}
+                                        size={16}
+                                    />
+                                </span>
+                                <span className='academy-guide__nav-label'>{mod.navTitle}</span>
+                                <span className='academy-guide__nav-trailing'>
+                                    {mod.minutes ? (
+                                        <span className='academy-guide__nav-meta'>{`~${mod.minutes} min`}</span>
+                                    ) : null}
+                                    <AcademyIcon
+                                        name='check-circle-outline'
+                                        className='academy-guide__nav-check'
+                                        size={14}
+                                    />
+                                </span>
                             </NavLink>
                         );
                     })}

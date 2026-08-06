@@ -32,7 +32,7 @@
     border: none;
     border-radius: 4px;
     background: transparent;
-    color: #FFBC1F;
+    color: var(--away-indicator);
     cursor: pointer;
 }
 
@@ -64,7 +64,7 @@
     z-index: 1;
     margin-top: -5px;
     display: inline-flex;
-    color: #FFBC1F;
+    color: var(--away-indicator);
     line-height: 1;
     user-select: none;
     pointer-events: none;

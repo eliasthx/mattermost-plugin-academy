@@ -58,7 +58,7 @@ export default function CatalogPage() {
                     <p className='academy-header__subtitle'>
                         {'Earn a badge for completing short walk-through guides that help you get more done in Mattermost.'}
                     </p>
-                    <p className='academy-header__subtitle'>
+                    <p className='academy-header__progress'>
                         {`${completedGuides} / ${GUIDE_LIST.length} guides complete`}
                     </p>
                 </div>
@@ -111,7 +111,7 @@ export default function CatalogPage() {
                                         <span className='academy-card__icon'>
                                             <AcademyIcon
                                                 name={guide.icon}
-                                                size={22}
+                                                size={32}
                                             />
                                         </span>
                                         <h2 className='academy-card__title'>{guide.title}</h2>
@@ -130,7 +130,7 @@ export default function CatalogPage() {
                                             <span className='academy-card__cta'>
                                                 {cta}
                                                 <AcademyIcon
-                                                    name='chevron_right'
+                                                    name='chevron-right'
                                                     size={16}
                                                 />
                                             </span>

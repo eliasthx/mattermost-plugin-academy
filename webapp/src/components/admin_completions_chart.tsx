@@ -42,6 +42,15 @@ Chart.register(
     Filler,
 );
 
+function themeColor(name: string) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function themeRgba(rgbVar: string, alpha: number) {
+    const rgb = getComputedStyle(document.documentElement).getPropertyValue(rgbVar).trim();
+    return rgb ? `rgba(${rgb}, ${alpha})` : undefined;
+}
+
 type TimeBucket = {
     start: number;
     count: number;
@@ -197,6 +206,10 @@ export default function AdminCompletionsChart(props: Props) {
             chartRef.current = null;
         }
 
+        const buttonColor = themeRgba('--button-bg-rgb', 1);
+        const buttonFill = themeRgba('--button-bg-rgb', 0.12);
+        const pointBorder = themeColor('--center-channel-bg');
+
         chartRef.current = new Chart(canvas, {
             type: 'line',
             data: {
@@ -206,10 +219,10 @@ export default function AdminCompletionsChart(props: Props) {
                     data: values,
                     fill: true,
                     tension: 0.25,
-                    borderColor: 'rgba(28, 88, 217, 1)',
-                    backgroundColor: 'rgba(28, 88, 217, 0.12)',
-                    pointBackgroundColor: 'rgba(28, 88, 217, 1)',
-                    pointBorderColor: '#fff',
+                    borderColor: buttonColor,
+                    backgroundColor: buttonFill,
+                    pointBackgroundColor: buttonColor,
+                    pointBorderColor: pointBorder,
                     pointRadius: 3,
                     pointHoverRadius: 5,
                 }],

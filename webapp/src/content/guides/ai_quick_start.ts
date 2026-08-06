@@ -9,7 +9,7 @@ const aiQuickStart: Guide = {
     heroTitle: 'Put AI to work inside Mattermost',
     subtitle: 'Seven focused guides for AI chat, summaries, calls, search, rewrites, and custom agents. Accelerate your workflows and decision making with full operational context.',
     description: 'Put AI to work inside Mattermost — chat, summaries, calls, search, rewrites, and custom agents.',
-    icon: 'smart_toy',
+    icon: 'robot-happy',
     audiences: ['end-user'],
     doneTitle: 'You\'re AI-ready in Mattermost',
     doneSummary: 'You\'ve covered chat, summaries, calls, search, rewrite, and custom agents. Learn more about Agents in our user guide:',
@@ -20,7 +20,7 @@ const aiQuickStart: Guide = {
         {
             id: 'ai-chat',
             navTitle: 'AI Chat',
-            icon: 'smart_toy',
+            icon: 'robot-happy',
             minutes: 2,
             title: 'Start a conversation with an Agent',
             summary: 'The Agents right-hand pane is your AI workspace — it\'s one click away and private to you.',
@@ -52,7 +52,7 @@ const aiQuickStart: Guide = {
         {
             id: 'summarize-threads',
             navTitle: 'Summarize Threads',
-            icon: 'summarize',
+            icon: 'ai-summarize',
             minutes: 2,
             title: 'Summarize long threads in seconds',
             summary: 'Use AI Actions to generate a private thread summary in the Agents pane — plus surface action items or open questions from the same menu.',
@@ -84,7 +84,7 @@ const aiQuickStart: Guide = {
         {
             id: 'summarize-channels',
             navTitle: 'Summarize Channels',
-            icon: 'mark_chat_unread',
+            icon: 'message-text-outline',
             minutes: 1,
             title: 'Summarize channels or unread messages',
             summary: 'Use AI Actions to summarize unread messages or entire channels based on your selected timeline.',
@@ -116,7 +116,7 @@ const aiQuickStart: Guide = {
         {
             id: 'summarize-calls',
             navTitle: 'Summarize Calls',
-            icon: 'videocam',
+            icon: 'video-outline',
             minutes: 2,
             title: 'Turn Call recordings into concise meeting summaries',
             summary: 'Agents read your call transcriptions and generate concise summaries with next actions and owners, shared directly in the call thread.',
@@ -149,7 +149,7 @@ const aiQuickStart: Guide = {
         {
             id: 'ai-search',
             navTitle: 'AI Search',
-            icon: 'manage_search',
+            icon: 'search-list',
             minutes: 1,
             title: 'Use natural language to search',
             summary: 'Instead of using keywords and search filters, ask in natural language. Semantic search finds relevant discussions and generates the answers you\'re looking for.',

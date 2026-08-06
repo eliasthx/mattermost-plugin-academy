@@ -60,80 +60,78 @@ export default function ModulePage() {
     return (
         <div className='academy-module'>
             <div className='academy-module__scroll'>
-                <div className='academy-module__hero'>
-                    <div className='academy-module__eyebrow'>
-                        <AcademyIcon
-                            name={mod.icon}
-                            size={16}
-                        />
-                        {`Module ${index + 1} of ${guide.modules.length}`}
+                <div className='academy-module__content'>
+                    <div className='academy-module__hero'>
+                        <div className='academy-module__eyebrow'>
+                            {`Module ${index + 1} of ${guide.modules.length}`}
+                        </div>
+                        <h2 className='academy-module__title'>{mod.title}</h2>
+                        <p className='academy-module__summary'>{mod.summary}</p>
                     </div>
-                    <h2 className='academy-module__title'>{mod.title}</h2>
-                    <p className='academy-module__summary'>{mod.summary}</p>
-                </div>
 
-                <div className='academy-module__steps'>
-                    {mod.steps.map((step, stepIndex) => (
-                        <div
-                            className='academy-step'
-                            key={`${mod.id}-${stepIndex}`}
-                        >
-                            <div className='academy-step__num'>{stepIndex + 1}</div>
-                            <div className='academy-step__body'>
-                                <h3 className='academy-step__title'>{step.title}</h3>
-                                <p className='academy-step__desc'>
-                                    <RichText text={step.description}/>
-                                </p>
-                                {step.media ? (
-                                    <div className='academy-step__media'>
-                                        <img
-                                            src={guideAssetURL(guide.id, step.media.file)}
-                                            alt={step.media.alt || ''}
-                                        />
-                                    </div>
-                                ) : null}
-                                {step.tip ? (
-                                    <div className='academy-step__tip'>
-                                        <RichText text={step.tip}/>
-                                    </div>
-                                ) : null}
-                            </div>
-                        </div>
-                    ))}
-
-                    {mod.commandGroups && mod.commandGroups.length > 0 ? (
-                        <div className='academy-cmd'>
-                            <div className='academy-cmd__hdr'>
-                                <span>{'Command'}</span>
-                                <span>{'What it does'}</span>
-                            </div>
-                            {mod.commandGroups.map((group) => (
-                                <div key={group.label}>
-                                    <div className='academy-cmd__group-label'>{group.label}</div>
-                                    {group.items.map((item) => (
-                                        <div
-                                            className='academy-cmd__item'
-                                            key={item.command}
-                                        >
-                                            <button
-                                                type='button'
-                                                className='academy-cmd__try'
-                                                onClick={() => copyCommand(item.command)}
-                                                title='Copy command'
-                                            >
-                                                <span>{item.command}</span>
-                                                <AcademyIcon
-                                                    name={copied === item.command ? 'check' : 'content_copy'}
-                                                    size={14}
-                                                />
-                                            </button>
-                                            <span className='academy-cmd__desc'>{item.description}</span>
+                    <div className='academy-module__steps'>
+                        {mod.steps.map((step, stepIndex) => (
+                            <div
+                                className='academy-step'
+                                key={`${mod.id}-${stepIndex}`}
+                            >
+                                <div className='academy-step__num'>{stepIndex + 1}</div>
+                                <div className='academy-step__body'>
+                                    <h3 className='academy-step__title'>{step.title}</h3>
+                                    <p className='academy-step__desc'>
+                                        <RichText text={step.description}/>
+                                    </p>
+                                    {step.media ? (
+                                        <div className='academy-step__media'>
+                                            <img
+                                                src={guideAssetURL(guide.id, step.media.file)}
+                                                alt={step.media.alt || ''}
+                                            />
                                         </div>
-                                    ))}
+                                    ) : null}
+                                    {step.tip ? (
+                                        <div className='academy-step__tip'>
+                                            <RichText text={step.tip}/>
+                                        </div>
+                                    ) : null}
                                 </div>
-                            ))}
-                        </div>
-                    ) : null}
+                            </div>
+                        ))}
+
+                        {mod.commandGroups && mod.commandGroups.length > 0 ? (
+                            <div className='academy-cmd'>
+                                <div className='academy-cmd__hdr'>
+                                    <span>{'Command'}</span>
+                                    <span>{'What it does'}</span>
+                                </div>
+                                {mod.commandGroups.map((group) => (
+                                    <div key={group.label}>
+                                        <div className='academy-cmd__group-label'>{group.label}</div>
+                                        {group.items.map((item) => (
+                                            <div
+                                                className='academy-cmd__item'
+                                                key={item.command}
+                                            >
+                                                <button
+                                                    type='button'
+                                                    className='academy-cmd__try'
+                                                    onClick={() => copyCommand(item.command)}
+                                                    title='Copy command'
+                                                >
+                                                    <span>{item.command}</span>
+                                                    <AcademyIcon
+                                                        name={copied === item.command ? 'check' : 'content-copy'}
+                                                        size={14}
+                                                    />
+                                                </button>
+                                                <span className='academy-cmd__desc'>{item.description}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
             </div>
 
@@ -144,7 +142,7 @@ export default function ModulePage() {
                         to={routes.module(guide.id, prev.id)}
                     >
                         <AcademyIcon
-                            name='arrow_back'
+                            name='arrow-left'
                             size={16}
                         />
                         {'Back'}
@@ -155,7 +153,7 @@ export default function ModulePage() {
                         to={routes.catalog}
                     >
                         <AcademyIcon
-                            name='arrow_back'
+                            name='arrow-left'
                             size={16}
                         />
                         {'All guides'}

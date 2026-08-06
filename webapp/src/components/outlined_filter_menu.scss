@@ -20,7 +20,7 @@
 
         .Input_fieldset {
             min-width: 140px;
-            background: var(--center-channel-bg, #fff);
+            background: var(--center-channel-bg);
         }
 
         .Input.form-control {
@@ -62,8 +62,8 @@
         padding: 8px 0;
         border: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
         border-radius: 4px;
-        background: var(--center-channel-bg, #fff);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        background: var(--center-channel-bg);
+        box-shadow: var(--elevation-2);
     }
 
     &__item {

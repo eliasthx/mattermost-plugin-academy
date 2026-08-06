@@ -6,10 +6,10 @@ import type {Guide} from 'content/types';
 const slashCommands: Guide = {
     id: 'slash-command-workflow-automation-quick-start',
     title: 'Slash Commands & Workflow Automation',
-    heroTitle: 'COMMAND YOUR WORKFLOW',
+    heroTitle: 'Command your workflow',
     subtitle: 'Five focused modules covering slash commands, scheduled messages, and Playbook automations and triggers — everything you need to become a power user.',
     description: 'Slash commands, scheduled messages, and Playbook automations — become a Mattermost power user.',
-    icon: 'terminal',
+    icon: 'console',
     audiences: ['end-user', 'admin'],
     doneTitle: 'You\'re automation-ready in Mattermost',
     doneSummary: 'You\'ve covered slash commands, scheduled messages, workflow automations, and Playbook triggers.',
@@ -21,7 +21,7 @@ const slashCommands: Guide = {
         {
             id: 'slash-command-basics',
             navTitle: 'Slash Command Basics',
-            icon: 'terminal',
+            icon: 'console',
             minutes: 1,
             title: 'Slash command basics',
             summary: 'Slash commands are shortcuts you type in a message box to take action instantly — invite someone, change your status, start a call, and more.',
@@ -39,7 +39,7 @@ const slashCommands: Guide = {
         {
             id: 'built-in-commands',
             navTitle: 'Built-in Commands',
-            icon: 'list_alt',
+            icon: 'format-list-bulleted',
             minutes: 2,
             title: 'Built-in commands',
             summary: 'These commands work out of the box in every Mattermost instance — no plugins or Admin setup required. Click any command to copy it.',
@@ -100,7 +100,7 @@ const slashCommands: Guide = {
         {
             id: 'scheduled-messages',
             navTitle: 'Scheduled Messages',
-            icon: 'schedule_send',
+            icon: 'clock-send-outline',
             minutes: 2,
             title: 'Scheduled messages',
             summary: 'Compose a message now and send it at exactly the right time — no slash command needed and no Admin setup required.',
@@ -127,7 +127,7 @@ const slashCommands: Guide = {
         {
             id: 'workflow-automations',
             navTitle: 'Workflow Automations',
-            icon: 'checklist',
+            icon: 'playlist-check',
             minutes: 3,
             title: 'Workflow automations with Playbooks',
             summary: 'A Playbook is a repeatable digital checklist your team configures once and reuses. You build it once, and run it for instances of the same process.',
@@ -163,7 +163,7 @@ const slashCommands: Guide = {
         {
             id: 'playbook-triggers',
             navTitle: 'Playbook Triggers',
-            icon: 'bolt',
+            icon: 'lightning-bolt-outline',
             minutes: 2,
             title: 'Playbook triggers',
             summary: 'Playbooks can start from a slash command or a keyword in a channel. Use webhooks to stream in alert data from connected systems, then setup keywords to trigger your Playbook workflows.',

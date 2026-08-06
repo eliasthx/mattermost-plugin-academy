@@ -71,14 +71,14 @@ export default function CompletionPage() {
                         // eslint-disable-next-line @mattermost/use-external-link
                         <a
                             key={link.href}
-                            className='academy-done__link'
+                            className='academy-link academy-done__link'
                             href={link.href}
                             target='_blank'
                             rel='noopener noreferrer'
                         >
                             {link.label}
                             <AcademyIcon
-                                name='open_in_new'
+                                name='open-in-new'
                                 size={14}
                             />
                         </a>
