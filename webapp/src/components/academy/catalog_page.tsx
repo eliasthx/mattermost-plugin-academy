@@ -53,7 +53,7 @@ export default function CatalogPage() {
     return (
         <div className='academy-app__body'>
             <header className='academy-header'>
-                <div className='academy-header__bottom'>
+                <div className='academy-header__content'>
                     <h1 className='academy-header__title'>{'Learn Mattermost by doing'}</h1>
                     <p className='academy-header__subtitle'>
                         {'Earn a badge for completing short walk-through guides that help you get more done in Mattermost.'}

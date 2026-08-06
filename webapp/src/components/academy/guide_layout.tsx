@@ -14,7 +14,7 @@ function GuideShell({children}: {children: React.ReactNode}) {
     return (
         <div className='academy-app__body'>
             <header className='academy-header'>
-                <div className='academy-header__bottom'>
+                <div className='academy-header__content'>
                     <Link
                         className='academy-header__back'
                         to={routes.catalog}
