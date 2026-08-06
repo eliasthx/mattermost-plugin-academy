@@ -10,6 +10,7 @@ import CompletionPage from 'components/academy/completion_page';
 import GuideLayout from 'components/academy/guide_layout';
 import GuideRedirect from 'components/academy/guide_redirect';
 import ModulePage from 'components/academy/module_page';
+import {LOADING_TEXTURE_URL} from 'components/icons';
 
 import './app.scss';
 
@@ -60,7 +61,10 @@ const ProductRouter = BrowserRouter as unknown as React.ComponentType<{
 
 export default function App() {
     return (
-        <div className='academy-app'>
+        <div
+            className='academy-app'
+            style={{['--academy-loading-texture' as string]: `url(${LOADING_TEXTURE_URL})`}}
+        >
             <ProductRouter basename={ACADEMY_BASE_PATH}>
                 <Switch>
                     <Route

@@ -91,3 +91,6 @@ export function AcademyProductIcon({size = 24, className}: {size?: number; class
 }
 
 export const ACADEMY_ICON_URL = `/plugins/${manifest.id}/public/academy-icon.png`;
+
+/** Mattermost initial-loading-screen chevron texture (used as a CSS mask). */
+export const LOADING_TEXTURE_URL = `/plugins/${manifest.id}/public/loading-texture.svg`;

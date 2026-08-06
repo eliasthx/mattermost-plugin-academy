@@ -14,6 +14,10 @@ function GuideShell({children}: {children: React.ReactNode}) {
     return (
         <div className='academy-app__body'>
             <header className='academy-header'>
+                <div
+                    className='academy-header__texture'
+                    aria-hidden={true}
+                />
                 <div className='academy-header__content'>
                     <Link
                         className='academy-header__back'
@@ -29,7 +33,7 @@ function GuideShell({children}: {children: React.ReactNode}) {
                         <span className='academy-header__icon'>
                             <AcademyIcon
                                 name={guide.icon}
-                                size={28}
+                                size={32}
                             />
                         </span>
                         <h1 className='academy-header__title'>{guide.heroTitle}</h1>

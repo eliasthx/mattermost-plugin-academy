@@ -8,7 +8,7 @@ import type {Audience} from 'content/types';
 import React, {useEffect, useMemo, useState} from 'react';
 import {Link} from 'react-router-dom';
 
-import {AcademyIcon} from 'components/icons';
+import {AcademyIcon, ACADEMY_ICON_URL} from 'components/icons';
 
 type Filter = 'all' | Audience;
 
@@ -53,8 +53,22 @@ export default function CatalogPage() {
     return (
         <div className='academy-app__body'>
             <header className='academy-header'>
+                <div
+                    className='academy-header__texture'
+                    aria-hidden={true}
+                />
                 <div className='academy-header__content'>
-                    <h1 className='academy-header__title'>{'Learn Mattermost by doing'}</h1>
+                    <div className='academy-header__title-row'>
+                        <img
+                            className='academy-header__brand-icon'
+                            src={ACADEMY_ICON_URL}
+                            alt=''
+                            width={48}
+                            height={48}
+                            draggable={false}
+                        />
+                        <h1 className='academy-header__title'>{'Quick start guides'}</h1>
+                    </div>
                     <p className='academy-header__subtitle'>
                         {'Earn a badge for completing short walk-through guides that help you get more done in Mattermost.'}
                     </p>
@@ -116,15 +130,6 @@ export default function CatalogPage() {
                                         </span>
                                         <h2 className='academy-card__title'>{guide.title}</h2>
                                         <p className='academy-card__desc'>{guide.description}</p>
-                                        <div
-                                            className='academy-card__progress'
-                                            aria-hidden={true}
-                                        >
-                                            <div
-                                                className='academy-card__progress-bar'
-                                                style={{width: `${pct}%`}}
-                                            />
-                                        </div>
                                         <div className='academy-card__footer'>
                                             <span>{`${done} / ${guide.modules.length} modules`}</span>
                                             <span className='academy-card__cta'>
@@ -134,6 +139,15 @@ export default function CatalogPage() {
                                                     size={16}
                                                 />
                                             </span>
+                                        </div>
+                                        <div
+                                            className='academy-card__progress'
+                                            aria-hidden={true}
+                                        >
+                                            <div
+                                                className='academy-card__progress-bar'
+                                                style={{width: `${pct}%`}}
+                                            />
                                         </div>
                                     </Link>
                                 );
