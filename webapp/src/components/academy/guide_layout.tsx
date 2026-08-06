@@ -14,26 +14,17 @@ function GuideShell({children}: {children: React.ReactNode}) {
     return (
         <div className='academy-app__body'>
             <header className='academy-header'>
-                <div className='academy-header__top'>
+                <div className='academy-header__bottom'>
                     <Link
-                        className='academy-header__brand'
+                        className='academy-header__back'
                         to={routes.catalog}
                     >
                         <AcademyIcon
-                            name='school'
-                            size={22}
+                            name='arrow_back'
+                            size={16}
                         />
-                        {'Mattermost Academy'}
-                    </Link>
-                    <Link
-                        className='academy-btn academy-btn--ghost'
-                        to={routes.catalog}
-                        style={{color: 'inherit'}}
-                    >
                         {'All guides'}
                     </Link>
-                </div>
-                <div className='academy-header__bottom'>
                     <h1 className='academy-header__title'>{guide.heroTitle}</h1>
                     <p className='academy-header__subtitle'>{guide.subtitle}</p>
                 </div>
