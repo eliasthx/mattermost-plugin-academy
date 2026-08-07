@@ -138,7 +138,7 @@ export default function ModulePage() {
             <div className='academy-module__footer'>
                 {prev ? (
                     <Link
-                        className='academy-btn'
+                        className='academy-btn academy-btn--tertiary'
                         to={routes.module(guide.id, prev.id)}
                     >
                         <AcademyIcon
@@ -149,7 +149,7 @@ export default function ModulePage() {
                     </Link>
                 ) : (
                     <Link
-                        className='academy-btn'
+                        className='academy-btn academy-btn--tertiary'
                         to={routes.catalog}
                     >
                         <AcademyIcon
@@ -164,7 +164,6 @@ export default function ModulePage() {
                     className='academy-btn academy-btn--primary'
                     onClick={onComplete}
                     disabled={saving}
-                    style={{marginLeft: 'auto'}}
                 >
                     {completeLabel(completed.has(mod.id), isLast)}
                 </button>

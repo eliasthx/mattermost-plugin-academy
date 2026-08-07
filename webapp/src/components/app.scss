@@ -52,9 +52,13 @@
         }
     }
 
-    // Colors set on the <a> itself must beat the inherit reset above.
+    // Beat the inherit reset for button-styled anchors.
     a.academy-btn--primary {
         color: var(--button-color);
+    }
+
+    a.academy-btn--tertiary {
+        color: rgb(var(--button-bg-rgb)) !important;
     }
 
     a.academy-guide__nav-btn--active {
@@ -62,25 +66,28 @@
     }
 }
 
+// Mirror host `.btn` / `.btn-md` sizing with Academy-scoped names.
 .academy-btn {
     appearance: none;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
-    min-height: 36px;
-    padding: 0 14px;
+    gap: 8px;
+    height: 40px;
+    padding: 0 20px;
+    border: none;
     border-radius: var(--radius-s, 4px);
-    border: 1px solid rgba(var(--center-channel-color-rgb), 0.16);
-    background: var(--center-channel-bg);
+    background: rgba(var(--center-channel-color-rgb), 0.08);
     color: var(--center-channel-color);
+    font: inherit;
+    font-size: 14px;
     font-weight: 600;
-    font-size: 13px;
     cursor: pointer;
     text-decoration: none;
+    outline: none;
 
     &:hover {
-        background: rgba(var(--center-channel-color-rgb), 0.08);
+        background: rgba(var(--center-channel-color-rgb), 0.12);
     }
 
     &:focus-visible {
@@ -88,19 +95,41 @@
         outline-offset: 1px;
     }
 
-    &--primary {
-        border-color: transparent;
-        background: var(--button-bg);
-        color: var(--button-color);
+    &:disabled {
+        background: rgba(var(--center-channel-color-rgb), 0.08);
+        color: rgba(var(--center-channel-color-rgb), 0.32);
+        cursor: not-allowed;
+    }
 
-        &:hover {
-            background: rgba(var(--button-bg-rgb), 0.92);
+    &--primary {
+        background: rgb(var(--button-bg-rgb));
+        color: rgb(var(--button-color-rgb));
+
+        &:hover:not(:disabled) {
+            background: color-mix(in srgb, var(--button-bg) 90%, #000);
+        }
+
+        &:disabled {
+            background: rgba(var(--center-channel-color-rgb), 0.08);
+            color: rgba(var(--center-channel-color-rgb), 0.32);
+        }
+    }
+
+    &--tertiary {
+        background: rgba(var(--button-bg-rgb), 0.08);
+        color: rgb(var(--button-bg-rgb));
+
+        &:hover:not(:disabled) {
+            background: rgba(var(--button-bg-rgb), 0.12);
         }
     }
 
     &--ghost {
-        border-color: transparent;
         background: transparent;
+
+        &:hover:not(:disabled) {
+            background: rgba(var(--center-channel-color-rgb), 0.08);
+        }
     }
 }
 
@@ -155,6 +184,7 @@
         font-weight: 600;
         opacity: 0.85;
         cursor: pointer;
+        margin-top: -8px;
 
         &:hover {
             opacity: 1;
@@ -677,7 +707,8 @@
     }
 
     &__hero {
-        padding: 0 0 24px 0;
+        padding: 0 0 32px 0;
+        margin-bottom: 32px;
         border-bottom: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
     }
 
@@ -705,7 +736,6 @@
     }
 
     &__steps {
-        padding: 20px 0 0;
         display: flex;
         flex-direction: column;
         gap: 28px;
@@ -716,12 +746,16 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 14px 28px;
+        padding: 32px 14px 28px 14px;
         margin: 0 auto;
         width: 100%;
         max-width: var(--academy-content-max-width);
         border-top: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
         background: var(--center-channel-bg);
+
+        .academy-btn--primary {
+            margin-left: auto;
+        }
     }
 }
 
