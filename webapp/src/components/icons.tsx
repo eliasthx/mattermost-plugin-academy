@@ -76,21 +76,23 @@ export function AcademyIcon({name, className, size = 20}: IconProps) {
 
 /** Product switcher icon — Academy graduation cap. */
 export function AcademyProductIcon({size = 24, className}: {size?: number; className?: string} = {}) {
+    const classes = className ? `academy-product-icon ${className}` : 'academy-product-icon';
+
     return (
         <svg
-            className={className}
+            className={classes}
             width={size}
             height={size}
             viewBox='0 0 24 24'
-            fill='currentColor'
+            fill='none'
+            xmlns='http://www.w3.org/2000/svg'
             aria-hidden={true}
             focusable='false'
         >
-            {/* Glyph fills the viewBox more than Compass icons; scale down for optical match. */}
-            <g transform='translate(12 12) scale(0.82) translate(-12 -12)'>
-                <path d='M12 3L1 9l11 6 9-4.91V17h2V9L12 3z'/>
-                <path d='M5 13.18v4.32C5 19.8 8.13 21 12 21s7-1.2 7-3.5v-4.32l-7 3.82-7-3.82z'/>
-            </g>
+            <path
+                d='M18 16.0001C18 18.0001 15.5 20.0001 12 20.0001C8.50003 20.0001 6.00003 18 6 16.0001V12.6172L11.3291 15.2823C11.7514 15.4934 12.2486 15.4934 12.6709 15.2823L18 12.6172V16.0001ZM11.7764 4.61139C11.917 4.54109 12.0829 4.54113 12.2236 4.61139L21.1055 9.0528C21.474 9.23706 21.474 9.76306 21.1055 9.94733L20.4453 10.2764C20.4793 10.3439 20.5 10.4194 20.5 10.5001V14.1348C20.7987 14.3078 21 14.6301 21 15.0001V16.2501C21 16.6643 20.6642 17.0001 20.25 17.0001H19.75C19.3358 17 19 16.6643 19 16.2501V15.0001C19 14.6301 19.2014 14.3078 19.5 14.1348V10.7491L18 11.4991L12.2236 14.3887L12.1143 14.4278C12.0809 14.4356 12.0468 14.4386 12.0127 14.4395C12.0006 14.4398 11.9886 14.4391 11.9766 14.4385C11.9516 14.4374 11.927 14.4346 11.9023 14.4297C11.8942 14.4281 11.886 14.4269 11.8779 14.4249C11.8433 14.4162 11.809 14.405 11.7764 14.3887L6 11.5001V11.4991L2.89453 9.94733C2.52601 9.76306 2.52601 9.23706 2.89453 9.0528L11.7764 4.61139Z'
+                fill='currentColor'
+            />
         </svg>
     );
 }

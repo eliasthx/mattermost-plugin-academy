@@ -9,7 +9,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 
 import GuideCard, {guideCardCta} from 'components/academy/guide_card';
 import HeaderProgress from 'components/academy/header_progress';
-import {AcademyIcon, ACADEMY_ICON_URL} from 'components/icons';
+import {AcademyIcon, AcademyProductIcon} from 'components/icons';
 import {navigateToChannels} from 'navigation';
 
 type Filter = 'all' | Audience;
@@ -72,14 +72,9 @@ export default function CatalogPage() {
                         {'Back to channels'}
                     </button>
                     <div className='academy-header__title-row'>
-                        <img
-                            className='academy-header__brand-icon'
-                            src={ACADEMY_ICON_URL}
-                            alt=''
-                            width={48}
-                            height={48}
-                            draggable={false}
-                        />
+                        <span className='academy-header__icon'>
+                            <AcademyProductIcon size={32}/>
+                        </span>
                         <h1 className='academy-header__title'>{'Quick start guides'}</h1>
                     </div>
                     <p className='academy-header__subtitle'>
