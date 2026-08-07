@@ -137,7 +137,13 @@
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
-    background: var(--sidebar-bg);
+    background-color: var(--sidebar-bg);
+    background-image: linear-gradient(
+        to bottom left,
+        rgba(var(--center-channel-bg-rgb), 0.08) 0%,
+        rgba(var(--center-channel-bg-rgb), 0.04) 50%,
+        transparent 72%
+    );
     color: var(--sidebar-text);
     margin: 8px 8px 0 8px;
     border-radius: var(--radius-m, 6px);
@@ -151,12 +157,12 @@
         background-color: rgba(var(--sidebar-text-rgb), 0.02);
         -webkit-mask-image: var(--academy-loading-texture);
         mask-image: var(--academy-loading-texture);
-        -webkit-mask-size: cover;
-        mask-size: cover;
-        -webkit-mask-position: top;
-        mask-position: top;
-        -webkit-mask-repeat: no-repeat;
-        mask-repeat: no-repeat;
+        -webkit-mask-size: 90%;
+        mask-size: 90%;
+        -webkit-mask-position: top left;
+        mask-position: top left;
+        -webkit-mask-repeat: repeat;
+        mask-repeat: repeat;
     }
 
     &__content {
@@ -235,17 +241,35 @@
     }
 
     &__progress {
-        font-size: 12px;
-        font-weight: 600;
-        color: rgba(var(--sidebar-text-rgb), 0.75);
-        background: rgba(var(--sidebar-text-rgb), 0.08);
-        border-radius: var(--radius-l, 8px);
-        padding: 4px 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
         width: fit-content;
+        min-width: 147px;
         position: absolute;
         bottom: 40px;
         right: 40px;
         margin: 0;
+    }
+
+    &__progress-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(var(--sidebar-text-rgb), 0.75);
+    }
+
+    &__progress-track {
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(var(--sidebar-text-rgb), 0.16);
+        overflow: hidden;
+    }
+
+    &__progress-bar {
+        height: 100%;
+        border-radius: inherit;
+        background: var(--away-indicator);
+        transition: width 0.2s ease;
     }
 
     // Narrow surfaces (RHS) — in-flow progress, tighter type.
@@ -278,6 +302,8 @@
         .academy-header__progress {
             position: static;
             margin-top: 12px;
+            min-width: 0;
+            width: 100%;
         }
     }
 }
@@ -290,7 +316,7 @@
     &__content {
         box-sizing: border-box;
         width: 100%;
-        margin: 0 auto;
+        margin: 0 8px;
         padding: 40px;
     }
 
@@ -746,7 +772,7 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 32px 14px 28px 14px;
+        padding: 28px 14px 24px 14px;
         margin: 0 auto;
         width: 100%;
         max-width: var(--academy-content-max-width);

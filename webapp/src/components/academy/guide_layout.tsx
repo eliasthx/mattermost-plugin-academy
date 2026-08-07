@@ -6,6 +6,7 @@ import React from 'react';
 import {Link, NavLink} from 'react-router-dom';
 
 import {GuideProvider, useGuideContext} from 'components/academy/guide_context';
+import HeaderProgress from 'components/academy/header_progress';
 import {AcademyIcon} from 'components/icons';
 
 function GuideShell({children}: {children: React.ReactNode}) {
@@ -40,9 +41,11 @@ function GuideShell({children}: {children: React.ReactNode}) {
                         <h1 className='academy-header__title'>{guide.heroTitle}</h1>
                     </div>
                     <p className='academy-header__subtitle'>{guide.subtitle}</p>
-                    <p className='academy-header__progress'>
-                        {`${doneCount} / ${guide.modules.length} modules complete`}
-                    </p>
+                    <HeaderProgress
+                        done={doneCount}
+                        total={guide.modules.length}
+                        label={`${doneCount} / ${guide.modules.length} modules complete`}
+                    />
                 </div>
             </header>
 

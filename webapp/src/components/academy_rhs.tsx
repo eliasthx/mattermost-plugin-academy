@@ -7,6 +7,7 @@ import {GUIDE_LIST} from 'content';
 import React, {useEffect, useState} from 'react';
 
 import GuideCard, {guideCardCta} from 'components/academy/guide_card';
+import HeaderProgress from 'components/academy/header_progress';
 import {LOADING_TEXTURE_URL} from 'components/icons';
 import {navigateToAcademy, navigateToGuide} from 'navigation';
 
@@ -58,9 +59,11 @@ export default function AcademyRHS() {
                     <p className='academy-header__subtitle'>
                         {'Earn a badge for completing short walk-through guides that help you get more done in Mattermost.'}
                     </p>
-                    <p className='academy-header__progress'>
-                        {`${completedGuides} / ${GUIDE_LIST.length} guides complete`}
-                    </p>
+                    <HeaderProgress
+                        done={completedGuides}
+                        total={GUIDE_LIST.length}
+                        label={`${completedGuides} / ${GUIDE_LIST.length} guides complete`}
+                    />
                 </div>
             </header>
 

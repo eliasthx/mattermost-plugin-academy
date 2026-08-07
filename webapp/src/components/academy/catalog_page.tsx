@@ -8,6 +8,7 @@ import type {Audience} from 'content/types';
 import React, {useEffect, useMemo, useState} from 'react';
 
 import GuideCard, {guideCardCta} from 'components/academy/guide_card';
+import HeaderProgress from 'components/academy/header_progress';
 import {AcademyIcon, ACADEMY_ICON_URL} from 'components/icons';
 import {navigateToChannels} from 'navigation';
 
@@ -84,9 +85,11 @@ export default function CatalogPage() {
                     <p className='academy-header__subtitle'>
                         {'Earn a badge for completing short walk-through guides that help you get more done in Mattermost.'}
                     </p>
-                    <p className='academy-header__progress'>
-                        {`${completedGuides} / ${GUIDE_LIST.length} guides complete`}
-                    </p>
+                    <HeaderProgress
+                        done={completedGuides}
+                        total={GUIDE_LIST.length}
+                        label={`${completedGuides} / ${GUIDE_LIST.length} guides complete`}
+                    />
                 </div>
             </header>
 
