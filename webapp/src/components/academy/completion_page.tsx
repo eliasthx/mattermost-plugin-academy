@@ -45,7 +45,7 @@ export default function CompletionPage() {
             <div className='academy-done__actions'>
                 <button
                     type='button'
-                    className='academy-btn'
+                    className='academy-btn academy-btn--tertiary'
                     onClick={() => {
                         resetProgress().catch(() => undefined);
                     }}

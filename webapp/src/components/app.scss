@@ -15,7 +15,9 @@
 
 .academy-app {
     --academy-content-max-width: 880px;
-    --academy-nav-width: 320px;
+    --academy-catalog-content-max-width: 1024px;
+    --academy-nav-width: 304px;
+    --academy-content-padding: 40px;
 
     display: flex;
     flex-direction: column;
@@ -32,6 +34,7 @@
         min-height: 0;
         display: flex;
         flex-direction: column;
+        padding: 8px;
     }
 }
 
@@ -144,6 +147,7 @@
     position: relative;
     overflow: hidden;
     flex-shrink: 0;
+    container-type: inline-size;
     background-color: var(--sidebar-bg);
     background-image: linear-gradient(
         to bottom left,
@@ -152,10 +156,10 @@
         transparent 72%
     );
     color: var(--sidebar-text);
-    margin: 8px 8px 0 8px;
     border-radius: var(--radius-m, 6px);
     font-size: 16px;
     line-height: 1.4;
+    padding: var(--academy-content-padding);
 
     &__texture {
         position: absolute;
@@ -178,7 +182,24 @@
         box-sizing: border-box;
         width: 100%;
         margin: 0 auto;
-        padding: 40px;
+        max-width: var(--academy-content-max-width);
+    }
+
+    &--catalog {
+        .academy-header__content {
+            max-width: var(--academy-catalog-content-max-width);
+        }
+    }
+
+    // Absolute progress sits bottom-right — keep title/subtitle clear of it.
+    &:not(.academy-header--compact) {
+        .academy-header__content {
+            padding-right: 200px;
+        }
+
+        .academy-header__subtitle {
+            max-width: 100%;
+        }
     }
 
     &__back {
@@ -238,7 +259,6 @@
 
     &__subtitle {
         margin: 12px 0 0;
-        max-width: var(--academy-content-max-width);
         color: rgba(var(--sidebar-text-rgb), 0.75);
     }
 
@@ -249,8 +269,8 @@
         width: fit-content;
         min-width: 147px;
         position: absolute;
-        bottom: 40px;
-        right: 40px;
+        bottom: 0;
+        right: 0;
         margin: 0;
     }
 
@@ -272,6 +292,29 @@
         border-radius: inherit;
         background: var(--away-indicator);
         transition: width 0.2s ease;
+    }
+
+    // Below 1000px: stack progress under the titles instead of absolute right.
+    @container (max-width: 1000px) {
+        &:not(.academy-header--compact) {
+            .academy-header__content {
+                padding-right: 0;
+                padding-bottom: 0;
+            }
+
+            .academy-header__progress {
+                position: static;
+                margin-top: 16px;
+                min-width: 0;
+                width: 100%;
+                max-width: 240px;
+            }
+        }
+    }
+
+    // Guide route: header scrolls inside the main column.
+    &--in-scroll {
+        border-radius: var(--radius-m, 6px);
     }
 
     // Narrow surfaces (RHS) — in-flow progress, tighter type.
@@ -310,11 +353,34 @@
     min-height: 0;
     overflow: auto;
 
+    .academy-header--in-scroll {
+        margin: 0;
+    }
+
+    .academy-header-compact {
+        // Catalog scroll has no side margin; keep compact flush to the scrollport top.
+        border-radius: 0;
+
+        &--visible {
+            border-radius: var(--radius-m, 6px);
+        }
+    }
+
+    // Compact back is a <button> on catalog.
+    .academy-header-compact__back {
+        appearance: none;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        font: inherit;
+        cursor: pointer;
+    }
+
     &__content {
         box-sizing: border-box;
         width: 100%;
-        margin: 0 8px;
-        padding: 40px;
+        padding: var(--academy-content-padding);
     }
 
     &__toolbar {
@@ -323,6 +389,8 @@
         align-items: center;
         gap: 12px 16px;
         margin-bottom: 18px;
+        max-width: var(--academy-catalog-content-max-width);
+        margin: 0 auto 16px auto;
     }
 
     &__filters {
@@ -373,6 +441,8 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 16px;
+        max-width: var(--academy-catalog-content-max-width);
+        margin: 0 auto;
     }
 
     &__empty {
@@ -513,36 +583,53 @@
 
     &__progress-bar {
         height: 100%;
+        border-radius: 999px;
         background: var(--button-bg);
     }
 }
 
 .academy-guide {
-    // Overlay while there's room for centered content + nav gutters on both sides:
-    // content-max-width (880) + 2 × nav-width (320) = 1520.
     position: relative;
-    container-type: inline-size;
     flex: 1;
     min-height: 0;
     display: flex;
+    overflow: hidden;
     background: var(--center-channel-bg);
-    margin: 8px;
     border-radius: var(--radius-m, 6px);
+    gap: 8px;
 
     &__nav {
         display: flex;
         flex-direction: column;
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        z-index: 1;
+        flex-shrink: 0;
+        align-self: stretch;
         box-sizing: border-box;
         width: var(--academy-nav-width);
         border-radius: var(--radius-m, 6px);
-        padding: 24px;
+        padding: 12px;
         overflow: auto;
+        gap: 2px;
+        background: rgba(var(--center-channel-color-rgb), 0.06);
+    }
+
+    &__back {
+        display: inline-flex;
+        align-items: center;
         gap: 4px;
+        flex-shrink: 0;
+        margin: 0 0 8px;
+        padding: 6px 12px;
+        border-radius: var(--radius-s, 4px);
+        color: rgba(var(--center-channel-color-rgb), 0.72);
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        width: fit-content;
+
+        &:hover {
+            background: rgba(var(--center-channel-color-rgb), 0.04);
+            color: var(--center-channel-color);
+        }
     }
 
     &__nav-heading {
@@ -662,44 +749,169 @@
         min-height: 0;
     }
 
-    // When the centered content column would collide with the overlay nav,
-    // put the nav back in normal flex flow beside main.
-    @container (max-width: 1520px) {
-        .academy-guide__nav {
-            position: static;
-            flex-shrink: 0;
-            height: auto;
-            align-self: stretch;
-        }
+    &__scroll {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+    }
 
-        .academy-guide__main {
-            width: auto;
+    &__footer {
+        flex-shrink: 0;
+        z-index: 3;
+        background: var(--center-channel-bg);
+        border-top: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
+
+        .academy-module__footer {
+            border-top: none;
         }
     }
 }
 
-.academy-module {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    font-size: 16px;
-    line-height: 1.5;
+.academy-header-sentinel {
+    height: 1px;
+    margin: 0;
+    pointer-events: none;
+}
 
-    &__scroll {
-        flex: 1;
-        min-height: 0;
-        overflow: auto;
-        scrollbar-behavior: stable;
+.academy-header-compact {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    height: 48px;
+    margin-bottom: -48px;
+    padding: 0 20px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-100%);
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    box-shadow: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+    &--visible {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+        border-radius: var(--radius-m, 6px);
     }
 
+    &__back {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+        color: inherit;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+        opacity: 0.85;
+
+        &:hover {
+            opacity: 1;
+        }
+
+        + .academy-header-compact__brand {
+            margin-left: 12px;
+        }
+    }
+
+    &__brand {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    &__icon {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: var(--radius-s, 4px);
+        background: var(--away-indicator);
+        color: var(--sidebar-bg);
+
+        .academy-product-icon {
+            fill: currentColor;
+        }
+    }
+
+    &__title {
+        flex: 0 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    &__module {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 13px;
+        font-weight: 500;
+        color: rgba(var(--sidebar-text-rgb), 0.64);
+    }
+
+    &__progress {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    &__progress-count {
+        font-size: 12px;
+        font-weight: 600;
+        color: rgba(var(--sidebar-text-rgb), 0.75);
+        white-space: nowrap;
+    }
+
+    &__progress-track {
+        width: 72px;
+        height: 4px;
+        border-radius: 999px;
+        background: rgba(var(--sidebar-text-rgb), 0.16);
+        overflow: hidden;
+    }
+
+    &__progress-bar {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--away-indicator);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .academy-header-compact {
+        transition: none;
+    }
+}
+
+.academy-module {
+    font-size: 16px;
+    line-height: 1.5;
+    padding: var(--academy-content-padding);
+
     &__content {
-        color: rgba(var(--center-channel-color-rgb), 0.75);
+        color: rgba(var(--center-channel-color-rgb), 0.88);
         box-sizing: border-box;
         width: 100%;
         max-width: var(--academy-content-max-width);
         margin: 0 auto;
-        padding: 40px;
     
         h2 {
             font-size: 28px;
@@ -908,15 +1120,13 @@
 }
 
 .academy-done {
-    flex: 1;
-    min-height: 0;
-    overflow: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 40px 24px;
+    padding: var(--academy-content-padding);
+    min-height: 60vh;
 
     &__badge {
         position: relative;
