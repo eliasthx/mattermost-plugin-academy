@@ -1,0 +1,52 @@
+/* Matches Agents System Console Panel (panel.tsx) heading/container. */
+.AcademyAdminPanel {
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    border: 1px solid #ccc;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.08);
+    overflow: visible;
+
+    /* Agents ConfigContainer uses gap: 20px between panels. */
+    margin: 0 0 20px;
+}
+
+.AcademyAdminPanel:last-child {
+    margin-bottom: 0;
+}
+
+.AcademyAdminPanel__header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-bottom: 24px;
+}
+
+.AcademyAdminPanel__title {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    color: rgba(63, 67, 80, 1);
+}
+
+.AcademyAdminPanel__subtitle {
+    color: rgba(63, 67, 80, 0.72);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.AcademyAdminPanel__body {
+    overflow: visible;
+}
+
+/* Space flat settings rows (e.g. badges) like Agents panel stack. */
+.AcademyAdminSection {
+    margin: 0 0 20px;
+}
+
+.AcademyAdminSection:last-child {
+    margin-bottom: 0;
+}

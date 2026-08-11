@@ -3,32 +3,31 @@
 
 import React from 'react';
 
-import AdminCompletionsChart from './admin_completions_chart';
-
 import './admin_panel.scss';
+import './admin_user_access_section.scss';
 
 type Props = {
     sectionTitle?: string;
+    sectionSubtitle?: string;
     settingsList?: React.ReactNode[];
 };
 
 /**
- * Guide completions System Console section.
+ * System Console Access section (users + guides).
  * Panel chrome matches Agents System Console panels.
  */
-export default function GuideCompletionsSection(props: Props) {
-    const title = props.sectionTitle || 'Guide completions';
+export default function AdminUserAccessSection(props: Props) {
+    const title = props.sectionTitle || 'Access';
+    const subtitle = props.sectionSubtitle ||
+        'Control who can use Academy and which guides are available. Users who are not allowed will not see Academy in the product interface.';
 
     return (
-        <div className='AcademyAdminPanel'>
+        <div className='AcademyAdminPanel AcademyUserAccessSection'>
             <div className='AcademyAdminPanel__header'>
                 <div className='AcademyAdminPanel__title'>{title}</div>
-                <div className='AcademyAdminPanel__subtitle'>
-                    {'See how many users finish Academy guides over time, filter by guide, and export results'}
-                </div>
+                <div className='AcademyAdminPanel__subtitle'>{subtitle}</div>
             </div>
             <div className='AcademyAdminPanel__body'>
-                <AdminCompletionsChart/>
                 {props.settingsList}
             </div>
         </div>

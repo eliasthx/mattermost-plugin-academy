@@ -1,0 +1,123 @@
+/* Agents-style ItemList: setting name left, controls right. */
+.AcademyUserAccessSetting {
+    display: grid;
+    grid-template-columns: minmax(auto, 275px) 1fr;
+    column-gap: 16px;
+    row-gap: 24px;
+    overflow: visible;
+    align-items: start;
+}
+
+.AcademyUserAccessSetting__label {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: rgba(63, 67, 80, 1);
+    padding-top: 0;
+}
+
+.AcademyUserAccessSetting__control {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: visible;
+}
+
+.AcademyUserAccessSetting__help {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: rgba(63, 67, 80, 0.72);
+}
+
+.AcademyUserAccessSetting__radios {
+    margin-top: 24px;
+    margin-bottom: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 8px;
+    row-gap: 8px;
+    align-items: center;
+
+    input[type='radio'] {
+        appearance: none;
+        display: grid;
+        place-content: center;
+        width: 1.6rem;
+        height: 1.6rem;
+        margin: 0;
+        border: 1px solid rgba(var(--sys-center-channel-color-rgb, var(--center-channel-color-rgb)), 0.24);
+        border-radius: 50%;
+        cursor: pointer;
+
+        &::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--sys-button-bg, var(--button-bg));
+            transform: scale(0);
+            transition: 200ms transform ease-in-out;
+        }
+
+        &:checked {
+            border-color: var(--sys-button-bg, var(--button-bg));
+
+            &::before {
+                transform: scale(1);
+            }
+        }
+    }
+
+    label {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        color: var(--sys-center-channel-color, var(--center-channel-color));
+        cursor: pointer;
+    }
+}
+
+.AcademyUserAccessSetting__list {
+    margin-top: 24px;
+    width: 90%;
+}
+
+.AcademyUserAccessSetting__listLabel {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    color: rgba(63, 67, 80, 1);
+}
+
+.AcademyUserAccessSetting__list .AcademyUserAccessSetting__help {
+    margin-top: 8px;
+}
+
+.AcademyUserAccessSetting__guides {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 8px;
+    row-gap: 8px;
+    align-items: center;
+
+    input[type='checkbox'] {
+        width: 16px;
+        height: 16px;
+        margin: 0;
+        accent-color: var(--sys-button-bg, var(--button-bg));
+        cursor: pointer;
+    }
+
+    label {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        color: var(--sys-center-channel-color, var(--center-channel-color));
+        cursor: pointer;
+    }
+}

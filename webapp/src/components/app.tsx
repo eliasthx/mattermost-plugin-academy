@@ -10,7 +10,10 @@ import CompletionPage from 'components/academy/completion_page';
 import GuideLayout from 'components/academy/guide_layout';
 import GuideRedirect from 'components/academy/guide_redirect';
 import ModulePage from 'components/academy/module_page';
+import AcademyAccessDenied from 'components/academy_access_denied';
 import {LOADING_TEXTURE_URL} from 'components/icons';
+import {useAcademyAccess} from 'hooks/use_academy_access';
+import {isGuideEnabled, useAvailableGuides} from 'hooks/use_available_guides';
 
 import './app.scss';
 
@@ -39,12 +42,27 @@ function GuideRoutes() {
     );
 }
 
-function GuideGate({children}: {children: React.ReactNode}) {
+function GuideGate({
+    children,
+    disabledGuideIDs,
+    loading,
+}: {
+    children: React.ReactNode;
+    disabledGuideIDs: string[];
+    loading: boolean;
+}) {
     return (
         <Route
             path='/guides/:guideId'
             render={({match}) => {
-                if (!getGuide(match.params.guideId)) {
+                const guideID = match.params.guideId;
+                if (!getGuide(guideID)) {
+                    return <Redirect to={routes.catalog}/>;
+                }
+                if (loading) {
+                    return null;
+                }
+                if (!isGuideEnabled(guideID, disabledGuideIDs)) {
                     return <Redirect to={routes.catalog}/>;
                 }
                 return children;
@@ -60,6 +78,21 @@ const ProductRouter = BrowserRouter as unknown as React.ComponentType<{
 }>;
 
 export default function App() {
+    const access = useAcademyAccess();
+    const {disabledGuideIDs, loading: guidesLoading} = useAvailableGuides();
+
+    if (access === 'denied') {
+        return (
+            <div className='academy-app'>
+                <AcademyAccessDenied/>
+            </div>
+        );
+    }
+
+    if (access === 'loading') {
+        return <div className='academy-app'/>;
+    }
+
     return (
         <div
             className='academy-app'
@@ -72,7 +105,10 @@ export default function App() {
                         path='/'
                         component={CatalogPage}
                     />
-                    <GuideGate>
+                    <GuideGate
+                        disabledGuideIDs={disabledGuideIDs}
+                        loading={guidesLoading}
+                    >
                         <GuideRoutes/>
                     </GuideGate>
                     <Redirect to={routes.catalog}/>

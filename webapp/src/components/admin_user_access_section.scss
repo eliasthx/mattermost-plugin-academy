@@ -1,0 +1,5 @@
+/* Keep select menus from being clipped by section parents. */
+.AcademyUserAccessSection,
+.AcademyUserAccessSection .AcademyAdminPanel__body {
+    overflow: visible;
+}

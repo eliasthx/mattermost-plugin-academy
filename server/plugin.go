@@ -57,7 +57,20 @@ func (p *Plugin) ServeHTTP(_ *plugin.Context, w http.ResponseWriter, r *http.Req
 		p.progressHandler.ServeAdminHTTP(w, r)
 		return
 	}
-	if strings.HasPrefix(r.URL.Path, "/api/v1/progress") || strings.HasPrefix(r.URL.Path, "/api/v1/users/") {
+	if strings.HasPrefix(r.URL.Path, "/api/v1/progress") {
+		userID := r.Header.Get("Mattermost-User-Id")
+		if userID == "" {
+			http.Error(w, "unauthorized", http.StatusUnauthorized)
+			return
+		}
+		if !p.userHasAccess(userID) {
+			http.Error(w, "forbidden", http.StatusForbidden)
+			return
+		}
+		p.progressHandler.ServeHTTP(w, r)
+		return
+	}
+	if strings.HasPrefix(r.URL.Path, "/api/v1/users/") {
 		p.progressHandler.ServeHTTP(w, r)
 		return
 	}
@@ -69,13 +82,22 @@ func (p *Plugin) serveSettings(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	if r.Header.Get("Mattermost-User-Id") == "" {
+	userID := r.Header.Get("Mattermost-User-Id")
+	if userID == "" {
 		http.Error(w, "unauthorized", http.StatusUnauthorized)
 		return
 	}
 
+	cfg := p.getConfiguration()
+	disabled := cfg.disabledGuideIDs()
+	if disabled == nil {
+		disabled = []string{}
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]any{
-		"enableProfileBadges": p.getConfiguration().profileBadgesEnabled(),
+		"enableProfileBadges": cfg.profileBadgesEnabled(),
+		"userAllowed":         p.userHasAccess(userID),
+		"disabledGuideIDs":    disabled,
 	})
 }

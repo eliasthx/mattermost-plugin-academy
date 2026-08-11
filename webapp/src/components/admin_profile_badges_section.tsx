@@ -3,6 +3,8 @@
 
 import React from 'react';
 
+import './admin_panel.scss';
+
 type Props = {
     settingsList?: React.ReactNode[];
 };
@@ -12,5 +14,9 @@ type Props = {
  * (same placement pattern as Enable Plugin on Calls).
  */
 export default function ProfileBadgesSection(props: Props) {
-    return <>{props.settingsList}</>;
+    return (
+        <div className='AcademyAdminSection'>
+            {props.settingsList}
+        </div>
+    );
 }

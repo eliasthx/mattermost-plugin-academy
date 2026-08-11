@@ -37,6 +37,21 @@
                 ]
             },
             {
+                "key": "UserAccess",
+                "title": "Access",
+                "subtitle": "Control who can use Academy and which guides are available. Users who are not allowed will not see Academy in the product interface.",
+                "custom": true,
+                "fallback": true,
+                "settings": [
+                    {
+                        "key": "UserAccessConfig",
+                        "type": "custom",
+                        "display_name": "Access:",
+                        "help_text": ""
+                    }
+                ]
+            },
+            {
                 "key": "GuideCompletions",
                 "title": "Guide completions",
                 "subtitle": "See how many users finish Academy guides over time, filter by guide, and export results",

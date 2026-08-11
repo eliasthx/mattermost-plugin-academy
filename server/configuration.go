@@ -8,6 +8,72 @@ import (
 	"github.com/pkg/errors"
 )
 
+// UserAccessLevel controls who may use Academy (same model as Agents).
+type UserAccessLevel int
+
+const (
+	UserAccessLevelAll UserAccessLevel = iota
+	UserAccessLevelAllow
+	UserAccessLevelBlock
+	UserAccessLevelNone
+)
+
+// UserAccessConfig is stored as the UserAccessConfig custom plugin setting.
+type UserAccessConfig struct {
+	UserAccessLevel  UserAccessLevel `json:"userAccessLevel"`
+	UserIDs          []string        `json:"userIDs"`
+	TeamIDs          []string        `json:"teamIDs"`
+	DisabledGuideIDs []string        `json:"disabledGuideIDs"`
+}
+
+// UnmarshalJSON accepts a JSON object or a JSON-encoded string (Mattermost defaults).
+func (c *UserAccessConfig) UnmarshalJSON(data []byte) error {
+	trimmed := strings.TrimSpace(string(data))
+	if trimmed == "" || trimmed == "null" || trimmed == `""` {
+		*c = defaultUserAccessConfig()
+		return nil
+	}
+
+	if len(trimmed) >= 2 && trimmed[0] == '"' {
+		var asString string
+		if err := json.Unmarshal(data, &asString); err != nil {
+			return err
+		}
+		asString = strings.TrimSpace(asString)
+		if asString == "" {
+			*c = defaultUserAccessConfig()
+			return nil
+		}
+		data = []byte(asString)
+	}
+
+	type raw UserAccessConfig
+	var parsed raw
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		return err
+	}
+	*c = UserAccessConfig(parsed)
+	if c.UserIDs == nil {
+		c.UserIDs = []string{}
+	}
+	if c.TeamIDs == nil {
+		c.TeamIDs = []string{}
+	}
+	if c.DisabledGuideIDs == nil {
+		c.DisabledGuideIDs = []string{}
+	}
+	return nil
+}
+
+func defaultUserAccessConfig() UserAccessConfig {
+	return UserAccessConfig{
+		UserAccessLevel:  UserAccessLevelAll,
+		UserIDs:          []string{},
+		TeamIDs:          []string{},
+		DisabledGuideIDs: []string{},
+	}
+}
+
 // configuration captures the plugin's external configuration as exposed in the Mattermost server
 // configuration, as well as values computed from the configuration. Any public fields will be
 // deserialized from the Mattermost server configuration in OnConfigurationChange.
@@ -23,6 +89,7 @@ type configuration struct {
 	// EnableProfileBadges controls profile-popover badges. Nil means unset → default on.
 	// Uses Truthy because Mattermost plugin defaults are JSON strings ("true"/"false").
 	EnableProfileBadges *Truthy
+	UserAccessConfig    *UserAccessConfig
 }
 
 // Truthy unmarshals Mattermost plugin bools from either a JSON boolean or "true"/"false" string.
@@ -44,8 +111,7 @@ func (t Truthy) MarshalJSON() ([]byte, error) {
 	return json.Marshal(bool(t))
 }
 
-// Clone shallow copies the configuration. Your implementation may require a deep copy if
-// your configuration has reference types.
+// Clone deep-copies configuration reference fields.
 func (c *configuration) Clone() *configuration {
 	if c == nil {
 		return &configuration{}
@@ -55,6 +121,13 @@ func (c *configuration) Clone() *configuration {
 		v := *c.EnableProfileBadges
 		clone.EnableProfileBadges = &v
 	}
+	if c.UserAccessConfig != nil {
+		ua := *c.UserAccessConfig
+		ua.UserIDs = append([]string(nil), c.UserAccessConfig.UserIDs...)
+		ua.TeamIDs = append([]string(nil), c.UserAccessConfig.TeamIDs...)
+		ua.DisabledGuideIDs = append([]string(nil), c.UserAccessConfig.DisabledGuideIDs...)
+		clone.UserAccessConfig = &ua
+	}
 	return &clone
 }
 
@@ -63,6 +136,26 @@ func (c *configuration) profileBadgesEnabled() bool {
 		return true
 	}
 	return bool(*c.EnableProfileBadges)
+}
+
+func (c *configuration) userAccess() UserAccessConfig {
+	if c == nil || c.UserAccessConfig == nil {
+		return defaultUserAccessConfig()
+	}
+	return *c.UserAccessConfig
+}
+
+func (c *configuration) disabledGuideIDs() []string {
+	return c.userAccess().DisabledGuideIDs
+}
+
+func (c *configuration) guideEnabled(guideID string) bool {
+	for _, id := range c.disabledGuideIDs() {
+		if id == guideID {
+			return false
+		}
+	}
+	return true
 }
 
 // getConfiguration retrieves the active configuration under lock, making it safe to use
@@ -86,8 +179,8 @@ func (p *Plugin) getConfiguration() *configuration {
 // hook back into the plugin. If that hook attempts to acquire this lock, a deadlock may occur.
 //
 // This method panics if setConfiguration is called with the existing configuration. This almost
-// certainly means that the configuration was modified without being cloned and may result in
-// an unsafe access.
+// certainly means that the configuration was modified without being cloned and may result in an
+// unsafe access.
 func (p *Plugin) setConfiguration(configuration *configuration) {
 	p.configurationLock.Lock()
 	defer p.configurationLock.Unlock()

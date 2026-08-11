@@ -3,7 +3,6 @@
 
 import {fetchAllProgress} from 'client/progress';
 import type {ProgressRecord} from 'client/progress';
-import {GUIDE_LIST} from 'content';
 import type {Audience} from 'content/types';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 
@@ -11,6 +10,7 @@ import GuideCard, {guideCardCta} from 'components/academy/guide_card';
 import HeaderProgress from 'components/academy/header_progress';
 import {useHeaderCondensed} from 'components/academy/use_header_condensed';
 import {AcademyIcon, AcademyProductIcon} from 'components/icons';
+import {useAvailableGuides} from 'hooks/use_available_guides';
 import {navigateToChannels} from 'navigation';
 
 type Filter = 'all' | Audience;
@@ -23,6 +23,7 @@ function completedCount(rec: ProgressRecord | undefined, moduleCount: number) {
 }
 
 export default function CatalogPage() {
+    const {guides: availableGuides} = useAvailableGuides();
     const [filter, setFilter] = useState<Filter>('all');
     const [progress, setProgress] = useState<Record<string, ProgressRecord>>({});
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -49,13 +50,13 @@ export default function CatalogPage() {
 
     const guides = useMemo(() => {
         if (filter === 'all') {
-            return GUIDE_LIST;
+            return availableGuides;
         }
-        return GUIDE_LIST.filter((g) => g.audiences.includes(filter));
-    }, [filter]);
+        return availableGuides.filter((g) => g.audiences.includes(filter));
+    }, [filter, availableGuides]);
 
-    const completedGuides = GUIDE_LIST.filter((g) => progress[g.id]?.everCompleted).length;
-    const progressPct = GUIDE_LIST.length ? Math.round((completedGuides / GUIDE_LIST.length) * 100) : 0;
+    const completedGuides = availableGuides.filter((g) => progress[g.id]?.everCompleted).length;
+    const progressPct = availableGuides.length ? Math.round((completedGuides / availableGuides.length) * 100) : 0;
 
     return (
         <div className='academy-app__body'>
@@ -87,7 +88,7 @@ export default function CatalogPage() {
                     </div>
                     <div className='academy-header-compact__progress'>
                         <span className='academy-header-compact__progress-count'>
-                            {`${completedGuides}/${GUIDE_LIST.length}`}
+                            {`${completedGuides}/${availableGuides.length}`}
                         </span>
                         <div className='academy-header-compact__progress-track'>
                             <div
@@ -129,8 +130,8 @@ export default function CatalogPage() {
                         </p>
                         <HeaderProgress
                             done={completedGuides}
-                            total={GUIDE_LIST.length}
-                            label={`${completedGuides} / ${GUIDE_LIST.length} guides complete`}
+                            total={availableGuides.length}
+                            label={`${completedGuides} / ${availableGuides.length} guides complete`}
                         />
                     </div>
                 </header>

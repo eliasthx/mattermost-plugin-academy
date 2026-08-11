@@ -8,12 +8,16 @@ import type {Store} from 'redux';
 
 import type {GlobalState} from '@mattermost/types/store';
 
+import {setClientSiteURL} from 'client/mm_client';
+import {fetchPluginSettings} from 'client/settings';
 import AcademyBadges from 'components/academy_badges';
 import AcademyHelpMenuItem from 'components/academy_help_menu_item';
 import AcademyRHS from 'components/academy_rhs';
 import AcademyRHSTitle from 'components/academy_rhs_title';
 import AdminGuideCompletionsSection from 'components/admin_guide_completions_section';
 import AdminProfileBadgesSection from 'components/admin_profile_badges_section';
+import AdminUserAccessSection from 'components/admin_user_access_section';
+import AdminUserAccessSetting from 'components/admin_user_access_setting';
 import App from 'components/app';
 import {AcademyProductIcon, ACADEMY_ICON_URL} from 'components/icons';
 import LearnIcon from 'components/learn_icon';
@@ -22,6 +26,32 @@ import type {PluginRegistry} from 'types/mattermost-webapp';
 
 export default class Plugin {
     public async initialize(registry: PluginRegistry, store: Store<GlobalState>) {
+        let siteURL = store.getState().entities.general.config.SiteURL;
+        if (!siteURL) {
+            siteURL = window.location.origin;
+        }
+        setClientSiteURL(siteURL);
+
+        // Admin console + profile badges are always available.
+        registry.registerPopoverUserAttributesComponent(AcademyBadges);
+        registry.registerAdminConsoleCustomSection('ProfileBadges', AdminProfileBadgesSection);
+        registry.registerAdminConsoleCustomSection('UserAccess', AdminUserAccessSection);
+        registry.registerAdminConsoleCustomSetting('UserAccessConfig', AdminUserAccessSetting, {showTitle: false});
+        registry.registerAdminConsoleCustomSection('GuideCompletions', AdminGuideCompletionsSection);
+
+        let userAllowed = true;
+        try {
+            const settings = await fetchPluginSettings();
+            userAllowed = settings.userAllowed;
+        } catch {
+            // Fail open if settings cannot be loaded.
+            userAllowed = true;
+        }
+
+        if (!userAllowed) {
+            return;
+        }
+
         registry.registerProduct(
             '/academy',
             <AcademyProductIcon/>,
@@ -53,11 +83,6 @@ export default class Plugin {
             'Mattermost Academy',
             'Mattermost Academy',
         );
-
-        registry.registerPopoverUserAttributesComponent(AcademyBadges);
-
-        registry.registerAdminConsoleCustomSection('ProfileBadges', AdminProfileBadgesSection);
-        registry.registerAdminConsoleCustomSection('GuideCompletions', AdminGuideCompletionsSection);
 
         registry.registerUserGuideDropdownMenuAction(
             <AcademyHelpMenuItem/>,

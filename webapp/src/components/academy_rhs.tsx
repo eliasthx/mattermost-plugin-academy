@@ -3,12 +3,14 @@
 
 import {fetchAllProgress} from 'client/progress';
 import type {ProgressRecord} from 'client/progress';
-import {GUIDE_LIST} from 'content';
 import React, {useEffect, useState} from 'react';
 
 import GuideCard, {guideCardCta} from 'components/academy/guide_card';
 import HeaderProgress from 'components/academy/header_progress';
+import AcademyAccessDenied from 'components/academy_access_denied';
 import {LOADING_TEXTURE_URL} from 'components/icons';
+import {useAcademyAccess} from 'hooks/use_academy_access';
+import {useAvailableGuides} from 'hooks/use_available_guides';
 import {navigateToAcademy, navigateToGuide} from 'navigation';
 
 import './app.scss';
@@ -22,9 +24,15 @@ function completedCount(rec: ProgressRecord | undefined, moduleCount: number) {
 }
 
 export default function AcademyRHS() {
+    const access = useAcademyAccess();
+    const {guides: availableGuides} = useAvailableGuides();
     const [progress, setProgress] = useState<Record<string, ProgressRecord>>({});
 
     useEffect(() => {
+        if (access !== 'allowed') {
+            return undefined;
+        }
+
         let cancelled = false;
         fetchAllProgress().
             then((guides) => {
@@ -40,9 +48,17 @@ export default function AcademyRHS() {
         return () => {
             cancelled = true;
         };
-    }, []);
+    }, [access]);
 
-    const completedGuides = GUIDE_LIST.filter((g) => progress[g.id]?.everCompleted).length;
+    if (access === 'denied') {
+        return <AcademyAccessDenied/>;
+    }
+
+    if (access === 'loading') {
+        return <div className='academy-rhs'/>;
+    }
+
+    const completedGuides = availableGuides.filter((g) => progress[g.id]?.everCompleted).length;
 
     return (
         <div
@@ -61,15 +77,15 @@ export default function AcademyRHS() {
                     </p>
                     <HeaderProgress
                         done={completedGuides}
-                        total={GUIDE_LIST.length}
-                        label={`${completedGuides} / ${GUIDE_LIST.length} guides complete`}
+                        total={availableGuides.length}
+                        label={`${completedGuides} / ${availableGuides.length} guides complete`}
                     />
                 </div>
             </header>
 
             <div className='academy-rhs__body'>
                 <div className='academy-rhs__list'>
-                    {GUIDE_LIST.map((guide) => {
+                    {availableGuides.map((guide) => {
                         const done = completedCount(progress[guide.id], guide.modules.length);
                         return (
                             <GuideCard
