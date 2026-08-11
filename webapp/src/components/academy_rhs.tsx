@@ -1,0 +1,99 @@
+// Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
+// See LICENSE.txt for license information.
+
+import {fetchAllProgress} from 'client/progress';
+import type {ProgressRecord} from 'client/progress';
+import {GUIDE_LIST} from 'content';
+import React, {useEffect, useState} from 'react';
+
+import GuideCard, {guideCardCta} from 'components/academy/guide_card';
+import HeaderProgress from 'components/academy/header_progress';
+import {LOADING_TEXTURE_URL} from 'components/icons';
+import {navigateToAcademy, navigateToGuide} from 'navigation';
+
+import './app.scss';
+import './academy_rhs.scss';
+
+function completedCount(rec: ProgressRecord | undefined, moduleCount: number) {
+    if (!rec) {
+        return 0;
+    }
+    return Math.min(rec.completedModuleIds?.length || 0, moduleCount);
+}
+
+export default function AcademyRHS() {
+    const [progress, setProgress] = useState<Record<string, ProgressRecord>>({});
+
+    useEffect(() => {
+        let cancelled = false;
+        fetchAllProgress().
+            then((guides) => {
+                if (!cancelled) {
+                    setProgress(guides);
+                }
+            }).
+            catch(() => {
+                if (!cancelled) {
+                    setProgress({});
+                }
+            });
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    const completedGuides = GUIDE_LIST.filter((g) => progress[g.id]?.everCompleted).length;
+
+    return (
+        <div
+            className='academy-rhs'
+            style={{['--academy-loading-texture' as string]: `url(${LOADING_TEXTURE_URL})`}}
+        >
+            <header className='academy-header academy-header--compact'>
+                <div
+                    className='academy-header__texture'
+                    aria-hidden={true}
+                />
+                <div className='academy-header__content'>
+                    <h1 className='academy-header__title'>{'Quick start guides'}</h1>
+                    <p className='academy-header__subtitle'>
+                        {'Earn a badge for completing short walk-through guides that help you get more done in Mattermost.'}
+                    </p>
+                    <HeaderProgress
+                        done={completedGuides}
+                        total={GUIDE_LIST.length}
+                        label={`${completedGuides} / ${GUIDE_LIST.length} guides complete`}
+                    />
+                </div>
+            </header>
+
+            <div className='academy-rhs__body'>
+                <div className='academy-rhs__list'>
+                    {GUIDE_LIST.map((guide) => {
+                        const done = completedCount(progress[guide.id], guide.modules.length);
+                        return (
+                            <GuideCard
+                                key={guide.id}
+                                guide={guide}
+                                done={done}
+                                cta={guideCardCta(done, progress[guide.id]?.everCompleted)}
+                                compact={true}
+                                onClick={() => navigateToGuide(guide.id)}
+                            />
+                        );
+                    })}
+                </div>
+            </div>
+
+            <div className='academy-rhs__footer'>
+                <button
+                    type='button'
+                    className='academy-btn academy-btn--primary'
+                    onClick={() => navigateToAcademy()}
+                >
+                    {'Browse all guides'}
+                </button>
+            </div>
+        </div>
+    );
+}

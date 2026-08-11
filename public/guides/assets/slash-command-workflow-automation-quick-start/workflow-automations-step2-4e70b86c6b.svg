@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 80" role="img" aria-label="Checklist task with Run slash command">
+  <defs>
+    <style>
+      .pt-task { font: 500 13px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #3F4350; }
+      .pt-pill { font: 400 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #5E6169; }
+      .pt-run { font: 500 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #1C58D9; }
+      .pt-cmd { font: 400 11px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #5E6169; }
+      .pt-initial { font: 600 8px system-ui, -apple-system, "Segoe UI", sans-serif; fill: #FFFFFF; }
+    </style>
+  </defs>
+
+  <rect x="0.5" y="0.5" width="439" height="79" rx="8" fill="#FFFFFF" stroke="#E2E2E2"/>
+
+  <!-- Checkbox + task -->
+  <rect x="16" y="16" width="16" height="16" rx="3" fill="#FFFFFF" stroke="#C5C5C5" stroke-width="1.5"/>
+  <text class="pt-task" x="42" y="29">Contain outage spread (e.g., reroute traffic)</text>
+
+  <!-- Assignee pill -->
+  <rect x="42" y="40" width="108" height="22" rx="11" fill="#F2F3F4"/>
+  <circle cx="53" cy="51" r="7" fill="#1C58D9"/>
+  <text class="pt-initial" x="53" y="54" text-anchor="middle">AT</text>
+  <text class="pt-pill" x="66" y="55">Alex Turner</text>
+
+  <!-- Due pill -->
+  <rect x="158" y="40" width="108" height="22" rx="11" fill="#F2F3F4"/>
+  <rect x="168" y="47" width="10" height="10" rx="1.5" fill="none" stroke="#5E6169" stroke-width="1.2"/>
+  <path d="M170 47 V45.5 M176 47 V45.5" stroke="#5E6169" stroke-width="1.2" stroke-linecap="round"/>
+  <text class="pt-pill" x="184" y="55">Due tomorrow</text>
+
+  <!-- Run command pill -->
+  <rect x="274" y="40" width="148" height="22" rx="11" fill="#F2F3F4"/>
+  <text class="pt-run" x="286" y="55">Run</text>
+  <text class="pt-cmd" x="310" y="55">/validate-manifest</text>
+</svg>

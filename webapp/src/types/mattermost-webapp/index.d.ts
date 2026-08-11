@@ -931,7 +931,7 @@ export interface PluginRegistry {
     registerProduct(
         ...args: [
             baseURL: string,
-            switcherIcon: string,
+            switcherIcon: ReactResolvable | string,
             switcherText: string,
             switcherLinkURL: string,
             mainComponent: ReactResolvable,
@@ -940,7 +940,7 @@ export interface PluginRegistry {
             showTeamSidebar: boolean
         ] | [{
             baseURL: string;
-            switcherIcon: string;
+            switcherIcon: ReactResolvable | string;
             switcherText: string;
             switcherLinkURL: string;
             mainComponent: ReactResolvable;

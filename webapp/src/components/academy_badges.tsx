@@ -1,15 +1,19 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+/* eslint-disable no-restricted-imports -- plugins cannot import host OverlayTrigger */
+import {badgeSealURL} from 'content';
+import {GUIDES} from 'guides';
+import manifest from 'manifest';
+import {navigateToGuide} from 'navigation';
 import React, {useEffect, useState} from 'react';
 import {OverlayTrigger} from 'react-bootstrap';
+/* eslint-enable no-restricted-imports */
 
 import type {UserProfile} from '@mattermost/types/users';
 
 import {AcademyBadgeTooltip, formatBadgeEarnedAt} from 'components/academy_badge_tooltip';
-import {GUIDES, guidePublicURL} from 'guides';
-import {openLearning} from 'learning_state';
-import manifest from 'manifest';
+import {AcademyIcon} from 'components/icons';
 
 import './academy_badges.scss';
 
@@ -23,23 +27,7 @@ type Props = {
     hide?: () => void;
 };
 
-const MATERIAL_SYMBOLS_HREF =
-    'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200';
-
-const MATERIAL_SYMBOLS_ID = 'mm-academy-material-symbols';
-
-function ensureMaterialSymbolsFont() {
-    if (document.getElementById(MATERIAL_SYMBOLS_ID)) {
-        return;
-    }
-    const link = document.createElement('link');
-    link.id = MATERIAL_SYMBOLS_ID;
-    link.rel = 'stylesheet';
-    link.href = MATERIAL_SYMBOLS_HREF;
-    document.head.appendChild(link);
-}
-
-const BADGE_SEAL_URL = `/plugins/${manifest.id}/public/Badge.svg`;
+const BADGE_SEAL_URL = badgeSealURL();
 
 /**
  * Profile popover attributes: one icon per completed Academy guide.
@@ -49,10 +37,6 @@ export default function AcademyBadges(props: Props) {
     const userId = props.user?.id;
     const [badgesEnabled, setBadgesEnabled] = useState<boolean | null>(null);
     const [completions, setCompletions] = useState<Completion[] | null>(null);
-
-    useEffect(() => {
-        ensureMaterialSymbolsFont();
-    }, []);
 
     useEffect(() => {
         let cancelled = false;
@@ -155,7 +139,7 @@ export default function AcademyBadges(props: Props) {
                     aria-label={`${meta.title}${dateLabel ? `, earned ${dateLabel}` : ''}. Open guide.`}
                     onClick={() => {
                         props.hide?.();
-                        openLearning(guidePublicURL(meta.file));
+                        navigateToGuide(c.guideId);
                     }}
                 >
                     <img
@@ -164,8 +148,14 @@ export default function AcademyBadges(props: Props) {
                         alt=''
                         draggable={false}
                     />
-                    <span className='material-symbols-outlined AcademyBadges__icon' aria-hidden={true}>
-                        {meta.icon}
+                    <span
+                        className='AcademyBadges__icon'
+                        aria-hidden={true}
+                    >
+                        <AcademyIcon
+                            name={meta.icon}
+                            size={18}
+                        />
                     </span>
                 </button>
             </OverlayTrigger>
@@ -178,8 +168,12 @@ export default function AcademyBadges(props: Props) {
 
     return (
         <div className='AcademyBadges'>
-            <strong className='user-popover__subtitle AcademyBadges__heading'>Academy Badges</strong>
-            <div className='AcademyBadges__row' role='list' aria-label='Mattermost Academy badges'>
+            <strong className='user-popover__subtitle AcademyBadges__heading'>{'Academy Badges'}</strong>
+            <div
+                className='AcademyBadges__row'
+                role='list'
+                aria-label='Mattermost Academy badges'
+            >
                 {badges}
             </div>
         </div>
