@@ -1,41 +1,106 @@
-# Mattermost Academy
+<div align="center">
 
-A Mattermost plugin that provides interactive learning guides as a full-screen product (like Boards / Playbooks / Weave).
+# Mattermost Academy [![Download Latest Master Build](https://img.shields.io/badge/Download-Latest%20Master%20Build-blue)](https://github.com/esethna/mm-academy/releases/tag/latest-master)
 
-## Features
+Short, interactive walk-through guides that help end-users and admins get more done in [Mattermost](https://github.com/mattermost/mattermost) — delivered as a full-screen product experience.
 
-- **Academy** entry in the product switcher
-- App Bar / channel header button opens the full-screen Academy product
-- `/learn` slash command — posts an ephemeral link to `/academy`
-- React catalog, guides, and lessons with real URL routing under `/academy`
-- Profile badges and admin completion reporting
+</div>
 
-## Requirements
+![Mattermost Academy guide catalog with progress tracking and badge completion](img/academy-catalog.png)
 
-- Mattermost server **6.2.1+**
-- Go **1.25+**
-- Node **16+** / npm **8+**
+![Mattermost Academy guide module with step-by-step walk-through](img/academy-guide.png)
 
-## Develop & deploy
+## Key Features
 
+- **Interactive guides**: Step-by-step modules with screenshots and in-product walk-throughs
+- **Badges**: Earn a badge when you finish a guide; optionally show badges on user profiles
+- **Progress tracking**: Per-guide and module completion, with continue / review flows
+- **Audience filters**: Browse guides for end users, admins, or everyone
+- **Access controls**: Admins choose who can use Academy and which guides are available
+- **Completion reporting**: System Console charts and export for guide completion over time
+- **Deep Mattermost integration**: Product switcher, App Bar, help menu, and `/learn` slash command
+
+## Guides included
+
+- **[AI Quick Start](webapp/src/content/guides/ai_quick_start.ts)**: Chat, summaries, calls, search, rewrites, and custom agents
+- **[Slash Commands & Workflow Automation](webapp/src/content/guides/slash_commands.ts)**: Slash commands, scheduled messages, and Playbook automations
+
+## Installation
+
+1. [Download a release bundle](https://github.com/esethna/mm-academy/releases/tag/latest-master). 
+2. Upload and enable the plugin in **System Console → Plugins**
+3. Optionally configure profile badges, user access, and review guide completions under **System Console → Plugins → Mattermost Academy**
+
+### System Requirements
+
+- Mattermost Server running a supported ESR or later version.
+
+## Quick Start
+
+After installation:
+
+1. Open Academy from the product switcher, App Bar, help menu, or run `/learn`.
+2. Pick a guide from the catalog.
+3. Work through modules; progress is saved as you go.
+4. Finish a guide to earn a badge.
+
+### Product routes
+
+| Path | Page |
+|------|------|
+| `/academy` | Guide catalog |
+| `/academy/guides/:guideId` | Redirect to first incomplete module |
+| `/academy/guides/:guideId/modules/:moduleId` | Lesson |
+| `/academy/guides/:guideId/done` | Completion / badge |
+
+## Development
+
+### Prerequisites
+
+- Go 1.25+
+- Node.js 16+ / npm 8+
+- A running Mattermost server for deploy/testing
+
+### Local Setup
+
+1. Set up your Mattermost development environment by following the [Mattermost developer setup guide](https://developers.mattermost.com/contribute/server/developer-setup/). If you already have a remote Mattermost server, you can skip this step.
+
+2. Set up your Mattermost plugin development environment by following the [Plugin Developer setup guide](https://developers.mattermost.com/integrate/plugins/developer-setup/).
+
+3. Clone the repository:
+```bash
+git clone https://github.com/esethna/mm-academy.git
+cd mm-academy
+```
+
+4. **Optional**. If you are developing against a remote server, set environment variables to deploy:
 ```bash
 export MM_SERVICESETTINGS_SITEURL=http://localhost:8065
-export MM_ADMIN_USERNAME=<admin>
-export MM_ADMIN_PASSWORD=<password>
+export MM_ADMIN_USERNAME=<YOUR_USERNAME>
+export MM_ADMIN_PASSWORD=<YOUR_PASSWORD>
+```
+
+5. Build and deploy the plugin:
+```bash
 make deploy
 ```
 
 Hard-refresh the browser after deploy.
 
-Build only:
+Build only (produces `dist/com.mattermost.academy-*.tar.gz` for manual upload):
 
 ```bash
 make
 ```
 
-Produces `dist/com.mattermost.academy-*.tar.gz` for manual upload in **System Console → Plugins**.
+### Other make commands
 
-## Project layout
+- Run `make help` for a list of all make commands
+- Run `make check-style` to verify code style
+- Run `make test` to run the test suite
+- Run `make watch` to rebuild the webapp on change (then `make deploy-from-watch` to install)
+
+### Project layout
 
 | Path | Purpose |
 |------|---------|
@@ -48,11 +113,6 @@ Produces `dist/com.mattermost.academy-*.tar.gz` for manual upload in **System Co
 
 Plugin id: `com.mattermost.academy`
 
-## Product routes
+## License
 
-| Path | Page |
-|------|------|
-| `/academy` | Guide catalog |
-| `/academy/guides/:guideId` | Redirect to first incomplete module |
-| `/academy/guides/:guideId/modules/:moduleId` | Lesson |
-| `/academy/guides/:guideId/done` | Completion / badge |
+This repository is licensed under [Apache-2.0](./LICENSE).
