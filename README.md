@@ -1,4 +1,4 @@
-# Mattermost Academy   [![Download Latest Release](https://img.shields.io/badge/Download-Latest%20Master%20Build-blue)](https://github.com/esethna/mm-academy/releases)
+# Mattermost Academy [![Download Latest Release](https://img.shields.io/badge/Download-Latest%20Release-blue)](https://github.com/esethna/mm-academy/releases)
 
 Short, interactive walk-through guides that help end-users and admins get more done in [Mattermost](https://github.com/mattermost/mattermost) — delivered as a full-screen product experience.
 
@@ -45,9 +45,9 @@ After installation:
 | Path | Page |
 |------|------|
 | `/academy` | Guide catalog |
-| `/academy/guides/:guideId` | Redirect to first incomplete module |
-| `/academy/guides/:guideId/modules/:moduleId` | Lesson |
-| `/academy/guides/:guideId/done` | Completion / badge |
+| `/academy/guides/<guideId>` | Redirect to first incomplete module |
+| `/academy/guides/<guideId>/modules/<moduleId>` | Lesson |
+| `/academy/guides/<guideId>/done` | Completion / badge |
 
 ## Development
 
