@@ -1,10 +1,6 @@
-<div align="center">
-
-# Mattermost Academy [![Download Latest Master Build](https://img.shields.io/badge/Download-Latest%20Master%20Build-blue)](https://github.com/esethna/mm-academy/releases/tag/latest-master)
+# Mattermost Academy   [![Download Latest Release](https://img.shields.io/badge/Download-Latest%20Master%20Build-blue)](https://github.com/esethna/mm-academy/releases)
 
 Short, interactive walk-through guides that help end-users and admins get more done in [Mattermost](https://github.com/mattermost/mattermost) — delivered as a full-screen product experience.
-
-</div>
 
 ![Mattermost Academy guide catalog with progress tracking and badge completion](img/academy-catalog.png)
 
@@ -18,33 +14,33 @@ Short, interactive walk-through guides that help end-users and admins get more d
 - **Audience filters**: Browse guides for end users, admins, or everyone
 - **Access controls**: Admins choose who can use Academy and which guides are available
 - **Completion reporting**: System Console charts and export for guide completion over time
-- **Deep Mattermost integration**: Product switcher, App Bar, help menu, and `/learn` slash command
+- **Deep integration**: Entry points in the product switcher, apps bar, help menu, and `/learn` slash command
 
-## Guides included
+## Guides
 
 - **[AI Quick Start](webapp/src/content/guides/ai_quick_start.ts)**: Chat, summaries, calls, search, rewrites, and custom agents
 - **[Slash Commands & Workflow Automation](webapp/src/content/guides/slash_commands.ts)**: Slash commands, scheduled messages, and Playbook automations
-
-## Installation
-
-1. [Download a release bundle](https://github.com/esethna/mm-academy/releases/tag/latest-master). 
-2. Upload and enable the plugin in **System Console → Plugins**
-3. Optionally configure profile badges, user access, and review guide completions under **System Console → Plugins → Mattermost Academy**
 
 ### System Requirements
 
 - Mattermost Server running a supported ESR or later version.
 
+## Installation
+
+1. [Download a release bundle](https://github.com/esethna/mm-academy/releases). 
+2. Upload and enable the plugin in **System Console → Plugins**
+3. Optionally configure profile badges, user access, and review guide completions under **System Console → Plugins → Mattermost Academy**
+
 ## Quick Start
 
 After installation:
 
-1. Open Academy from the product switcher, App Bar, help menu, or run `/learn`.
+1. Open Academy from the product switcher, apps bar, help menu, or run `/learn`.
 2. Pick a guide from the catalog.
 3. Work through modules; progress is saved as you go.
 4. Finish a guide to earn a badge.
 
-### Product routes
+### Product Routes
 
 | Path | Page |
 |------|------|
@@ -93,14 +89,14 @@ Build only (produces `dist/com.mattermost.academy-*.tar.gz` for manual upload):
 make
 ```
 
-### Other make commands
+### Make Commands
 
 - Run `make help` for a list of all make commands
 - Run `make check-style` to verify code style
 - Run `make test` to run the test suite
 - Run `make watch` to rebuild the webapp on change (then `make deploy-from-watch` to install)
 
-### Project layout
+### Project Layout
 
 | Path | Purpose |
 |------|---------|
