@@ -32,13 +32,6 @@ func TestLearnCommand(t *testing.T) {
 	assert := assert.New(t)
 	env := setupTest()
 
-	siteURL := "http://localhost:8065"
-	env.api.On("GetConfig").Return(&model.Config{
-		ServiceSettings: model.ServiceSettings{
-			SiteURL: &siteURL,
-		},
-	})
-
 	cmdHandler := NewCommandHandler(env.client)
 
 	response, err := cmdHandler.Handle(&model.CommandArgs{
@@ -47,7 +40,6 @@ func TestLearnCommand(t *testing.T) {
 		ChannelId: "channel-id",
 	})
 	assert.Nil(err)
-	assert.Equal(model.CommandResponseTypeEphemeral, response.ResponseType)
-	assert.Contains(response.Text, "http://localhost:8065/academy")
-	assert.Contains(response.Text, "Mattermost Academy")
+	assert.Equal("/academy", response.GotoLocation)
+	assert.Empty(response.Text)
 }

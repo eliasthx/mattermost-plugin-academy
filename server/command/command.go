@@ -8,9 +8,7 @@ import (
 	"github.com/mattermost/mattermost/server/public/pluginapi"
 )
 
-type Handler struct {
-	client *pluginapi.Client
-}
+type Handler struct{}
 
 type Command interface {
 	Handle(args *model.CommandArgs) (*model.CommandResponse, error)
@@ -29,9 +27,7 @@ func NewCommandHandler(client *pluginapi.Client) Command {
 		client.Log.Error("Failed to register command", "error", err)
 	}
 
-	return &Handler{
-		client: client,
-	}
+	return &Handler{}
 }
 
 func (c *Handler) Handle(args *model.CommandArgs) (*model.CommandResponse, error) {
@@ -56,23 +52,7 @@ func (c *Handler) Handle(args *model.CommandArgs) (*model.CommandResponse, error
 }
 
 func (c *Handler) executeLearnCommand() *model.CommandResponse {
-	siteURL := ""
-	if cfg := c.client.Configuration.GetConfig(); cfg.ServiceSettings.SiteURL != nil {
-		siteURL = strings.TrimRight(*cfg.ServiceSettings.SiteURL, "/")
-	}
-
-	fallback := &model.CommandResponse{
-		ResponseType: model.CommandResponseTypeEphemeral,
-		Text:         "Open **Mattermost Academy** from the product switcher or App Bar.",
-	}
-
-	if siteURL == "" {
-		return fallback
-	}
-
-	learnURL := fmt.Sprintf("%s/academy", siteURL)
 	return &model.CommandResponse{
-		ResponseType: model.CommandResponseTypeEphemeral,
-		Text:         fmt.Sprintf("Open [Mattermost Academy](%s)", learnURL),
+		GotoLocation: "/academy",
 	}
 }

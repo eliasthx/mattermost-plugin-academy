@@ -88,6 +88,15 @@ export default class Plugin {
             <AcademyHelpMenuItem/>,
             () => navigateToAcademy(),
         );
+
+        registry.registerSlashCommandWillBePostedHook((message, args) => {
+            const trigger = message.trim().split(/\s+/)[0];
+            if (trigger === '/learn') {
+                navigateToAcademy();
+                return {};
+            }
+            return {message, args};
+        });
     }
 }
 
