@@ -33,8 +33,18 @@ type Plugin struct {
 func (p *Plugin) OnActivate() error {
 	p.client = pluginapi.NewClient(p.API, p.Driver)
 	p.commandClient = command.NewCommandHandler(p.client)
-	p.progressHandler = progress.NewHandler(progress.NewStore(p.client))
+	p.progressHandler = progress.NewHandler(progress.NewStore(p.client), p)
 	return nil
+}
+
+// GuideEnabled implements progress.Policy.
+func (p *Plugin) GuideEnabled(guideID string) bool {
+	return p.getConfiguration().guideEnabled(guideID)
+}
+
+// ProfileBadgesEnabled implements progress.Policy.
+func (p *Plugin) ProfileBadgesEnabled() bool {
+	return p.getConfiguration().profileBadgesEnabled()
 }
 
 // ExecuteCommand runs registered slash commands (currently /learn).
