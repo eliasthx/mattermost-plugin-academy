@@ -91,6 +91,25 @@ export default function AdminUserAccessSetting(props: Props) {
                 )}
             </div>
 
+            <div className='AcademyUserAccessSetting__label'>{'Admin guides'}</div>
+            <div className='AcademyUserAccessSetting__control'>
+                <div className='AcademyUserAccessSetting__help'>
+                    {'Guides written for system admins walk through the System Console. They are hidden from everyone else unless you turn this on.'}
+                </div>
+                <div className='AcademyUserAccessSetting__guides'>
+                    <input
+                        type='checkbox'
+                        id={`${props.id}-admin-guides`}
+                        checked={value.showAdminGuidesToAllUsers}
+                        disabled={props.disabled}
+                        onChange={(e) => update({...value, showAdminGuidesToAllUsers: e.target.checked})}
+                    />
+                    <label htmlFor={`${props.id}-admin-guides`}>
+                        {'Show admin guides to all users'}
+                    </label>
+                </div>
+            </div>
+
             <div className='AcademyUserAccessSetting__label'>{'Guides'}</div>
             <div className='AcademyUserAccessSetting__control'>
                 <div className='AcademyUserAccessSetting__help'>

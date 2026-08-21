@@ -3,45 +3,47 @@
 
 import {fetchPluginSettings} from 'client/settings';
 import {GUIDE_LIST, getGuide, resolveGuide} from 'content';
-import type {Guide} from 'content';
+import type {Guide, GuideAvailability} from 'content';
 import {useEffect, useMemo, useState} from 'react';
 
 type GuidesState = {
     guides: Guide[];
     disabledGuideIDs: string[];
-    activePluginIDs: string[] | null;
+    canSeeAdminGuides: boolean;
     loading: boolean;
 };
 
-type Availability = {
+type Availability = GuideAvailability & {
     disabledGuideIDs: string[];
-    activePluginIDs: string[] | null;
     loading: boolean;
+};
+
+const UNKNOWN: Availability = {
+    disabledGuideIDs: [],
+    activePluginIDs: null,
+    canSeeAdminGuides: false,
+    loading: true,
 };
 
 function useAvailability(): Availability {
-    const [disabledGuideIDs, setDisabledGuideIDs] = useState<string[]>([]);
-    const [activePluginIDs, setActivePluginIDs] = useState<string[] | null>(null);
-    const [loading, setLoading] = useState(true);
+    const [availability, setAvailability] = useState<Availability>(UNKNOWN);
 
     useEffect(() => {
         let cancelled = false;
         fetchPluginSettings().
             then((settings) => {
                 if (!cancelled) {
-                    setDisabledGuideIDs(settings.disabledGuideIDs);
-                    setActivePluginIDs(settings.activePluginIDs);
+                    setAvailability({
+                        disabledGuideIDs: settings.disabledGuideIDs,
+                        activePluginIDs: settings.activePluginIDs,
+                        canSeeAdminGuides: settings.isAdmin || settings.showAdminGuidesToAllUsers,
+                        loading: false,
+                    });
                 }
             }).
             catch(() => {
                 if (!cancelled) {
-                    setDisabledGuideIDs([]);
-                    setActivePluginIDs(null);
-                }
-            }).
-            finally(() => {
-                if (!cancelled) {
-                    setLoading(false);
+                    setAvailability({...UNKNOWN, loading: false});
                 }
             });
         return () => {
@@ -49,7 +51,7 @@ function useAvailability(): Availability {
         };
     }, []);
 
-    return {disabledGuideIDs, activePluginIDs, loading};
+    return availability;
 }
 
 /**
@@ -57,30 +59,30 @@ function useAvailability(): Availability {
  * so callers can use `guide.modules` without repeating the filtering.
  */
 export function useAvailableGuides(): GuidesState {
-    const {disabledGuideIDs, activePluginIDs, loading} = useAvailability();
+    const {disabledGuideIDs, activePluginIDs, canSeeAdminGuides, loading} = useAvailability();
 
     const guides = useMemo(
         () => GUIDE_LIST.
             filter((guide) => !disabledGuideIDs.includes(guide.id)).
-            map((guide) => resolveGuide(guide, activePluginIDs)).
+            map((guide) => resolveGuide(guide, {activePluginIDs, canSeeAdminGuides})).
             filter((guide): guide is Guide => Boolean(guide)),
-        [activePluginIDs, disabledGuideIDs],
+        [activePluginIDs, canSeeAdminGuides, disabledGuideIDs],
     );
 
-    return {guides, disabledGuideIDs, activePluginIDs, loading};
+    return {guides, disabledGuideIDs, canSeeAdminGuides, loading};
 }
 
 /** Single-guide equivalent of useAvailableGuides, for the guide routes. */
 export function useAvailableGuide(guideId: string): {guide: Guide | undefined; loading: boolean} {
-    const {disabledGuideIDs, activePluginIDs, loading} = useAvailability();
+    const {disabledGuideIDs, activePluginIDs, canSeeAdminGuides, loading} = useAvailability();
 
     const guide = useMemo(() => {
         const found = getGuide(guideId);
         if (!found || disabledGuideIDs.includes(found.id)) {
             return undefined;
         }
-        return resolveGuide(found, activePluginIDs);
-    }, [activePluginIDs, disabledGuideIDs, guideId]);
+        return resolveGuide(found, {activePluginIDs, canSeeAdminGuides});
+    }, [activePluginIDs, canSeeAdminGuides, disabledGuideIDs, guideId]);
 
     return {guide, loading};
 }

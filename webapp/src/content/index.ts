@@ -42,11 +42,27 @@ export function visibleModules(guide: Guide, activePluginIDs: string[] | null): 
     return guide.modules.filter((mod) => meetsPluginRequirements(mod.requiresPlugins, activePluginIDs));
 }
 
+export type GuideAvailability = {
+    activePluginIDs: string[] | null;
+    canSeeAdminGuides: boolean;
+};
+
+/** Admin-only guides walk through the System Console, so they stay hidden
+ * from everyone else unless an admin opts in. */
+export function isAudienceVisible(guide: Guide, canSeeAdminGuides: boolean): boolean {
+    return canSeeAdminGuides || guide.audiences.some((audience) => audience !== 'admin');
+}
+
 /**
  * Returns the guide with unavailable modules removed, or undefined when the
  * guide itself is unavailable or has nothing left to show.
  */
-export function resolveGuide(guide: Guide, activePluginIDs: string[] | null): Guide | undefined {
+export function resolveGuide(guide: Guide, availability: GuideAvailability): Guide | undefined {
+    const {activePluginIDs, canSeeAdminGuides} = availability;
+
+    if (!isAudienceVisible(guide, canSeeAdminGuides)) {
+        return undefined;
+    }
     if (!meetsPluginRequirements(guide.requiresPlugins, activePluginIDs)) {
         return undefined;
     }

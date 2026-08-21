@@ -2,7 +2,10 @@
 // See LICENSE.txt for license information.
 
 import {meetsPluginRequirements, resolveGuide, visibleModules} from 'content';
-import type {Guide, Module} from 'content/types';
+import type {Audience, Guide, Module} from 'content/types';
+
+/** Default availability: no plugins running, admin guides hidden. */
+const RESTRICTED = {activePluginIDs: [] as string[] | null, canSeeAdminGuides: false};
 
 function makeModule(id: string, requiresPlugins?: string[]): Module {
     return {
@@ -16,7 +19,7 @@ function makeModule(id: string, requiresPlugins?: string[]): Module {
     };
 }
 
-function makeGuide(modules: Module[], requiresPlugins?: string[]): Guide {
+function makeGuide(modules: Module[], requiresPlugins?: string[], audiences: Audience[] = ['end-user']): Guide {
     return {
         id: 'guide',
         title: 'Guide',
@@ -24,7 +27,7 @@ function makeGuide(modules: Module[], requiresPlugins?: string[]): Guide {
         subtitle: '',
         description: '',
         icon: 'check',
-        audiences: ['end-user'],
+        audiences,
         modules,
         doneTitle: '',
         doneSummary: '',
@@ -66,19 +69,19 @@ describe('resolveGuide', () => {
     it('hides a guide whose required plugin is not active', () => {
         const guide = makeGuide([makeModule('one')], ['focalboard']);
 
-        expect(resolveGuide(guide, [])).toBeUndefined();
-        expect(resolveGuide(guide, ['focalboard'])).toBe(guide);
+        expect(resolveGuide(guide, RESTRICTED)).toBeUndefined();
+        expect(resolveGuide(guide, {...RESTRICTED, activePluginIDs: ['focalboard']})).toBe(guide);
     });
 
     it('hides a guide once every module is filtered out', () => {
         const guide = makeGuide([makeModule('one', ['focalboard'])]);
 
-        expect(resolveGuide(guide, [])).toBeUndefined();
+        expect(resolveGuide(guide, RESTRICTED)).toBeUndefined();
     });
 
     it('returns a trimmed copy when only some modules are filtered out', () => {
         const guide = makeGuide([makeModule('one'), makeModule('two', ['focalboard'])]);
-        const resolved = resolveGuide(guide, []);
+        const resolved = resolveGuide(guide, RESTRICTED);
 
         expect(resolved).not.toBe(guide);
         expect(resolved?.modules.map((m) => m.id)).toEqual(['one']);
@@ -87,6 +90,19 @@ describe('resolveGuide', () => {
     it('returns the original guide when nothing is filtered', () => {
         const guide = makeGuide([makeModule('one')]);
 
-        expect(resolveGuide(guide, [])).toBe(guide);
+        expect(resolveGuide(guide, RESTRICTED)).toBe(guide);
+    });
+
+    it('hides admin-only guides unless the viewer may see them', () => {
+        const guide = makeGuide([makeModule('one')], undefined, ['admin']);
+
+        expect(resolveGuide(guide, RESTRICTED)).toBeUndefined();
+        expect(resolveGuide(guide, {...RESTRICTED, canSeeAdminGuides: true})).toBe(guide);
+    });
+
+    it('shows guides aimed at both audiences to everyone', () => {
+        const guide = makeGuide([makeModule('one')], undefined, ['end-user', 'admin']);
+
+        expect(resolveGuide(guide, RESTRICTED)).toBe(guide);
     });
 });

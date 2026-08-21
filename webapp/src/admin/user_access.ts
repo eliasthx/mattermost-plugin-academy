@@ -13,6 +13,9 @@ export type UserAccessConfig = {
     userIDs: string[];
     teamIDs: string[];
     disabledGuideIDs: string[];
+
+    /** Opens admin-audience guides to everyone. Off by default. */
+    showAdminGuidesToAllUsers: boolean;
 };
 
 export const DEFAULT_USER_ACCESS_CONFIG: UserAccessConfig = {
@@ -20,7 +23,12 @@ export const DEFAULT_USER_ACCESS_CONFIG: UserAccessConfig = {
     userIDs: [],
     teamIDs: [],
     disabledGuideIDs: [],
+    showAdminGuidesToAllUsers: false,
 };
+
+function emptyUserAccessConfig(): UserAccessConfig {
+    return {...DEFAULT_USER_ACCESS_CONFIG, userIDs: [], teamIDs: [], disabledGuideIDs: []};
+}
 
 export function normalizeUserAccessConfig(value: unknown): UserAccessConfig {
     if (!value || typeof value !== 'object') {
@@ -28,10 +36,10 @@ export function normalizeUserAccessConfig(value: unknown): UserAccessConfig {
             try {
                 return normalizeUserAccessConfig(JSON.parse(value));
             } catch {
-                return {...DEFAULT_USER_ACCESS_CONFIG, userIDs: [], teamIDs: [], disabledGuideIDs: []};
+                return emptyUserAccessConfig();
             }
         }
-        return {...DEFAULT_USER_ACCESS_CONFIG, userIDs: [], teamIDs: [], disabledGuideIDs: []};
+        return emptyUserAccessConfig();
     }
 
     const raw = value as Partial<UserAccessConfig>;
@@ -43,5 +51,6 @@ export function normalizeUserAccessConfig(value: unknown): UserAccessConfig {
         disabledGuideIDs: Array.isArray(raw.disabledGuideIDs) ?
             raw.disabledGuideIDs.filter((id): id is string => typeof id === 'string') :
             [],
+        showAdminGuidesToAllUsers: raw.showAdminGuidesToAllUsers === true,
     };
 }

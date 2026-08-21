@@ -15,6 +15,12 @@ import {navigateToChannels} from 'navigation';
 
 type Filter = 'all' | Audience;
 
+const ALL_FILTERS: Array<[Filter, string]> = [
+    ['all', 'All'],
+    ['end-user', 'End users'],
+    ['admin', 'Admins'],
+];
+
 function completedCount(rec: ProgressRecord | undefined, moduleCount: number) {
     if (!rec) {
         return 0;
@@ -23,7 +29,7 @@ function completedCount(rec: ProgressRecord | undefined, moduleCount: number) {
 }
 
 export default function CatalogPage() {
-    const {guides: availableGuides} = useAvailableGuides();
+    const {guides: availableGuides, canSeeAdminGuides} = useAvailableGuides();
     const [filter, setFilter] = useState<Filter>('all');
     const [progress, setProgress] = useState<Record<string, ProgressRecord>>({});
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -47,6 +53,11 @@ export default function CatalogPage() {
             cancelled = true;
         };
     }, []);
+
+    const filters = useMemo(
+        () => ALL_FILTERS.filter(([id]) => id !== 'admin' || canSeeAdminGuides),
+        [canSeeAdminGuides],
+    );
 
     const guides = useMemo(() => {
         if (filter === 'all') {
@@ -144,11 +155,7 @@ export default function CatalogPage() {
                             role='group'
                             aria-label='Filter guides by audience'
                         >
-                            {([
-                                ['all', 'All'],
-                                ['end-user', 'End users'],
-                                ['admin', 'Admins'],
-                            ] as Array<[Filter, string]>).map(([id, label]) => (
+                            {filters.map(([id, label]) => (
                                 <button
                                     key={id}
                                     type='button'
