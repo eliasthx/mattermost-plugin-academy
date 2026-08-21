@@ -110,6 +110,23 @@ describe('guide copy', () => {
         });
     });
 
+    it('keeps markup out of fields that render literally', () => {
+        // The catalog card is wrapped in a link, so its description cannot
+        // carry an anchor without nesting one inside another.
+        GUIDE_LIST.forEach((guide) => {
+            expect(guide.description).not.toMatch(/<[a-z/]/i);
+            expect(guide.title).not.toMatch(/<[a-z/]/i);
+            expect(guide.heroTitle).not.toMatch(/<[a-z/]/i);
+            expect(guide.doneTitle).not.toMatch(/<[a-z/]/i);
+
+            guide.modules.forEach((mod) => {
+                expect(mod.title).not.toMatch(/<[a-z/]/i);
+                expect(mod.navTitle).not.toMatch(/<[a-z/]/i);
+                mod.steps.forEach((step) => expect(step.title).not.toMatch(/<[a-z/]/i));
+            });
+        });
+    });
+
     it('only links to https or in-app paths', () => {
         GUIDE_LIST.flatMap(proseOf).forEach(({text}) => {
             for (const match of text.matchAll(/<a\s+href="([^"]*)"/gi)) {

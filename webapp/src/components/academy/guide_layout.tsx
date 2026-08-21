@@ -8,6 +8,7 @@ import {Link, NavLink, useLocation, useRouteMatch} from 'react-router-dom';
 import {GuideProvider, useGuideContext} from 'components/academy/guide_context';
 import {GuideFooterProvider, useGuideFooterState} from 'components/academy/guide_footer';
 import HeaderProgress from 'components/academy/header_progress';
+import RichText from 'components/academy/rich_text';
 import {useHeaderCondensed} from 'components/academy/use_header_condensed';
 import {AcademyIcon} from 'components/icons';
 
@@ -146,7 +147,9 @@ function GuideShell({children}: {children: React.ReactNode}) {
                                     </span>
                                     <h1 className='academy-header__title'>{guide.heroTitle}</h1>
                                 </div>
-                                <p className='academy-header__subtitle'>{guide.subtitle}</p>
+                                <p className='academy-header__subtitle'>
+                                    <RichText text={guide.subtitle}/>
+                                </p>
                                 <HeaderProgress
                                     done={doneCount}
                                     total={guide.modules.length}

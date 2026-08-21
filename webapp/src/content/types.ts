@@ -1,6 +1,11 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+/**
+ * Fields commented "Rich" render through RichText and accept <strong> and
+ * <a href="...">, with hrefs limited to https and in-app paths. Every other
+ * field renders literally, so a tag written there shows as angle brackets.
+ */
 export type Audience = 'end-user' | 'admin';
 
 export type StepMedia = {
@@ -12,8 +17,10 @@ export type StepMedia = {
 export type Step = {
     title: string;
 
-    /** May include <strong> tags for emphasis. */
+    /** Rich. */
     description: string;
+
+    /** Rich. */
     tip?: string;
     media?: StepMedia;
 };
@@ -30,6 +37,8 @@ export type CommandGroup = {
 
 export type TierItem = {
     name: string;
+
+    /** Rich. */
     description: string;
 
     /** Shown as a badge, e.g. 'Enterprise'. */
@@ -39,6 +48,8 @@ export type TierItem = {
 /** A level of a graded model, such as a security maturity tier. */
 export type Tier = {
     label: string;
+
+    /** Rich. */
     summary: string;
     items: TierItem[];
 };
@@ -52,7 +63,7 @@ export type Variant = {
 export type ChecklistItem = {
     title: string;
 
-    /** May include <strong> tags for emphasis. */
+    /** Rich. */
     description: string;
 };
 
@@ -67,6 +78,8 @@ export type Module = {
     icon: string;
     minutes?: number;
     title: string;
+
+    /** Rich. */
     summary: string;
     steps: Step[];
     tiers?: Tier[];
@@ -87,12 +100,18 @@ export type Guide = {
     id: string;
     title: string;
     heroTitle: string;
+
+    /** Rich. */
     subtitle: string;
+
+    /** Plain: renders inside the catalog card, which is itself a link. */
     description: string;
     icon: string;
     audiences: Audience[];
     modules: Module[];
     doneTitle: string;
+
+    /** Rich. */
     doneSummary: string;
     doneLinks: DoneLink[];
 

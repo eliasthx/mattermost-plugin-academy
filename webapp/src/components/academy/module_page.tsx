@@ -8,6 +8,7 @@ import {Link, Redirect, useHistory, useParams} from 'react-router-dom';
 import {GuideFooter} from 'components/academy/guide_footer';
 import {useGuideContext} from 'components/academy/guide_context';
 import {Checklist, CommandGroups, StepList, TierList, VariantTabs} from 'components/academy/module_blocks';
+import RichText from 'components/academy/rich_text';
 import {AcademyIcon} from 'components/icons';
 
 function completeLabel(alreadyDone: boolean, isLast: boolean) {
@@ -93,7 +94,9 @@ export default function ModulePage() {
                         {`Module ${index + 1} of ${guide.modules.length}`}
                     </div>
                     <h2 className='academy-module__title'>{mod.title}</h2>
-                    <p className='academy-module__summary'>{mod.summary}</p>
+                    <p className='academy-module__summary'>
+                        <RichText text={mod.summary}/>
+                    </p>
                 </div>
 
                 <div className='academy-module__steps'>
