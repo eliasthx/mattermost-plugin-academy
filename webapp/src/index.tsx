@@ -2,7 +2,7 @@
 // See LICENSE.txt for license information.
 
 import manifest from 'manifest';
-import {navigateToAcademy} from 'navigation';
+import {discardAcademyRestore, leaveAcademyForReload, navigateToAcademy, restoreAcademyAfterReload, watchAcademyReload} from 'navigation';
 import React from 'react';
 import type {Store} from 'redux';
 
@@ -25,6 +25,8 @@ import LearnIcon from 'components/learn_icon';
 import type {PluginRegistry} from 'types/mattermost-webapp';
 
 export default class Plugin {
+    private stopWatchingReload?: () => void;
+
     public async initialize(registry: PluginRegistry, store: Store<GlobalState>) {
         let siteURL = store.getState().entities.general.config.SiteURL;
         if (!siteURL) {
@@ -49,6 +51,7 @@ export default class Plugin {
         }
 
         if (!userAllowed) {
+            discardAcademyRestore();
             return;
         }
 
@@ -62,6 +65,9 @@ export default class Plugin {
             () => null,
             false,
         );
+
+        restoreAcademyAfterReload();
+        this.stopWatchingReload = watchAcademyReload(store, manifest.id);
 
         const {toggleRHSPlugin} = registry.registerRightHandSidebarComponent(
             AcademyRHS,
@@ -97,6 +103,12 @@ export default class Plugin {
             }
             return {message, args};
         });
+    }
+
+    public uninitialize() {
+        this.stopWatchingReload?.();
+        this.stopWatchingReload = undefined;
+        leaveAcademyForReload();
     }
 }
 
