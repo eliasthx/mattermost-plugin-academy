@@ -1,10 +1,12 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {PLUGIN_IDS} from 'content/plugins';
 import type {Guide} from 'content/types';
 
 const aiQuickStart: Guide = {
     id: 'ai-quick-start',
+    requiresPlugins: [PLUGIN_IDS.agents],
     title: 'AI Quick Start',
     heroTitle: 'Put AI to work inside Mattermost',
     subtitle: 'Seven focused guides for AI chat, summaries, calls, search, rewrites, and custom agents. Accelerate your workflows and decision making with full operational context.',
@@ -115,6 +117,7 @@ const aiQuickStart: Guide = {
         },
         {
             id: 'summarize-calls',
+            requiresPlugins: [PLUGIN_IDS.calls],
             navTitle: 'Summarize Calls',
             icon: 'video-outline',
             minutes: 2,
