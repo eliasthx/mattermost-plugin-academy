@@ -1,22 +1,23 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {PLUGIN_IDS} from 'content/plugins';
 import type {Guide} from 'content/types';
 
 const slashCommands: Guide = {
+    // Renaming this would orphan saved progress and the asset folder, so the
+    // id still mentions workflow automation after that content moved out.
     id: 'slash-command-workflow-automation-quick-start',
-    title: 'Slash Commands & Workflow Automation',
+    title: 'Slash Commands & Scheduled Messages',
     heroTitle: 'Command your workflow',
-    subtitle: 'Slash commands, scheduled messages, and Playbook automations and triggers — everything you need to become a power user.',
-    description: 'Slash commands, scheduled messages, and Playbook automations — become a Mattermost power user.',
+    subtitle: 'Drive Mattermost from the message box: run commands without leaving the conversation, and send messages at the moment they land best.',
+    description: 'Slash commands and scheduled messages — drive Mattermost without leaving the message box.',
     icon: 'console',
     audiences: ['end-user', 'admin'],
-    doneTitle: 'You\'re automation-ready in Mattermost',
-    doneSummary: 'You\'ve covered slash commands, scheduled messages, workflow automations, and Playbook triggers.',
+    doneTitle: 'You\'re driving Mattermost from the keyboard',
+    doneSummary: 'You\'ve covered slash command basics, the built-in commands worth memorizing, and scheduled messages.',
     doneLinks: [
-        {label: 'Playbooks documentation', href: 'https://docs.mattermost.com/end-user-guide/workflow-automation.html'},
         {label: 'Full slash command reference', href: 'https://docs.mattermost.com/integrations-guide/built-in-slash-commands.html'},
+        {label: 'Schedule messages', href: 'https://docs.mattermost.com/end-user-guide/collaborate/schedule-messages.html'},
     ],
     modules: [
         {
@@ -122,67 +123,6 @@ const slashCommands: Guide = {
                 {
                     title: 'When to use it',
                     description: 'Scheduled messages are especially useful when your team spans timezones, when you want to post an announcement at a specific moment, or when you finish writing something in the evening but don\'t want to ping everyone until morning.',
-                },
-            ],
-        },
-        {
-            id: 'workflow-automations',
-            navTitle: 'Workflow Automations',
-            icon: 'playlist-check',
-            minutes: 3,
-            requiresPlugins: [PLUGIN_IDS.playbooks],
-            title: 'Workflow automations with Playbooks',
-            summary: 'A Playbook is a repeatable digital checklist your team configures once and reuses. You build it once, and run it for instances of the same process.',
-            steps: [
-                {
-                    title: 'Create a Playbook',
-                    description: 'Select <strong>Playbooks</strong> from the main menu and <strong>create new Playbook</strong>. Name it, then define the structured checklist, assigned owners, and a status timeline.',
-                    media: {
-                        type: 'image',
-                        file: 'workflow-automations-step1-f68b94cf7e.svg',
-                        alt: 'Playbook run checklist showing three tasks with assignees and due dates',
-                    },
-                },
-                {
-                    title: 'Slash commands attached to tasks',
-                    description: 'Individual checklist tasks can have a slash command wired to them. Run participants engaging with the checklist can kick off slash commands in a single click.',
-                    media: {
-                        type: 'image',
-                        file: 'workflow-automations-step2-4e70b86c6b.svg',
-                        alt: 'Checklist task with assignee, due date, and Run slash command',
-                    },
-                },
-                {
-                    title: 'Start a Run',
-                    description: 'From any channel, type <strong>/playbook run</strong> and select the playbook you want. The process and checklist is already defined in the Playbook — you just execute it. Mattermost creates the channel and checklist automatically.',
-                },
-                {
-                    title: 'Common use cases',
-                    description: 'Playbooks are used anywhere a team needs a consistent, repeatable process.',
-                },
-            ],
-        },
-        {
-            id: 'playbook-triggers',
-            navTitle: 'Playbook Triggers',
-            icon: 'lightning-bolt-outline',
-            minutes: 2,
-            requiresPlugins: [PLUGIN_IDS.playbooks],
-            title: 'Playbook triggers',
-            summary: 'Playbooks can start from a slash command or a keyword in a channel. Use webhooks to stream in alert data from connected systems, then setup keywords to trigger your Playbook workflows.',
-            steps: [
-                {
-                    title: 'Keyword triggers',
-                    description: 'Access <strong>Channel Actions</strong> from the channel menu, then type a keyword and select the Playbook that should run. The keyword can be a specific word or phrase that appears in messages — for example <strong>SEV1</strong>, <strong>outage</strong>, or <strong>deploy failed</strong>.',
-                    media: {
-                        type: 'image',
-                        file: 'playbook-triggers-step1-9e6405dce4.svg',
-                        alt: 'Channel Actions modal showing a keyword trigger with Prompt to run a playbook enabled',
-                    },
-                },
-                {
-                    title: 'Slash commands during an active run',
-                    description: 'Manage ownership, status, and completion while a run is in progress.',
                 },
             ],
         },
