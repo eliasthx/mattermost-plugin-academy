@@ -7,6 +7,10 @@ export type PluginSettings = {
     enableProfileBadges: boolean;
     userAllowed: boolean;
     disabledGuideIDs: string[];
+    isAdmin: boolean;
+
+    /** Null means the server could not determine it; treat as "no filtering". */
+    activePluginIDs: string[] | null;
 };
 
 export async function fetchPluginSettings(): Promise<PluginSettings> {
@@ -22,5 +26,7 @@ export async function fetchPluginSettings(): Promise<PluginSettings> {
         enableProfileBadges: data.enableProfileBadges !== false,
         userAllowed: data.userAllowed !== false,
         disabledGuideIDs: Array.isArray(data.disabledGuideIDs) ? data.disabledGuideIDs : [],
+        isAdmin: data.isAdmin === true,
+        activePluginIDs: Array.isArray(data.activePluginIDs) ? data.activePluginIDs : null,
     };
 }

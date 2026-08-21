@@ -99,5 +99,39 @@ func (p *Plugin) serveSettings(w http.ResponseWriter, r *http.Request) {
 		"enableProfileBadges": cfg.profileBadgesEnabled(),
 		"userAllowed":         p.userHasAccess(userID),
 		"disabledGuideIDs":    disabled,
+		"isAdmin":             p.userIsAdmin(userID),
+		"activePluginIDs":     p.activePluginIDs(),
 	})
+}
+
+// userIsAdmin reports whether the user can administer the system.
+func (p *Plugin) userIsAdmin(userID string) bool {
+	if p.client == nil {
+		return false
+	}
+	return p.client.User.HasPermissionTo(userID, model.PermissionManageSystem)
+}
+
+// activePluginIDs lists plugins that are currently running, used by the webapp
+// to hide guides for features that aren't available. GetPlugins already
+// excludes installed-but-disabled plugins.
+//
+// Fails open: an error returns nil, and the webapp treats an absent list as
+// "no filtering" so a lookup failure can never hide a guide.
+func (p *Plugin) activePluginIDs() []string {
+	if p.API == nil {
+		return nil
+	}
+	manifests, appErr := p.API.GetPlugins()
+	if appErr != nil {
+		p.API.LogWarn("failed to list active plugins", "err", appErr.Error())
+		return nil
+	}
+	ids := make([]string, 0, len(manifests))
+	for _, m := range manifests {
+		if m != nil {
+			ids = append(ids, m.Id)
+		}
+	}
+	return ids
 }
