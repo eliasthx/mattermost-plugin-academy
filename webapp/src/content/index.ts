@@ -3,6 +3,7 @@
 
 import advancedSearch from 'content/guides/advanced_search';
 import aiQuickStart from 'content/guides/ai_quick_start';
+import boards from 'content/guides/boards';
 import mattermostBasics from 'content/guides/mattermost_basics';
 import slashCommands from 'content/guides/slash_commands';
 import type {Guide, Module} from 'content/types';
@@ -18,6 +19,7 @@ export const GUIDES: Record<string, Guide> = {
     [aiQuickStart.id]: aiQuickStart,
     [slashCommands.id]: slashCommands,
     [advancedSearch.id]: advancedSearch,
+    [boards.id]: boards,
 };
 
 export const GUIDE_LIST: Guide[] = Object.values(GUIDES);
