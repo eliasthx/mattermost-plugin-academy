@@ -1,6 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import advancedSearch from 'content/guides/advanced_search';
 import aiQuickStart from 'content/guides/ai_quick_start';
 import slashCommands from 'content/guides/slash_commands';
 import type {Guide, Module} from 'content/types';
@@ -13,6 +14,7 @@ export const ACADEMY_BASE_PATH = '/academy';
 export const GUIDES: Record<string, Guide> = {
     [aiQuickStart.id]: aiQuickStart,
     [slashCommands.id]: slashCommands,
+    [advancedSearch.id]: advancedSearch,
 };
 
 export const GUIDE_LIST: Guide[] = Object.values(GUIDES);
