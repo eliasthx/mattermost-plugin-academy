@@ -1,4 +1,4 @@
-# Mattermost Academy [![Download Latest Release](https://img.shields.io/badge/Download-Latest%20Release-blue)](https://github.com/esethna/mm-academy/releases)
+# Mattermost Academy [![Download Latest Release](https://img.shields.io/badge/Download-Latest%20Release-blue)](https://github.com/esethna/mattermost-plugin-academy/releases)
 
 Short, interactive walk-through guides that help end-users and admins get more done in [Mattermost](https://github.com/mattermost/mattermost) — delivered as a full-screen product experience.
 
@@ -18,8 +18,19 @@ Short, interactive walk-through guides that help end-users and admins get more d
 
 ## Guides
 
+### End-user
+
+- **[Messaging Basics & Productivity Tips](webapp/src/content/guides/mattermost_basics.ts)**: Channels, threads, notifications, composing, formatting, and shortcuts
 - **[AI Quick Start](webapp/src/content/guides/ai_quick_start.ts)**: Chat, summaries, calls, search, rewrites, and custom agents
-- **[Slash Commands & Workflow Automation](webapp/src/content/guides/slash_commands.ts)**: Slash commands, scheduled messages, and Playbook automations
+- **[Slash Commands & Scheduled Messages](webapp/src/content/guides/slash_commands.ts)**: Slash commands and scheduled messages
+- **[Advanced Search](webapp/src/content/guides/advanced_search.ts)**: Modifiers, date filters, file search, and AI semantic search
+- **[Boards](webapp/src/content/guides/boards.ts)**: Boards, cards, properties, views, and channel links
+- **[Playbooks](webapp/src/content/guides/playbooks.ts)**: Checklists, status updates, playbook setup, and retrospectives
+
+### Admin
+
+- **[Zero Trust](webapp/src/content/guides/zero_trust.ts)**: Mattermost security mapped to the five CISA Zero Trust pillars
+- **[Upgrading Mattermost](webapp/src/content/guides/update_guide.ts)**: Release tracks, upgrade paths, pre-flight checks, verification, and rollback
 
 ### System Requirements
 
@@ -27,7 +38,7 @@ Short, interactive walk-through guides that help end-users and admins get more d
 
 ## Installation
 
-1. [Download a release bundle](https://github.com/esethna/mm-academy/releases). 
+1. [Download a release bundle](https://github.com/esethna/mattermost-plugin-academy/releases). 
 2. Upload and enable the plugin in **System Console → Plugins**
 3. Optionally configure profile badges, user access, and review guide completions under **System Console → Plugins → Mattermost Academy**
 
@@ -65,8 +76,8 @@ After installation:
 
 3. Clone the repository:
 ```bash
-git clone https://github.com/esethna/mm-academy.git
-cd mm-academy
+git clone https://github.com/esethna/mattermost-plugin-academy.git
+cd mattermost-plugin-academy
 ```
 
 4. **Optional**. If you are developing against a remote server, set environment variables to deploy:
