@@ -12,6 +12,9 @@ import {
     type UserAccessConfig,
 } from 'admin/user_access';
 import {GUIDE_LIST} from 'content';
+import {pluginLabel} from 'content/plugins';
+import type {Guide} from 'content/types';
+import {useActivePluginIDs} from 'hooks/use_active_plugins';
 
 import SelectUser from './select_user';
 
@@ -27,7 +30,20 @@ function forEditor(value: UserAccessConfig): UserAccessConfig {
     return value;
 }
 
+/**
+ * Names the plugins a guide needs that are not currently running. Returns an
+ * empty list while the active set is unknown, so a failed lookup does not
+ * claim a guide is broken.
+ */
+function missingPlugins(guide: Guide, activePluginIDs: string[] | null): string[] {
+    if (!guide.requiresPlugins || activePluginIDs === null) {
+        return [];
+    }
+    return guide.requiresPlugins.filter((id) => !activePluginIDs.includes(id));
+}
+
 export default function AdminUserAccessSetting(props: Props) {
+    const activePluginIDs = useActivePluginIDs();
     const value = useMemo(
         () => forEditor(normalizeUserAccessConfig(props.value ?? DEFAULT_USER_ACCESS_CONFIG)),
         [props.value],
@@ -119,6 +135,7 @@ export default function AdminUserAccessSetting(props: Props) {
                     {GUIDE_LIST.map((guide) => {
                         const enabled = !value.disabledGuideIDs.includes(guide.id);
                         const inputId = `${props.id}-guide-${guide.id}`;
+                        const missing = missingPlugins(guide, activePluginIDs);
                         return (
                             <React.Fragment key={guide.id}>
                                 <input
@@ -128,7 +145,20 @@ export default function AdminUserAccessSetting(props: Props) {
                                     disabled={props.disabled}
                                     onChange={(e) => setGuideEnabled(guide.id, e.target.checked)}
                                 />
-                                <label htmlFor={inputId}>{guide.title}</label>
+                                <label htmlFor={inputId}>
+                                    {guide.title}
+                                    {missing.length > 0 && (
+                                        <span className='AcademyUserAccessSetting__requires'>
+                                            {`Hidden: needs ${missing.map(pluginLabel).join(' and ')}. `}
+                                            <a
+                                                href='/admin_console/plugins/plugin_management'
+                                                rel='noreferrer'
+                                            >
+                                                {'Manage plugins'}
+                                            </a>
+                                        </span>
+                                    )}
+                                </label>
                             </React.Fragment>
                         );
                     })}
