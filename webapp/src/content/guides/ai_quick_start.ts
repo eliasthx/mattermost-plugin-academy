@@ -65,7 +65,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-threads-step1.svg',
-                        alt: '',
+                        alt: 'A message about a failed staging deployment with the hover actions toolbar showing',
                     },
                 },
                 {
@@ -74,7 +74,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-threads-step2.svg',
-                        alt: '',
+                        alt: 'AI actions menu listing Summarize Thread, Find action items, Find open questions, and React for me',
                     },
                 },
                 {
@@ -106,7 +106,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-channels-step2.svg',
-                        alt: '',
+                        alt: 'A New Messages divider in a channel with an Ask AI button beside it',
                     },
                 },
                 {
@@ -130,7 +130,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-calls-step1.svg',
-                        alt: '',
+                        alt: 'An active call at 00:46 with a red REC indicator, four participants, and an End button',
                     },
                 },
                 {
@@ -139,7 +139,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-calls-step2.svg',
-                        alt: '',
+                        alt: 'A Calls bot post with a transcription file attached and a Create meeting summary action above it',
                     },
                 },
                 {
@@ -218,7 +218,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'custom-agents-step2.svg',
-                        alt: '',
+                        alt: 'A Create agent form filled in with the username secops-bot, an AI service, and custom instructions',
                     },
                 },
             ],

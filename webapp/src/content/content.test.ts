@@ -1,9 +1,14 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {existsSync} from 'fs';
+import path from 'path';
+
 import {ICON_NAMES} from 'components/icons';
 import {GUIDE_LIST} from 'content';
 import type {Guide, Module} from 'content/types';
+
+const ASSET_ROOT = path.resolve(__dirname, '../../../public/guides/assets');
 
 /** Mirrors validGuideID in server/progress/progress.go. */
 const GUIDE_ID = /^[a-z0-9_-]+$/;
@@ -102,6 +107,32 @@ describe('guide icons', () => {
         });
         allModules().forEach(({mod}) => {
             expect(ICON_NAMES).toContain(mod.icon);
+        });
+    });
+});
+
+describe('guide media', () => {
+    it('references files that exist under the guide asset folder', () => {
+        allModules().forEach(({guide, mod}) => {
+            const steps = [...mod.steps, ...(mod.variants?.flatMap((v) => v.steps) ?? [])];
+
+            steps.forEach((step) => {
+                if (!step.media) {
+                    return;
+                }
+                const file = path.join(ASSET_ROOT, guide.id, step.media.file);
+                expect(`${guide.id}/${step.media.file} exists: ${existsSync(file)}`).toContain('true');
+            });
+        });
+    });
+
+    it('gives every media item alt text', () => {
+        allModules().forEach(({mod}) => {
+            mod.steps.forEach((step) => {
+                if (step.media) {
+                    expect(step.media.alt.trim()).not.toBe('');
+                }
+            });
         });
     });
 });
