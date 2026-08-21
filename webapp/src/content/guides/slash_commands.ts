@@ -32,7 +32,7 @@ const slashCommands: Guide = {
                 },
                 {
                     title: 'Filter and select',
-                    description: 'Autocomplete filters matching commands in real time. Use keyboard_arrow_up keyboard_arrow_down to navigate options, then press Tab or Enter to select one.',
+                    description: 'Autocomplete filters matching commands in real time. Use the up and down arrow keys to navigate options, then press <strong>Tab</strong> or <strong>Enter</strong> to select one.',
                 },
             ],
         },

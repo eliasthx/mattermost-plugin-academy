@@ -119,6 +119,9 @@ const ICONS: Record<string, IconComponent> = {
     update: UpdateIcon,
 };
 
+/** Names AcademyIcon can resolve. Anything else silently renders as a book. */
+export const ICON_NAMES = Object.keys(ICONS);
+
 export function AcademyIcon({name, className, size = 20}: IconProps) {
     const Icon = ICONS[name] || BookOutlineIcon;
     return (
