@@ -1134,7 +1134,24 @@
     }
 }
 
+// Variant steps restart their numbering, so the block needs to read as its
+// own region when a module also has steps of its own above it.
 .academy-variants {
+    padding: 16px;
+    border: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
+    border-radius: var(--radius-m, 6px);
+    background: rgba(var(--center-channel-color-rgb), 0.03);
+
+    &__label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: rgba(var(--center-channel-color-rgb), 0.56);
+    }
+
     &__tabs {
         display: flex;
         flex-wrap: wrap;

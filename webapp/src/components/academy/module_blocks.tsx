@@ -90,10 +90,16 @@ export function VariantTabs({guideId, moduleId, variants}: {guideId: string; mod
 
     return (
         <div className='academy-variants'>
+            <span
+                className='academy-variants__label'
+                id={`${moduleId}-variants-label`}
+            >
+                {'Choose your setup'}
+            </span>
             <div
                 className='academy-variants__tabs'
                 role='tablist'
-                aria-label='Choose your setup'
+                aria-labelledby={`${moduleId}-variants-label`}
             >
                 {variants.map((variant, index) => (
                     <button
