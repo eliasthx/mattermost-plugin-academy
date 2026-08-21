@@ -3,14 +3,35 @@
 
 import React from 'react';
 
+const TOKEN = /(<\/?strong>|<a\s+href="[^"]*"\s*>|<\/a>)/i;
+const OPEN_LINK = /^<a\s+href="([^"]*)"\s*>$/i;
+
 /**
- * Renders guide copy that may include simple <strong> emphasis from content data.
+ * Content is authored in this repo, but keep the accepted shapes narrow so a
+ * typo cannot produce a javascript: or data: link. Root-relative paths stay
+ * in the app; anything else must be https.
+ */
+export function safeHref(href: string): string | null {
+    const trimmed = href.trim();
+    if (trimmed.startsWith('/') && !trimmed.startsWith('//')) {
+        return trimmed;
+    }
+    if ((/^https:\/\/[^\s]+$/i).test(trimmed)) {
+        return trimmed;
+    }
+    return null;
+}
+
+/**
+ * Renders guide copy that may include <strong> emphasis and <a href="..."> links.
+ * Unrecognised or unsafe markup degrades to plain text rather than throwing.
  */
 export default function RichText({text}: {text: string}) {
-    const parts = text.split(/(<\/?strong>)/i);
     const nodes: React.ReactNode[] = [];
     let bold = false;
-    parts.forEach((part, index) => {
+    let href: string | null = null;
+
+    text.split(TOKEN).forEach((part, index) => {
         if (!part) {
             return;
         }
@@ -22,7 +43,35 @@ export default function RichText({text}: {text: string}) {
             bold = false;
             return;
         }
-        nodes.push(bold ? <strong key={index}>{part}</strong> : <React.Fragment key={index}>{part}</React.Fragment>);
+
+        const open = part.match(OPEN_LINK);
+        if (open) {
+            href = safeHref(open[1]);
+            return;
+        }
+        if ((/^<\/a>$/i).test(part)) {
+            href = null;
+            return;
+        }
+
+        const content = bold ? <strong>{part}</strong> : part;
+        if (href === null) {
+            nodes.push(<React.Fragment key={index}>{content}</React.Fragment>);
+            return;
+        }
+
+        const external = href.startsWith('https:');
+        nodes.push(
+            <a
+                key={index}
+                href={href}
+                target={external ? '_blank' : undefined}
+                rel={external ? 'noopener noreferrer' : undefined}
+            >
+                {content}
+            </a>,
+        );
     });
+
     return <>{nodes}</>;
 }
