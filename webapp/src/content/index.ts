@@ -3,6 +3,7 @@
 
 import advancedSearch from 'content/guides/advanced_search';
 import aiQuickStart from 'content/guides/ai_quick_start';
+import mattermostBasics from 'content/guides/mattermost_basics';
 import slashCommands from 'content/guides/slash_commands';
 import type {Guide, Module} from 'content/types';
 import manifest from 'manifest';
@@ -11,7 +12,9 @@ export type {Guide, Module, Audience, Step} from 'content/types';
 
 export const ACADEMY_BASE_PATH = '/academy';
 
+// Order here is catalog order: broadest onboarding first.
 export const GUIDES: Record<string, Guide> = {
+    [mattermostBasics.id]: mattermostBasics,
     [aiQuickStart.id]: aiQuickStart,
     [slashCommands.id]: slashCommands,
     [advancedSearch.id]: advancedSearch,
