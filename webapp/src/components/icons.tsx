@@ -4,26 +4,54 @@
 import manifest from 'manifest';
 import React from 'react';
 
+import AccountMultipleOutlineIcon from '@mattermost/compass-icons/components/account-multiple-outline';
+import AccountOutlineIcon from '@mattermost/compass-icons/components/account-outline';
 import AiSummarizeIcon from '@mattermost/compass-icons/components/ai-summarize';
+import AlertOutlineIcon from '@mattermost/compass-icons/components/alert-outline';
 import ArrowLeftIcon from '@mattermost/compass-icons/components/arrow-left';
+import AtIcon from '@mattermost/compass-icons/components/at';
+import BellOutlineIcon from '@mattermost/compass-icons/components/bell-outline';
 import BookOutlineIcon from '@mattermost/compass-icons/components/book-outline';
+import BookmarkOutlineIcon from '@mattermost/compass-icons/components/bookmark-outline';
+import CalendarOutlineIcon from '@mattermost/compass-icons/components/calendar-outline';
+import CellphoneIcon from '@mattermost/compass-icons/components/cellphone';
+import ChartLineIcon from '@mattermost/compass-icons/components/chart-line';
 import CheckIcon from '@mattermost/compass-icons/components/check';
 import CheckCircleIcon from '@mattermost/compass-icons/components/check-circle';
 import CheckCircleOutlineIcon from '@mattermost/compass-icons/components/check-circle-outline';
 import ChevronRightIcon from '@mattermost/compass-icons/components/chevron-right';
 import ClockSendOutlineIcon from '@mattermost/compass-icons/components/clock-send-outline';
+import CodeTagsIcon from '@mattermost/compass-icons/components/code-tags';
+import CogOutlineIcon from '@mattermost/compass-icons/components/cog-outline';
 import ConsoleIcon from '@mattermost/compass-icons/components/console';
 import ContentCopyIcon from '@mattermost/compass-icons/components/content-copy';
+import DownloadOutlineIcon from '@mattermost/compass-icons/components/download-outline';
 import DrawIcon from '@mattermost/compass-icons/components/draw';
+import FilterVariantIcon from '@mattermost/compass-icons/components/filter-variant';
+import FlagOutlineIcon from '@mattermost/compass-icons/components/flag-outline';
+import FolderOutlineIcon from '@mattermost/compass-icons/components/folder-outline';
 import FormatListBulletedIcon from '@mattermost/compass-icons/components/format-list-bulleted';
+import GlobeIcon from '@mattermost/compass-icons/components/globe';
+import KeyVariantIcon from '@mattermost/compass-icons/components/key-variant';
 import LightningBoltOutlineIcon from '@mattermost/compass-icons/components/lightning-bolt-outline';
+import LinkVariantIcon from '@mattermost/compass-icons/components/link-variant';
+import LockOutlineIcon from '@mattermost/compass-icons/components/lock-outline';
+import MagnifyIcon from '@mattermost/compass-icons/components/magnify';
 import MessageTextOutlineIcon from '@mattermost/compass-icons/components/message-text-outline';
 import OpenInNewIcon from '@mattermost/compass-icons/components/open-in-new';
+import PinOutlineIcon from '@mattermost/compass-icons/components/pin-outline';
 import PlaylistCheckIcon from '@mattermost/compass-icons/components/playlist-check';
 import RefreshIcon from '@mattermost/compass-icons/components/refresh';
 import RobotHappyIcon from '@mattermost/compass-icons/components/robot-happy';
 import SearchListIcon from '@mattermost/compass-icons/components/search-list';
+import ServerVariantIcon from '@mattermost/compass-icons/components/server-variant';
+import ShieldOutlineIcon from '@mattermost/compass-icons/components/shield-outline';
+import StarOutlineIcon from '@mattermost/compass-icons/components/star-outline';
+import SyncIcon from '@mattermost/compass-icons/components/sync';
+import TableLargeIcon from '@mattermost/compass-icons/components/table-large';
+import TextBoxOutlineIcon from '@mattermost/compass-icons/components/text-box-outline';
 import TuneIcon from '@mattermost/compass-icons/components/tune';
+import UpdateIcon from '@mattermost/compass-icons/components/update';
 import VideoOutlineIcon from '@mattermost/compass-icons/components/video-outline';
 
 type IconComponent = React.ComponentType<{
@@ -61,6 +89,34 @@ const ICONS: Record<string, IconComponent> = {
     check: CheckIcon,
     'book-outline': BookOutlineIcon,
     'chevron-right': ChevronRightIcon,
+    'account-multiple-outline': AccountMultipleOutlineIcon,
+    'account-outline': AccountOutlineIcon,
+    'alert-outline': AlertOutlineIcon,
+    at: AtIcon,
+    'bell-outline': BellOutlineIcon,
+    'bookmark-outline': BookmarkOutlineIcon,
+    'calendar-outline': CalendarOutlineIcon,
+    cellphone: CellphoneIcon,
+    'chart-line': ChartLineIcon,
+    'code-tags': CodeTagsIcon,
+    'cog-outline': CogOutlineIcon,
+    'download-outline': DownloadOutlineIcon,
+    'filter-variant': FilterVariantIcon,
+    'flag-outline': FlagOutlineIcon,
+    'folder-outline': FolderOutlineIcon,
+    globe: GlobeIcon,
+    'key-variant': KeyVariantIcon,
+    'link-variant': LinkVariantIcon,
+    'lock-outline': LockOutlineIcon,
+    magnify: MagnifyIcon,
+    'pin-outline': PinOutlineIcon,
+    'server-variant': ServerVariantIcon,
+    'shield-outline': ShieldOutlineIcon,
+    'star-outline': StarOutlineIcon,
+    sync: SyncIcon,
+    'table-large': TableLargeIcon,
+    'text-box-outline': TextBoxOutlineIcon,
+    update: UpdateIcon,
 };
 
 export function AcademyIcon({name, className, size = 20}: IconProps) {
