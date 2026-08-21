@@ -6,6 +6,7 @@ import React from 'react';
 import {Link, Redirect} from 'react-router-dom';
 
 import {useGuideContext} from 'components/academy/guide_context';
+import RichText from 'components/academy/rich_text';
 import {AcademyIcon} from 'components/icons';
 
 export default function CompletionPage() {
@@ -41,7 +42,9 @@ export default function CompletionPage() {
             </div>
             <div className='academy-done__eyebrow'>{'Badge earned'}</div>
             <h2 className='academy-done__title'>{guide.doneTitle}</h2>
-            <p className='academy-done__body'>{guide.doneSummary}</p>
+            <p className='academy-done__body'>
+                <RichText text={guide.doneSummary}/>
+            </p>
             <div className='academy-done__actions'>
                 <button
                     type='button'

@@ -37,6 +37,12 @@ func TestTruthyUnmarshal(t *testing.T) {
 	}
 }
 
+func TestTestModeEnabledDefaults(t *testing.T) {
+	assert.False(t, (*configuration)(nil).testModeEnabled())
+	assert.False(t, (&configuration{}).testModeEnabled())
+	assert.True(t, (&configuration{UserAccessConfig: &UserAccessConfig{TestMode: true}}).testModeEnabled())
+}
+
 func TestProfileBadgesEnabledDefaults(t *testing.T) {
 	assert.True(t, (*configuration)(nil).profileBadgesEnabled())
 	assert.True(t, (&configuration{}).profileBadgesEnabled())
@@ -80,11 +86,12 @@ func TestUserAccessConfigUnmarshal(t *testing.T) {
 			TeamIDs:          []string{},
 			DisabledGuideIDs: []string{},
 		}},
-		{`{"userAccessLevel":0,"disabledGuideIDs":["ai-quick-start"]}`, UserAccessConfig{
+		{`{"userAccessLevel":0,"disabledGuideIDs":["ai-quick-start"],"testMode":true}`, UserAccessConfig{
 			UserAccessLevel:  UserAccessLevelAll,
 			UserIDs:          []string{},
 			TeamIDs:          []string{},
 			DisabledGuideIDs: []string{"ai-quick-start"},
+			TestMode:         true,
 		}},
 	}
 	for _, tc := range cases {

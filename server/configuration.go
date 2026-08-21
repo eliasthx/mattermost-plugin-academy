@@ -24,6 +24,10 @@ type UserAccessConfig struct {
 	UserIDs          []string        `json:"userIDs"`
 	TeamIDs          []string        `json:"teamIDs"`
 	DisabledGuideIDs []string        `json:"disabledGuideIDs"`
+
+	// TestMode shows plugin-gated content and admin-audience guides to everyone.
+	// Off by default.
+	TestMode bool `json:"testMode"`
 }
 
 // UnmarshalJSON accepts a JSON object or a JSON-encoded string (Mattermost defaults).
@@ -71,6 +75,7 @@ func defaultUserAccessConfig() UserAccessConfig {
 		UserIDs:          []string{},
 		TeamIDs:          []string{},
 		DisabledGuideIDs: []string{},
+		TestMode:         false,
 	}
 }
 
@@ -136,6 +141,10 @@ func (c *configuration) profileBadgesEnabled() bool {
 		return true
 	}
 	return bool(*c.EnableProfileBadges)
+}
+
+func (c *configuration) testModeEnabled() bool {
+	return c.userAccess().TestMode
 }
 
 func (c *configuration) userAccess() UserAccessConfig {

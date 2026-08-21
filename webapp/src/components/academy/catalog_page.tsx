@@ -15,6 +15,12 @@ import {navigateToChannels} from 'navigation';
 
 type Filter = 'all' | Audience;
 
+const ALL_FILTERS: Array<[Filter, string]> = [
+    ['all', 'All'],
+    ['end-user', 'End-users'],
+    ['admin', 'Admins'],
+];
+
 function completedCount(rec: ProgressRecord | undefined, moduleCount: number) {
     if (!rec) {
         return 0;
@@ -23,7 +29,7 @@ function completedCount(rec: ProgressRecord | undefined, moduleCount: number) {
 }
 
 export default function CatalogPage() {
-    const {guides: availableGuides} = useAvailableGuides();
+    const {guides: availableGuides, canSeeAdminGuides} = useAvailableGuides();
     const [filter, setFilter] = useState<Filter>('all');
     const [progress, setProgress] = useState<Record<string, ProgressRecord>>({});
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -137,29 +143,27 @@ export default function CatalogPage() {
                 </header>
 
                 <div className='academy-catalog__content'>
-                    <div className='academy-catalog__toolbar'>
-                        <div className='academy-catalog__label'>{'Available guides'}</div>
-                        <div
-                            className='academy-catalog__filters'
-                            role='group'
-                            aria-label='Filter guides by audience'
-                        >
-                            {([
-                                ['all', 'All'],
-                                ['end-user', 'End users'],
-                                ['admin', 'Admins'],
-                            ] as Array<[Filter, string]>).map(([id, label]) => (
-                                <button
-                                    key={id}
-                                    type='button'
-                                    className={`academy-catalog__chip${filter === id ? ' academy-catalog__chip--active' : ''}`}
-                                    onClick={() => setFilter(id)}
-                                >
-                                    {label}
-                                </button>
-                            ))}
+                    {canSeeAdminGuides && (
+                        <div className='academy-catalog__toolbar'>
+                            <div className='academy-catalog__label'>{'Available guides'}</div>
+                            <div
+                                className='academy-catalog__filters'
+                                role='group'
+                                aria-label='Filter guides by audience'
+                            >
+                                {ALL_FILTERS.map(([id, label]) => (
+                                    <button
+                                        key={id}
+                                        type='button'
+                                        className={`academy-catalog__chip${filter === id ? ' academy-catalog__chip--active' : ''}`}
+                                        onClick={() => setFilter(id)}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {guides.length === 0 ? (
                         <p className='academy-catalog__empty'>{'No guides match this filter.'}</p>

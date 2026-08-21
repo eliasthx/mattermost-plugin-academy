@@ -1,12 +1,13 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {guideAssetURL, routes} from 'content';
+import {routes} from 'content';
 import React, {useCallback, useMemo, useState} from 'react';
 import {Link, Redirect, useHistory, useParams} from 'react-router-dom';
 
 import {GuideFooter} from 'components/academy/guide_footer';
 import {useGuideContext} from 'components/academy/guide_context';
+import {Checklist, CommandGroups, StepList, TierList, VariantTabs} from 'components/academy/module_blocks';
 import RichText from 'components/academy/rich_text';
 import {AcademyIcon} from 'components/icons';
 
@@ -22,7 +23,6 @@ export default function ModulePage() {
     const {guide, completed, completeModule} = useGuideContext();
     const history = useHistory();
     const [saving, setSaving] = useState(false);
-    const [copied, setCopied] = useState<string | null>(null);
 
     const index = guide.modules.findIndex((m) => m.id === moduleId);
     if (index < 0) {
@@ -47,16 +47,6 @@ export default function ModulePage() {
             setSaving(false);
         }
     }, [completeModule, guide.id, history, isLast, mod.id, next]);
-
-    const copyCommand = async (command: string) => {
-        try {
-            await navigator.clipboard.writeText(command);
-            setCopied(command);
-            window.setTimeout(() => setCopied(null), 1500);
-        } catch {
-            // ignore clipboard failures
-        }
-    };
 
     const footer = useMemo(() => (
         <div className='academy-module__footer'>
@@ -104,71 +94,31 @@ export default function ModulePage() {
                         {`Module ${index + 1} of ${guide.modules.length}`}
                     </div>
                     <h2 className='academy-module__title'>{mod.title}</h2>
-                    <p className='academy-module__summary'>{mod.summary}</p>
+                    <p className='academy-module__summary'>
+                        <RichText text={mod.summary}/>
+                    </p>
                 </div>
 
                 <div className='academy-module__steps'>
-                    {mod.steps.map((step, stepIndex) => (
-                        <div
-                            className='academy-step'
-                            key={`${mod.id}-${stepIndex}`}
-                        >
-                            <div className='academy-step__num'>{stepIndex + 1}</div>
-                            <div className='academy-step__body'>
-                                <h3 className='academy-step__title'>{step.title}</h3>
-                                <p className='academy-step__desc'>
-                                    <RichText text={step.description}/>
-                                </p>
-                                {step.media ? (
-                                    <div className='academy-step__media'>
-                                        <img
-                                            src={guideAssetURL(guide.id, step.media.file)}
-                                            alt={step.media.alt || ''}
-                                        />
-                                    </div>
-                                ) : null}
-                                {step.tip ? (
-                                    <div className='academy-step__tip'>
-                                        <RichText text={step.tip}/>
-                                    </div>
-                                ) : null}
-                            </div>
-                        </div>
-                    ))}
+                    {mod.tiers?.length ? <TierList tiers={mod.tiers}/> : null}
 
-                    {mod.commandGroups && mod.commandGroups.length > 0 ? (
-                        <div className='academy-cmd'>
-                            <div className='academy-cmd__hdr'>
-                                <span>{'Command'}</span>
-                                <span>{'What it does'}</span>
-                            </div>
-                            {mod.commandGroups.map((group) => (
-                                <div key={group.label}>
-                                    <div className='academy-cmd__group-label'>{group.label}</div>
-                                    {group.items.map((item) => (
-                                        <div
-                                            className='academy-cmd__item'
-                                            key={item.command}
-                                        >
-                                            <button
-                                                type='button'
-                                                className='academy-cmd__try'
-                                                onClick={() => copyCommand(item.command)}
-                                                title='Copy command'
-                                            >
-                                                <span>{item.command}</span>
-                                                <AcademyIcon
-                                                    name={copied === item.command ? 'check' : 'content-copy'}
-                                                    size={14}
-                                                />
-                                            </button>
-                                            <span className='academy-cmd__desc'>{item.description}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            ))}
-                        </div>
+                    <StepList
+                        guideId={guide.id}
+                        keyPrefix={mod.id}
+                        steps={mod.steps}
+                    />
+
+                    {mod.variants?.length ? (
+                        <VariantTabs
+                            guideId={guide.id}
+                            moduleId={mod.id}
+                            variants={mod.variants}
+                        />
                     ) : null}
+
+                    {mod.checklist?.length ? <Checklist items={mod.checklist}/> : null}
+
+                    {mod.commandGroups?.length ? <CommandGroups groups={mod.commandGroups}/> : null}
                 </div>
             </div>
         </div>

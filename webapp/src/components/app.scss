@@ -491,12 +491,17 @@
     }
 
     &__heading {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-areas:
+            'icon . time'
+            'title title title';
         gap: 12px;
+        align-items: start;
     }
 
     &__icon {
+        grid-area: icon;
         flex: 0 0 auto;
         width: 56px;
         height: 56px;
@@ -509,10 +514,23 @@
     }
 
     &__title {
+        grid-area: title;
         margin: 0;
         font-size: 16px;
         font-weight: 700;
         color: var(--center-channel-color);
+    }
+
+    &__time {
+        grid-area: time;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 16px;
+        color: rgba(var(--center-channel-color-rgb), 0.64);
+        white-space: nowrap;
     }
 
     &--compact {
@@ -520,7 +538,7 @@
         padding: 12px 14px;
 
         .academy-card__heading {
-            flex-direction: row;
+            grid-template-areas: 'icon title time';
             align-items: center;
             gap: 10px;
         }
@@ -1035,6 +1053,8 @@
 
     &__media {
         margin-top: 12px;
+        width: fit-content;
+        max-width: 100%;
         border: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
         border-radius: var(--radius-m, 6px);
         overflow: hidden;
@@ -1042,8 +1062,11 @@
 
         img {
             display: block;
-            width: 100%;
+            width: auto;
             height: auto;
+            max-width: 100%;
+            max-height: 350px;
+            object-fit: contain;
         }
     }
 
@@ -1054,6 +1077,185 @@
         background: rgba(var(--button-bg-rgb), 0.08);
         color: rgba(var(--center-channel-color-rgb), 0.8);
         font-size: 13px;
+    }
+}
+
+.academy-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.academy-tier {
+    border: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
+    border-radius: var(--radius-m, 6px);
+    overflow: hidden;
+
+    &__hdr {
+        padding: 14px 16px;
+        background: rgba(var(--center-channel-color-rgb), 0.04);
+        border-bottom: 1px solid rgba(var(--center-channel-color-rgb), 0.08);
+    }
+
+    &__label {
+        margin: 0;
+
+        @at-root h3#{&} {
+            font-size: 16px;
+            font-weight: 700;
+        }
+    }
+
+    &__summary {
+        margin: 4px 0 0;
+        font-size: 13px;
+        color: rgba(var(--center-channel-color-rgb), 0.72);
+    }
+
+    &__items {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    &__item {
+        display: grid;
+        grid-template-columns: minmax(160px, 1fr) 2fr;
+        gap: 12px;
+        align-items: baseline;
+        padding: 10px 16px;
+
+        & + & {
+            border-top: 1px solid rgba(var(--center-channel-color-rgb), 0.08);
+        }
+    }
+
+    &__item-name {
+        display: inline-flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--center-channel-color);
+    }
+
+    &__badge {
+        padding: 1px 6px;
+        border-radius: var(--radius-s, 4px);
+        background: rgba(var(--button-bg-rgb), 0.12);
+        color: var(--button-bg);
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    &__item-desc {
+        font-size: 13px;
+        color: rgba(var(--center-channel-color-rgb), 0.72);
+    }
+}
+
+// Variant steps restart their numbering, so the block needs to read as its
+// own region when a module also has steps of its own above it.
+.academy-variants {
+    padding: 16px;
+    border: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
+    border-radius: var(--radius-m, 6px);
+    background: rgba(var(--center-channel-color-rgb), 0.03);
+
+    &__label {
+        display: block;
+        margin-bottom: 10px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.02em;
+        color: rgba(var(--center-channel-color-rgb), 0.56);
+    }
+
+    &__tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
+    }
+
+    &__tab {
+        appearance: none;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        padding: 8px 12px;
+        margin-bottom: -1px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        color: rgba(var(--center-channel-color-rgb), 0.64);
+
+        &:hover {
+            color: var(--center-channel-color);
+        }
+
+        &--active {
+            color: var(--button-bg);
+            border-bottom-color: var(--button-bg);
+        }
+    }
+
+    &__panel {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+}
+
+.academy-checklist {
+    list-style: none;
+    margin: 0;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
+    border-radius: var(--radius-m, 6px);
+    background: rgba(var(--center-channel-color-rgb), 0.03);
+
+    &__item {
+        display: flex;
+        gap: 12px;
+    }
+
+    &__marker {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(var(--button-bg-rgb), 0.12);
+        color: var(--button-bg);
+    }
+
+    &__body {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+    }
+
+    &__title {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--center-channel-color);
+    }
+
+    &__desc {
+        font-size: 13px;
+        color: rgba(var(--center-channel-color-rgb), 0.72);
     }
 }
 

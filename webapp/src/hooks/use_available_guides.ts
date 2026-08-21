@@ -2,36 +2,50 @@
 // See LICENSE.txt for license information.
 
 import {fetchPluginSettings} from 'client/settings';
-import {GUIDE_LIST} from 'content';
-import type {Guide} from 'content';
+import {GUIDE_LIST, getGuide, resolveGuide} from 'content';
+import type {Guide, GuideAvailability} from 'content';
 import {useEffect, useMemo, useState} from 'react';
 
 type GuidesState = {
     guides: Guide[];
     disabledGuideIDs: string[];
+    canSeeAdminGuides: boolean;
     loading: boolean;
 };
 
-export function useAvailableGuides(): GuidesState {
-    const [disabledGuideIDs, setDisabledGuideIDs] = useState<string[]>([]);
-    const [loading, setLoading] = useState(true);
+type Availability = GuideAvailability & {
+    disabledGuideIDs: string[];
+    loading: boolean;
+};
+
+const UNKNOWN: Availability = {
+    disabledGuideIDs: [],
+    activePluginIDs: null,
+    canSeeAdminGuides: false,
+    ignorePluginRequirements: false,
+    loading: true,
+};
+
+function useAvailability(): Availability {
+    const [availability, setAvailability] = useState<Availability>(UNKNOWN);
 
     useEffect(() => {
         let cancelled = false;
         fetchPluginSettings().
             then((settings) => {
                 if (!cancelled) {
-                    setDisabledGuideIDs(settings.disabledGuideIDs);
+                    setAvailability({
+                        disabledGuideIDs: settings.disabledGuideIDs,
+                        activePluginIDs: settings.activePluginIDs,
+                        canSeeAdminGuides: settings.isAdmin || settings.testMode,
+                        ignorePluginRequirements: settings.testMode,
+                        loading: false,
+                    });
                 }
             }).
             catch(() => {
                 if (!cancelled) {
-                    setDisabledGuideIDs([]);
-                }
-            }).
-            finally(() => {
-                if (!cancelled) {
-                    setLoading(false);
+                    setAvailability({...UNKNOWN, loading: false});
                 }
             });
         return () => {
@@ -39,14 +53,38 @@ export function useAvailableGuides(): GuidesState {
         };
     }, []);
 
-    const guides = useMemo(
-        () => GUIDE_LIST.filter((guide) => !disabledGuideIDs.includes(guide.id)),
-        [disabledGuideIDs],
-    );
-
-    return {guides, disabledGuideIDs, loading};
+    return availability;
 }
 
-export function isGuideEnabled(guideID: string, disabledGuideIDs: string[]) {
-    return !disabledGuideIDs.includes(guideID);
+/**
+ * Guides the current user should see, with unavailable modules already removed
+ * so callers can use `guide.modules` without repeating the filtering.
+ */
+export function useAvailableGuides(): GuidesState {
+    const {disabledGuideIDs, activePluginIDs, canSeeAdminGuides, ignorePluginRequirements, loading} = useAvailability();
+
+    const guides = useMemo(
+        () => GUIDE_LIST.
+            filter((guide) => !disabledGuideIDs.includes(guide.id)).
+            map((guide) => resolveGuide(guide, {activePluginIDs, canSeeAdminGuides, ignorePluginRequirements})).
+            filter((guide): guide is Guide => Boolean(guide)),
+        [activePluginIDs, canSeeAdminGuides, disabledGuideIDs, ignorePluginRequirements],
+    );
+
+    return {guides, disabledGuideIDs, canSeeAdminGuides, loading};
+}
+
+/** Single-guide equivalent of useAvailableGuides, for the guide routes. */
+export function useAvailableGuide(guideId: string): {guide: Guide | undefined; loading: boolean} {
+    const {disabledGuideIDs, activePluginIDs, canSeeAdminGuides, ignorePluginRequirements, loading} = useAvailability();
+
+    const guide = useMemo(() => {
+        const found = getGuide(guideId);
+        if (!found || disabledGuideIDs.includes(found.id)) {
+            return undefined;
+        }
+        return resolveGuide(found, {activePluginIDs, canSeeAdminGuides, ignorePluginRequirements});
+    }, [activePluginIDs, canSeeAdminGuides, disabledGuideIDs, ignorePluginRequirements, guideId]);
+
+    return {guide, loading};
 }

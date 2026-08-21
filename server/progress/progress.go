@@ -256,13 +256,21 @@ func (s *Store) EverCompletedCount(guideID string) (int64, error) {
 	return n, nil
 }
 
-// Handler serves progress HTTP APIs under /api/v1/progress.
-type Handler struct {
-	store *Store
+// Policy exposes the plugin configuration decisions the handler must honour,
+// so this package does not need to reach into plugin configuration itself.
+type Policy interface {
+	GuideEnabled(guideID string) bool
+	ProfileBadgesEnabled() bool
 }
 
-func NewHandler(store *Store) *Handler {
-	return &Handler{store: store}
+// Handler serves progress HTTP APIs under /api/v1/progress.
+type Handler struct {
+	store  *Store
+	policy Policy
+}
+
+func NewHandler(store *Store, policy Policy) *Handler {
+	return &Handler{store: store, policy: policy}
 }
 
 func userIDFromRequest(r *http.Request) string {
@@ -328,6 +336,14 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 
 		case http.MethodPut:
+			// Reads of a guide disabled after the fact stay allowed so an
+			// open tab degrades quietly, but writes must not record progress
+			// for a guide an admin has turned off.
+			if !h.policy.GuideEnabled(guideID) {
+				writeError(w, http.StatusForbidden, "guide is not available")
+				return
+			}
+
 			var req PutRequest
 			if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 				writeError(w, http.StatusBadRequest, "invalid json")
@@ -351,9 +367,17 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // serveUserCompletions handles GET /api/v1/users/{userId}/completions.
+//
+// This reports another user's finished guides so profile popovers can show
+// badges, so turning badges off has to close the endpoint too. Otherwise the
+// setting only hides the UI while the data stays readable.
 func (h *Handler) serveUserCompletions(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+	if !h.policy.ProfileBadgesEnabled() {
+		writeError(w, http.StatusForbidden, "profile badges are disabled")
 		return
 	}
 

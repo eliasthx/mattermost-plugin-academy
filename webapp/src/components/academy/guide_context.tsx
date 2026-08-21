@@ -2,8 +2,9 @@
 // See LICENSE.txt for license information.
 
 import {fetchGuideProgress, saveGuideProgress} from 'client/progress';
-import {getGuide, routes} from 'content';
+import {routes} from 'content';
 import type {Guide} from 'content/types';
+import {useAvailableGuide} from 'hooks/use_available_guides';
 import React, {useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import {useHistory, useParams} from 'react-router-dom';
 
@@ -27,7 +28,10 @@ export function useGuideContext() {
 
 export function GuideProvider({children}: {children: React.ReactNode}) {
     const {guideId} = useParams<{guideId: string}>();
-    const guide = getGuide(guideId);
+
+    // Modules the user cannot use are already stripped, so everything below
+    // (progress, navigation, completion) operates on the visible curriculum.
+    const {guide} = useAvailableGuide(guideId);
     const history = useHistory();
     const [completed, setCompleted] = useState<Set<string>>(new Set());
     const [loading, setLoading] = useState(true);
@@ -60,6 +64,8 @@ export function GuideProvider({children}: {children: React.ReactNode}) {
         if (!guide) {
             return;
         }
+
+        // Only the visible modules, so a user missing a plugin can still finish.
         const moduleIds = guide.modules.map((m) => m.id);
         const rec = await saveGuideProgress(guide.id, ids, moduleIds);
         setCompleted(new Set(rec.completedModuleIds || ids));

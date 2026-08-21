@@ -13,7 +13,7 @@ import ModulePage from 'components/academy/module_page';
 import AcademyAccessDenied from 'components/academy_access_denied';
 import {LOADING_TEXTURE_URL} from 'components/icons';
 import {useAcademyAccess} from 'hooks/use_academy_access';
-import {isGuideEnabled, useAvailableGuides} from 'hooks/use_available_guides';
+import {useAvailableGuides} from 'hooks/use_available_guides';
 
 import './app.scss';
 
@@ -44,11 +44,11 @@ function GuideRoutes() {
 
 function GuideGate({
     children,
-    disabledGuideIDs,
+    availableGuideIDs,
     loading,
 }: {
     children: React.ReactNode;
-    disabledGuideIDs: string[];
+    availableGuideIDs: Set<string>;
     loading: boolean;
 }) {
     return (
@@ -62,7 +62,11 @@ function GuideGate({
                 if (loading) {
                     return null;
                 }
-                if (!isGuideEnabled(guideID, disabledGuideIDs)) {
+
+                // Covers admin-disabled guides and guides whose required
+                // plugins are not running, so a direct URL cannot bypass
+                // the catalog.
+                if (!availableGuideIDs.has(guideID)) {
                     return <Redirect to={routes.catalog}/>;
                 }
                 return children;
@@ -79,7 +83,11 @@ const ProductRouter = BrowserRouter as unknown as React.ComponentType<{
 
 export default function App() {
     const access = useAcademyAccess();
-    const {disabledGuideIDs, loading: guidesLoading} = useAvailableGuides();
+    const {guides, loading: guidesLoading} = useAvailableGuides();
+    const availableGuideIDs = React.useMemo(
+        () => new Set(guides.map((guide) => guide.id)),
+        [guides],
+    );
 
     if (access === 'denied') {
         return (
@@ -106,7 +114,7 @@ export default function App() {
                         component={CatalogPage}
                     />
                     <GuideGate
-                        disabledGuideIDs={disabledGuideIDs}
+                        availableGuideIDs={availableGuideIDs}
                         loading={guidesLoading}
                     >
                         <GuideRoutes/>

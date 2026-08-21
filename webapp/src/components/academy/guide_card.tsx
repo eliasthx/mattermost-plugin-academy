@@ -1,7 +1,7 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {routes} from 'content';
+import {guideMinutes, routes} from 'content';
 import type {Guide} from 'content/types';
 import React from 'react';
 import {Link} from 'react-router-dom';
@@ -19,6 +19,7 @@ type GuideCardProps = {
 function GuideCardBody({guide, done, cta, compact}: GuideCardProps) {
     const pct = guide.modules.length ? Math.round((done / guide.modules.length) * 100) : 0;
     const iconSize = compact ? 22 : 32;
+    const minutes = guideMinutes(guide);
 
     return (
         <>
@@ -30,6 +31,15 @@ function GuideCardBody({guide, done, cta, compact}: GuideCardProps) {
                     />
                 </span>
                 <h2 className='academy-card__title'>{guide.title}</h2>
+                {minutes > 0 ? (
+                    <span className='academy-card__time'>
+                        <AcademyIcon
+                            name='clock-outline'
+                            size={14}
+                        />
+                        {`~${minutes} min`}
+                    </span>
+                ) : null}
             </div>
             <p className='academy-card__desc'>{guide.description}</p>
             <div className='academy-card__footer'>

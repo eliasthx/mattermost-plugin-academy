@@ -1,10 +1,12 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {PLUGIN_IDS} from 'content/plugins';
 import type {Guide} from 'content/types';
 
 const aiQuickStart: Guide = {
     id: 'ai-quick-start',
+    requiresPlugins: [PLUGIN_IDS.agents],
     title: 'AI Quick Start',
     heroTitle: 'Put AI to work inside Mattermost',
     subtitle: 'Seven focused guides for AI chat, summaries, calls, search, rewrites, and custom agents. Accelerate your workflows and decision making with full operational context.',
@@ -63,7 +65,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-threads-step1.svg',
-                        alt: '',
+                        alt: 'A message about a failed staging deployment with the hover actions toolbar showing',
                     },
                 },
                 {
@@ -72,7 +74,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-threads-step2.svg',
-                        alt: '',
+                        alt: 'AI actions menu listing Summarize Thread, Find action items, Find open questions, and React for me',
                     },
                 },
                 {
@@ -104,7 +106,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-channels-step2.svg',
-                        alt: '',
+                        alt: 'A New Messages divider in a channel with an Ask AI button beside it',
                     },
                 },
                 {
@@ -115,6 +117,7 @@ const aiQuickStart: Guide = {
         },
         {
             id: 'summarize-calls',
+            requiresPlugins: [PLUGIN_IDS.calls],
             navTitle: 'Summarize Calls',
             icon: 'video-outline',
             minutes: 2,
@@ -127,7 +130,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-calls-step1.svg',
-                        alt: '',
+                        alt: 'An active call at 00:46 with a red REC indicator, four participants, and an End button',
                     },
                 },
                 {
@@ -136,13 +139,13 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'summarize-calls-step2.svg',
-                        alt: '',
+                        alt: 'A Calls bot post with a transcription file attached and a Create meeting summary action above it',
                     },
                 },
                 {
                     title: 'Refine and then post the summary',
                     description: 'Refine your summary by typing in the Agents pane. When ready, select <strong>Post summary</strong> to share the refined summary with all users in the original call thread.',
-                    tip: 'info Recording and transcription must be enabled by your System Admin to use this feature.',
+                    tip: 'Recording and transcription must be enabled by your System Admin to use this feature.',
                 },
             ],
         },
@@ -215,7 +218,7 @@ const aiQuickStart: Guide = {
                     media: {
                         type: 'svg',
                         file: 'custom-agents-step2.svg',
-                        alt: '',
+                        alt: 'A Create agent form filled in with the username secops-bot, an AI service, and custom instructions',
                     },
                 },
             ],

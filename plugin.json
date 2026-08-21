@@ -1,11 +1,11 @@
 {
     "id": "com.mattermost.academy",
     "name": "Mattermost Academy",
-    "description": "Interactive learning guides for Mattermost end users.",
+    "description": "Interactive learning guides for Mattermost end-users and admins.",
     "homepage_url": "https://github.com/esethna/mm-academy",
     "support_url": "https://github.com/esethna/mm-academy/issues",
     "icon_path": "assets/plugin-icon.png",
-    "min_server_version": "6.2.1",
+    "min_server_version": "10.3.0",
     "server": {
         "executables": {
             "linux-amd64": "server/dist/plugin-linux-amd64",
@@ -19,7 +19,7 @@
         "bundle_path": "webapp/dist/main.js"
     },
     "settings_schema": {
-        "header": "Interactive learning guides for Mattermost end users.",
+        "header": "Interactive learning guides for Mattermost end-users and admins.",
         "footer": "",
         "sections": [
             {
