@@ -5,7 +5,7 @@ import type {Guide} from 'content/types';
 
 const mattermostBasics: Guide = {
     id: 'mattermost-basics',
-    title: 'Mattermost Basics',
+    title: 'Messaging Basics & Productivity Tips',
     heroTitle: 'Learn the core of daily Mattermost',
     subtitle: 'Seven modules covering channels and your sidebar, threads, notifications, composing, formatting, finding messages again, and the shortcuts that make all of it fast.',
     description: 'Channels, threads, notifications, composing, formatting, and shortcuts — the skills you use every day.',

@@ -17,7 +17,7 @@ type Filter = 'all' | Audience;
 
 const ALL_FILTERS: Array<[Filter, string]> = [
     ['all', 'All'],
-    ['end-user', 'End users'],
+    ['end-user', 'End-users'],
     ['admin', 'Admins'],
 ];
 
@@ -53,11 +53,6 @@ export default function CatalogPage() {
             cancelled = true;
         };
     }, []);
-
-    const filters = useMemo(
-        () => ALL_FILTERS.filter(([id]) => id !== 'admin' || canSeeAdminGuides),
-        [canSeeAdminGuides],
-    );
 
     const guides = useMemo(() => {
         if (filter === 'all') {
@@ -148,25 +143,27 @@ export default function CatalogPage() {
                 </header>
 
                 <div className='academy-catalog__content'>
-                    <div className='academy-catalog__toolbar'>
-                        <div className='academy-catalog__label'>{'Available guides'}</div>
-                        <div
-                            className='academy-catalog__filters'
-                            role='group'
-                            aria-label='Filter guides by audience'
-                        >
-                            {filters.map(([id, label]) => (
-                                <button
-                                    key={id}
-                                    type='button'
-                                    className={`academy-catalog__chip${filter === id ? ' academy-catalog__chip--active' : ''}`}
-                                    onClick={() => setFilter(id)}
-                                >
-                                    {label}
-                                </button>
-                            ))}
+                    {canSeeAdminGuides && (
+                        <div className='academy-catalog__toolbar'>
+                            <div className='academy-catalog__label'>{'Available guides'}</div>
+                            <div
+                                className='academy-catalog__filters'
+                                role='group'
+                                aria-label='Filter guides by audience'
+                            >
+                                {ALL_FILTERS.map(([id, label]) => (
+                                    <button
+                                        key={id}
+                                        type='button'
+                                        className={`academy-catalog__chip${filter === id ? ' academy-catalog__chip--active' : ''}`}
+                                        onClick={() => setFilter(id)}
+                                    >
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {guides.length === 0 ? (
                         <p className='academy-catalog__empty'>{'No guides match this filter.'}</p>

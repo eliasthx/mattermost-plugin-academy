@@ -491,12 +491,17 @@
     }
 
     &__heading {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-areas:
+            'icon . time'
+            'title title title';
         gap: 12px;
+        align-items: start;
     }
 
     &__icon {
+        grid-area: icon;
         flex: 0 0 auto;
         width: 56px;
         height: 56px;
@@ -509,10 +514,23 @@
     }
 
     &__title {
+        grid-area: title;
         margin: 0;
         font-size: 16px;
         font-weight: 700;
         color: var(--center-channel-color);
+    }
+
+    &__time {
+        grid-area: time;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 16px;
+        color: rgba(var(--center-channel-color-rgb), 0.64);
+        white-space: nowrap;
     }
 
     &--compact {
@@ -520,7 +538,7 @@
         padding: 12px 14px;
 
         .academy-card__heading {
-            flex-direction: row;
+            grid-template-areas: 'icon title time';
             align-items: center;
             gap: 10px;
         }

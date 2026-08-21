@@ -11,7 +11,7 @@ Short, interactive walk-through guides that help end-users and admins get more d
 - **Interactive guides**: Step-by-step modules with screenshots and in-product walk-throughs
 - **Badges**: Earn a badge when you finish a guide; optionally show badges on user profiles
 - **Progress tracking**: Per-guide and module completion, with continue / review flows
-- **Audience filters**: Browse guides for end users, admins, or everyone
+- **Audience filters**: Browse guides for end-users, admins, or everyone
 - **Access controls**: Admins choose who can use Academy and which guides are available
 - **Completion reporting**: System Console charts and export for guide completion over time
 - **Deep integration**: Entry points in the product switcher, apps bar, help menu, and `/learn` slash command

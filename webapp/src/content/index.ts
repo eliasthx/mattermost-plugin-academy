@@ -34,6 +34,11 @@ export function getGuide(guideId: string): Guide | undefined {
     return GUIDES[guideId];
 }
 
+/** Sum of each module's minute estimate. */
+export function guideMinutes(guide: Guide): number {
+    return guide.modules.reduce((sum, mod) => sum + mod.minutes, 0);
+}
+
 /**
  * A null `activePluginIDs` means the server could not determine what is
  * running, so nothing is filtered. An empty array means nothing is active.

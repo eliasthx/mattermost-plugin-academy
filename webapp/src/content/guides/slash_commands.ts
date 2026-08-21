@@ -12,7 +12,7 @@ const slashCommands: Guide = {
     subtitle: 'Drive Mattermost from the message box: run commands without leaving the conversation, and send messages at the moment they land best.',
     description: 'Slash commands and scheduled messages — drive Mattermost without leaving the message box.',
     icon: 'console',
-    audiences: ['end-user', 'admin'],
+    audiences: ['end-user'],
     doneTitle: 'You\'re driving Mattermost from the keyboard',
     doneSummary: 'You\'ve covered slash command basics, the built-in commands worth memorizing, and scheduled messages.',
     doneLinks: [

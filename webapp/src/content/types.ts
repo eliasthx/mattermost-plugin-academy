@@ -76,7 +76,7 @@ export type Module = {
     id: string;
     navTitle: string;
     icon: string;
-    minutes?: number;
+    minutes: number;
     title: string;
 
     /** Rich. */

@@ -20,6 +20,7 @@ import CheckIcon from '@mattermost/compass-icons/components/check';
 import CheckCircleIcon from '@mattermost/compass-icons/components/check-circle';
 import CheckCircleOutlineIcon from '@mattermost/compass-icons/components/check-circle-outline';
 import ChevronRightIcon from '@mattermost/compass-icons/components/chevron-right';
+import ClockOutlineIcon from '@mattermost/compass-icons/components/clock-outline';
 import ClockSendOutlineIcon from '@mattermost/compass-icons/components/clock-send-outline';
 import CodeTagsIcon from '@mattermost/compass-icons/components/code-tags';
 import CogOutlineIcon from '@mattermost/compass-icons/components/cog-outline';
@@ -77,6 +78,7 @@ const ICONS: Record<string, IconComponent> = {
     tune: TuneIcon,
     console: ConsoleIcon,
     'format-list-bulleted': FormatListBulletedIcon,
+    'clock-outline': ClockOutlineIcon,
     'clock-send-outline': ClockSendOutlineIcon,
     'playlist-check': PlaylistCheckIcon,
     'lightning-bolt-outline': LightningBoltOutlineIcon,

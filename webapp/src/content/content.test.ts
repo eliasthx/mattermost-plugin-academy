@@ -5,7 +5,7 @@ import {existsSync} from 'fs';
 import path from 'path';
 
 import {ICON_NAMES} from 'components/icons';
-import {GUIDE_LIST} from 'content';
+import {GUIDE_LIST, guideMinutes} from 'content';
 import type {Guide, Module} from 'content/types';
 
 const ASSET_ROOT = path.resolve(__dirname, '../../../public/guides/assets');
@@ -89,6 +89,15 @@ describe('guide registry', () => {
     it('gives every guide at least one module', () => {
         GUIDE_LIST.forEach((guide) => {
             expect(guide.modules.length).toBeGreaterThan(0);
+        });
+    });
+
+    it('gives every module a positive minute estimate', () => {
+        allModules().forEach(({mod}) => {
+            expect(mod.minutes).toBeGreaterThan(0);
+        });
+        GUIDE_LIST.forEach((guide) => {
+            expect(guideMinutes(guide)).toBeGreaterThan(0);
         });
     });
 
