@@ -11,8 +11,8 @@ const GUIDE_ID = /^[a-z0-9_-]+$/;
 /**
  * Material icon ligatures leaked into copy when the guides were ported from
  * HTML: 'keyboard_arrow_up' and a leading 'info ' both rendered as literal
- * words. Hrefs are stripped first because admin console paths legitimately
- * contain underscores.
+ * words. Hrefs and <strong> literals are stripped first because admin console
+ * paths and shell commands legitimately contain underscores.
  */
 const LIGATURE = /\b[a-z]+_[a-z_]+\b/;
 const LIGATURE_PREFIX = /^(info|warning|error|check|lightbulb|help)\s/;
@@ -54,6 +54,15 @@ function proseOf(guide: Guide): Array<{where: string; text: string}> {
 
 function withoutHrefs(text: string): string {
     return text.replace(/<a\s+href="[^"]*"\s*>/gi, '');
+}
+
+/**
+ * Commands, API parameters, and other literals the reader types are wrapped in
+ * <strong> by convention, and those legitimately contain underscores. Icon
+ * ligatures leaked into bare running prose, which is what this leaves behind.
+ */
+function withoutLiterals(text: string): string {
+    return text.replace(/<strong>[\s\S]*?<\/strong>/gi, '');
 }
 
 function allModules(): Array<{guide: Guide; mod: Module}> {
@@ -100,7 +109,7 @@ describe('guide icons', () => {
 describe('guide copy', () => {
     it('contains no leaked icon ligatures', () => {
         GUIDE_LIST.flatMap(proseOf).forEach(({where, text}) => {
-            expect(`${where}: ${withoutHrefs(text)}`).not.toMatch(LIGATURE);
+            expect(`${where}: ${withoutLiterals(withoutHrefs(text))}`).not.toMatch(LIGATURE);
         });
     });
 
