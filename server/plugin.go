@@ -125,25 +125,39 @@ func (p *Plugin) userIsAdmin(userID string) bool {
 }
 
 // activePluginIDs lists plugins that are currently running, used by the webapp
-// to hide guides for features that aren't available. GetPlugins already
-// excludes installed-but-disabled plugins.
+// to hide guides for features that aren't available.
 //
-// Fails open: an error returns nil, and the webapp treats an absent list as
-// "no filtering" so a lookup failure can never hide a guide.
+// Fails open: an error listing plugins returns nil, and the webapp treats an
+// absent list as "no filtering" so a lookup failure cannot hide every guide.
 func (p *Plugin) activePluginIDs() []string {
 	if p.API == nil {
 		return nil
 	}
 	manifests, appErr := p.API.GetPlugins()
 	if appErr != nil {
-		p.API.LogWarn("failed to list active plugins", "err", appErr.Error())
+		p.API.LogWarn("failed to list plugins", "err", appErr.Error())
 		return nil
 	}
 	ids := make([]string, 0, len(manifests))
 	for _, m := range manifests {
-		if m != nil {
-			ids = append(ids, m.Id)
+		if m == nil || !p.pluginIsRunning(m.Id) {
+			continue
 		}
+		ids = append(ids, m.Id)
 	}
 	return ids
+}
+
+// pluginIsRunning confirms a plugin is actually up. GetPlugins is documented
+// as returning active plugins but in practice also reports installed ones that
+// are disabled, so the manifest alone is not enough to go on.
+//
+// An unreadable status counts as not running: showing a guide for a feature
+// the user does not have is worse than omitting one.
+func (p *Plugin) pluginIsRunning(pluginID string) bool {
+	status, appErr := p.API.GetPluginStatus(pluginID)
+	if appErr != nil || status == nil {
+		return false
+	}
+	return status.State == model.PluginStateRunning
 }

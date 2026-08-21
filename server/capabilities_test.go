@@ -13,18 +13,51 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+func statusOf(state int) *model.PluginStatus {
+	return &model.PluginStatus{State: state}
+}
+
 func TestActivePluginIDs(t *testing.T) {
-	t.Run("returns ids of active plugins", func(t *testing.T) {
+	t.Run("returns ids of running plugins", func(t *testing.T) {
 		api := &plugintest.API{}
 		api.On("GetPlugins").Return([]*model.Manifest{
 			{Id: "playbooks"},
 			{Id: "focalboard"},
 		}, nil)
+		api.On("GetPluginStatus", "playbooks").Return(statusOf(model.PluginStateRunning), nil)
+		api.On("GetPluginStatus", "focalboard").Return(statusOf(model.PluginStateRunning), nil)
 
 		p := &Plugin{}
 		p.SetAPI(api)
 
 		assert.Equal(t, []string{"playbooks", "focalboard"}, p.activePluginIDs())
+	})
+
+	t.Run("excludes installed plugins that are not running", func(t *testing.T) {
+		api := &plugintest.API{}
+		api.On("GetPlugins").Return([]*model.Manifest{
+			{Id: "playbooks"},
+			{Id: "mattermost-ai"},
+		}, nil)
+		api.On("GetPluginStatus", "playbooks").Return(statusOf(model.PluginStateRunning), nil)
+		api.On("GetPluginStatus", "mattermost-ai").Return(statusOf(model.PluginStateNotRunning), nil)
+
+		p := &Plugin{}
+		p.SetAPI(api)
+
+		assert.Equal(t, []string{"playbooks"}, p.activePluginIDs())
+	})
+
+	t.Run("excludes a plugin whose status cannot be read", func(t *testing.T) {
+		api := &plugintest.API{}
+		api.On("GetPlugins").Return([]*model.Manifest{{Id: "focalboard"}}, nil)
+		api.On("GetPluginStatus", "focalboard").
+			Return(nil, model.NewAppError("GetPluginStatus", "boom", nil, "", http.StatusInternalServerError))
+
+		p := &Plugin{}
+		p.SetAPI(api)
+
+		assert.Empty(t, p.activePluginIDs())
 	})
 
 	t.Run("fails open when the lookup errors", func(t *testing.T) {
@@ -47,6 +80,7 @@ func TestActivePluginIDs(t *testing.T) {
 	t.Run("skips nil manifests", func(t *testing.T) {
 		api := &plugintest.API{}
 		api.On("GetPlugins").Return([]*model.Manifest{nil, {Id: "mattermost-ai"}}, nil)
+		api.On("GetPluginStatus", "mattermost-ai").Return(statusOf(model.PluginStateRunning), nil)
 
 		p := &Plugin{}
 		p.SetAPI(api)
