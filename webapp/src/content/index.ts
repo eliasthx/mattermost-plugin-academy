@@ -3,7 +3,7 @@
 
 import aiQuickStart from 'content/guides/ai_quick_start';
 import slashCommands from 'content/guides/slash_commands';
-import type {Guide} from 'content/types';
+import type {Guide, Module} from 'content/types';
 import manifest from 'manifest';
 
 export type {Guide, Module, Audience, Step} from 'content/types';
@@ -19,6 +19,45 @@ export const GUIDE_LIST: Guide[] = Object.values(GUIDES);
 
 export function getGuide(guideId: string): Guide | undefined {
     return GUIDES[guideId];
+}
+
+/**
+ * A null `activePluginIDs` means the server could not determine what is
+ * running, so nothing is filtered. An empty array means nothing is active.
+ */
+export function meetsPluginRequirements(
+    requiresPlugins: string[] | undefined,
+    activePluginIDs: string[] | null,
+): boolean {
+    if (!requiresPlugins || requiresPlugins.length === 0) {
+        return true;
+    }
+    if (activePluginIDs === null) {
+        return true;
+    }
+    return requiresPlugins.every((id) => activePluginIDs.includes(id));
+}
+
+export function visibleModules(guide: Guide, activePluginIDs: string[] | null): Module[] {
+    return guide.modules.filter((mod) => meetsPluginRequirements(mod.requiresPlugins, activePluginIDs));
+}
+
+/**
+ * Returns the guide with unavailable modules removed, or undefined when the
+ * guide itself is unavailable or has nothing left to show.
+ */
+export function resolveGuide(guide: Guide, activePluginIDs: string[] | null): Guide | undefined {
+    if (!meetsPluginRequirements(guide.requiresPlugins, activePluginIDs)) {
+        return undefined;
+    }
+    const modules = visibleModules(guide, activePluginIDs);
+    if (modules.length === 0) {
+        return undefined;
+    }
+    if (modules.length === guide.modules.length) {
+        return guide;
+    }
+    return {...guide, modules};
 }
 
 export function guideAssetURL(guideId: string, file: string) {

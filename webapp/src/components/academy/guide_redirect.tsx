@@ -2,17 +2,21 @@
 // See LICENSE.txt for license information.
 
 import {fetchGuideProgress} from 'client/progress';
-import {getGuide, routes} from 'content';
+import {routes} from 'content';
+import {useAvailableGuide} from 'hooks/use_available_guides';
 import React, {useEffect, useState} from 'react';
 import {Redirect, useParams} from 'react-router-dom';
 
 /** Sends `/guides/:guideId` to the first incomplete module (or done). */
 export default function GuideRedirect() {
     const {guideId} = useParams<{guideId: string}>();
-    const guide = getGuide(guideId);
+    const {guide, loading} = useAvailableGuide(guideId);
     const [target, setTarget] = useState<string | null>(null);
 
     useEffect(() => {
+        if (loading) {
+            return undefined;
+        }
         if (!guide) {
             setTarget(routes.catalog);
             return undefined;
@@ -39,8 +43,11 @@ export default function GuideRedirect() {
         return () => {
             cancelled = true;
         };
-    }, [guide]);
+    }, [guide, loading]);
 
+    if (loading) {
+        return null;
+    }
     if (!guide) {
         return <Redirect to={routes.catalog}/>;
     }

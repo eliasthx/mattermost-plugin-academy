@@ -37,6 +37,9 @@ export type Module = {
     summary: string;
     steps: Step[];
     commandGroups?: CommandGroup[];
+
+    /** Plugin IDs that must all be active for this module to be shown. */
+    requiresPlugins?: string[];
 };
 
 export type DoneLink = {
@@ -56,4 +59,7 @@ export type Guide = {
     doneTitle: string;
     doneSummary: string;
     doneLinks: DoneLink[];
+
+    /** Plugin IDs that must all be active for this guide to be shown. */
+    requiresPlugins?: string[];
 };
