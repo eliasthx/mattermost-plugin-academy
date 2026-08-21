@@ -24,15 +24,45 @@
 }
 
 .AcademyUserAccessSetting__help {
+    margin-top: 8px;
     font-size: 12px;
     font-weight: 400;
     line-height: 16px;
     color: rgba(63, 67, 80, 0.72);
 }
 
+%academy-radio {
+    appearance: none;
+    display: grid;
+    place-content: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin: 0;
+    border: 1px solid rgba(var(--sys-center-channel-color-rgb, var(--center-channel-color-rgb)), 0.24);
+    border-radius: 50%;
+    cursor: pointer;
+
+    &::before {
+        content: '';
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--sys-button-bg, var(--button-bg));
+        transform: scale(0);
+        transition: 200ms transform ease-in-out;
+    }
+
+    &:checked {
+        border-color: var(--sys-button-bg, var(--button-bg));
+
+        &::before {
+            transform: scale(1);
+        }
+    }
+}
+
 .AcademyUserAccessSetting__radios {
-    margin-top: 24px;
-    margin-bottom: 0;
+    margin: 0;
     display: grid;
     grid-template-columns: auto 1fr;
     column-gap: 8px;
@@ -40,33 +70,7 @@
     align-items: center;
 
     input[type='radio'] {
-        appearance: none;
-        display: grid;
-        place-content: center;
-        width: 1.6rem;
-        height: 1.6rem;
-        margin: 0;
-        border: 1px solid rgba(var(--sys-center-channel-color-rgb, var(--center-channel-color-rgb)), 0.24);
-        border-radius: 50%;
-        cursor: pointer;
-
-        &::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--sys-button-bg, var(--button-bg));
-            transform: scale(0);
-            transition: 200ms transform ease-in-out;
-        }
-
-        &:checked {
-            border-color: var(--sys-button-bg, var(--button-bg));
-
-            &::before {
-                transform: scale(1);
-            }
-        }
+        @extend %academy-radio;
     }
 
     label {
@@ -76,6 +80,33 @@
         line-height: 20px;
         color: var(--sys-center-channel-color, var(--center-channel-color));
         cursor: pointer;
+    }
+}
+
+/* Mattermost BooleanSetting: true/false on one row, 8px to the label, 24px between options. */
+.AcademyUserAccessSetting__bool {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 24px;
+    row-gap: 8px;
+    margin: 0;
+
+    label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        width: fit-content;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 20px;
+        color: var(--sys-center-channel-color, var(--center-channel-color));
+        cursor: pointer;
+    }
+
+    input[type='radio'] {
+        @extend %academy-radio;
     }
 }
 
@@ -97,14 +128,12 @@
 }
 
 .AcademyUserAccessSetting__guides {
-    margin-top: 24px;
+    margin: 0;
     display: grid;
     grid-template-columns: auto 1fr;
     column-gap: 8px;
-    row-gap: 8px;
-
-    /* Baseline, not center: a label may wrap to a second requirement line. */
-    align-items: baseline;
+    row-gap: 16px;
+    align-items: start;
 
     input[type='checkbox'] {
         position: relative;
@@ -114,6 +143,15 @@
         margin: 0;
         accent-color: var(--sys-button-bg, var(--button-bg));
         cursor: pointer;
+
+        &:disabled {
+            cursor: not-allowed;
+            opacity: 0.56;
+        }
+    }
+
+    input[type='checkbox']:disabled + label {
+        cursor: default;
     }
 
     label {
@@ -126,10 +164,26 @@
     }
 }
 
-.AcademyUserAccessSetting__requires {
+.AcademyUserAccessSetting__guideSummary {
     display: block;
+    margin-top: 4px;
     font-size: 12px;
     font-weight: 400;
     line-height: 16px;
     color: rgba(63, 67, 80, 0.72);
+}
+
+.AcademyUserAccessSetting__requires {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+    color: rgba(63, 67, 80, 0.72);
+
+    svg {
+        display: inline-block;
+        vertical-align: -2px;
+        margin-right: 4px;
+    }
 }

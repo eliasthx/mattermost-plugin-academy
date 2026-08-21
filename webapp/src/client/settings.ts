@@ -8,10 +8,12 @@ export type PluginSettings = {
     userAllowed: boolean;
     disabledGuideIDs: string[];
     isAdmin: boolean;
-    showAdminGuidesToAllUsers: boolean;
 
     /** Null means the server could not determine it; treat as "no filtering". */
     activePluginIDs: string[] | null;
+
+    /** When true, show plugin-gated content and admin-audience guides to everyone. */
+    testMode: boolean;
 };
 
 export async function fetchPluginSettings(): Promise<PluginSettings> {
@@ -28,7 +30,7 @@ export async function fetchPluginSettings(): Promise<PluginSettings> {
         userAllowed: data.userAllowed !== false,
         disabledGuideIDs: Array.isArray(data.disabledGuideIDs) ? data.disabledGuideIDs : [],
         isAdmin: data.isAdmin === true,
-        showAdminGuidesToAllUsers: data.showAdminGuidesToAllUsers === true,
         activePluginIDs: Array.isArray(data.activePluginIDs) ? data.activePluginIDs : null,
+        testMode: data.testMode === true,
     };
 }

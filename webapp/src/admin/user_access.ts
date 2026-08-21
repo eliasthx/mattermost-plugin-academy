@@ -14,8 +14,8 @@ export type UserAccessConfig = {
     teamIDs: string[];
     disabledGuideIDs: string[];
 
-    /** Opens admin-audience guides to everyone. Off by default. */
-    showAdminGuidesToAllUsers: boolean;
+    /** Show plugin-gated content and admin-audience guides to everyone. Off by default. */
+    testMode: boolean;
 };
 
 export const DEFAULT_USER_ACCESS_CONFIG: UserAccessConfig = {
@@ -23,7 +23,7 @@ export const DEFAULT_USER_ACCESS_CONFIG: UserAccessConfig = {
     userIDs: [],
     teamIDs: [],
     disabledGuideIDs: [],
-    showAdminGuidesToAllUsers: false,
+    testMode: false,
 };
 
 function emptyUserAccessConfig(): UserAccessConfig {
@@ -51,6 +51,6 @@ export function normalizeUserAccessConfig(value: unknown): UserAccessConfig {
         disabledGuideIDs: Array.isArray(raw.disabledGuideIDs) ?
             raw.disabledGuideIDs.filter((id): id is string => typeof id === 'string') :
             [],
-        showAdminGuidesToAllUsers: raw.showAdminGuidesToAllUsers === true,
+        testMode: raw.testMode === true,
     };
 }

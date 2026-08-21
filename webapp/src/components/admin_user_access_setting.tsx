@@ -3,6 +3,8 @@
 
 import React, {useMemo} from 'react';
 
+import EyeOffOutlineIcon from '@mattermost/compass-icons/components/eye-off-outline';
+
 import type {PluginCustomSettingsComponentProps} from 'types/mattermost-webapp';
 
 import {
@@ -42,8 +44,17 @@ function missingPlugins(guide: Guide, activePluginIDs: string[] | null): string[
     return guide.requiresPlugins.filter((id) => !activePluginIDs.includes(id));
 }
 
+function missingPluginsMessage(pluginIDs: string[]): string {
+    const names = pluginIDs.map(pluginLabel);
+    if (names.length === 1) {
+        return `Hidden: Needs ${names[0]} plugin enabled.`;
+    }
+    const last = names[names.length - 1];
+    return `Hidden: Needs ${names.slice(0, -1).join(', ')} and ${last} plugins enabled.`;
+}
+
 export default function AdminUserAccessSetting(props: Props) {
-    const activePluginIDs = useActivePluginIDs();
+    const {activePluginIDs} = useActivePluginIDs();
     const value = useMemo(
         () => forEditor(normalizeUserAccessConfig(props.value ?? DEFAULT_USER_ACCESS_CONFIG)),
         [props.value],
@@ -64,13 +75,57 @@ export default function AdminUserAccessSetting(props: Props) {
         update({...value, disabledGuideIDs: Array.from(disabled).sort()});
     };
 
+    const endUserGuides = GUIDE_LIST.filter((guide) => guide.audiences.includes('end-user'));
+    const adminGuides = GUIDE_LIST.filter((guide) => guide.audiences.includes('admin'));
+
+    const renderGuideList = (guides: Guide[], listId: string) => (
+        <div className='AcademyUserAccessSetting__guides'>
+            {guides.map((guide) => {
+                const enabled = !value.disabledGuideIDs.includes(guide.id);
+                const inputId = `${props.id}-guide-${listId}-${guide.id}`;
+                const missing = missingPlugins(guide, activePluginIDs);
+                const hidden = missing.length > 0;
+                return (
+                    <React.Fragment key={guide.id}>
+                        <input
+                            type='checkbox'
+                            id={inputId}
+                            checked={enabled}
+                            disabled={props.disabled || hidden}
+                            onChange={(e) => setGuideEnabled(guide.id, e.target.checked)}
+                        />
+                        <label htmlFor={inputId}>
+                            {guide.title}
+                            <span className='AcademyUserAccessSetting__guideSummary'>
+                                {guide.description}
+                            </span>
+                            {hidden && (
+                                <span className='AcademyUserAccessSetting__requires'>
+                                    <EyeOffOutlineIcon
+                                        size={14}
+                                        color='currentColor'
+                                        aria-hidden={true}
+                                    />
+                                    {`${missingPluginsMessage(missing)} `}
+                                    <a
+                                        href='/admin_console/plugins/plugin_management'
+                                        rel='noreferrer'
+                                    >
+                                        {'Manage plugins'}
+                                    </a>
+                                </span>
+                            )}
+                        </label>
+                    </React.Fragment>
+                );
+            })}
+        </div>
+    );
+
     return (
         <div className='AcademyUserAccessSetting'>
             <div className='AcademyUserAccessSetting__label'>{'Users'}</div>
             <div className='AcademyUserAccessSetting__control'>
-                <div className='AcademyUserAccessSetting__help'>
-                    {'Select who can open Academy and complete guides. Users who are not allowed will not see Academy in the product interface.'}
-                </div>
                 <div className='AcademyUserAccessSetting__radios'>
                     <input
                         type='radio'
@@ -91,6 +146,9 @@ export default function AdminUserAccessSetting(props: Props) {
                     />
                     <label htmlFor={`${props.id}-allow`}>{'Allow for selected users'}</label>
                 </div>
+                <div className='AcademyUserAccessSetting__help'>
+                    {'Select who can open Academy and complete guides. Users who are not allowed will not see Academy in the product interface.'}
+                </div>
                 {value.userAccessLevel === UserAccessLevel.Allow && (
                     <div className='AcademyUserAccessSetting__list'>
                         <div className='AcademyUserAccessSetting__listLabel'>{'Allow list'}</div>
@@ -107,61 +165,50 @@ export default function AdminUserAccessSetting(props: Props) {
                 )}
             </div>
 
-            <div className='AcademyUserAccessSetting__label'>{'Admin guides'}</div>
+            <div className='AcademyUserAccessSetting__label'>{'End-user Guides'}</div>
             <div className='AcademyUserAccessSetting__control'>
+                {renderGuideList(endUserGuides, 'end-user')}
                 <div className='AcademyUserAccessSetting__help'>
-                    {'Guides written for system admins walk through the System Console. They are hidden from everyone else unless you turn this on.'}
-                </div>
-                <div className='AcademyUserAccessSetting__guides'>
-                    <input
-                        type='checkbox'
-                        id={`${props.id}-admin-guides`}
-                        checked={value.showAdminGuidesToAllUsers}
-                        disabled={props.disabled}
-                        onChange={(e) => update({...value, showAdminGuidesToAllUsers: e.target.checked})}
-                    />
-                    <label htmlFor={`${props.id}-admin-guides`}>
-                        {'Show admin guides to all users'}
-                    </label>
+                    {'Choose which end-user guides are available in Academy.'}
                 </div>
             </div>
 
-            <div className='AcademyUserAccessSetting__label'>{'Guides'}</div>
+            <div className='AcademyUserAccessSetting__label'>{'Admin Guides'}</div>
             <div className='AcademyUserAccessSetting__control'>
+                {renderGuideList(adminGuides, 'admin')}
                 <div className='AcademyUserAccessSetting__help'>
-                    {'Choose which guides are available to users in Academy.'}
+                    {'Choose which admin guides are available in Academy. Admin guides are hidden from end-users unless Test Mode is enabled.'}
                 </div>
-                <div className='AcademyUserAccessSetting__guides'>
-                    {GUIDE_LIST.map((guide) => {
-                        const enabled = !value.disabledGuideIDs.includes(guide.id);
-                        const inputId = `${props.id}-guide-${guide.id}`;
-                        const missing = missingPlugins(guide, activePluginIDs);
-                        return (
-                            <React.Fragment key={guide.id}>
-                                <input
-                                    type='checkbox'
-                                    id={inputId}
-                                    checked={enabled}
-                                    disabled={props.disabled}
-                                    onChange={(e) => setGuideEnabled(guide.id, e.target.checked)}
-                                />
-                                <label htmlFor={inputId}>
-                                    {guide.title}
-                                    {missing.length > 0 && (
-                                        <span className='AcademyUserAccessSetting__requires'>
-                                            {`Hidden: needs ${missing.map(pluginLabel).join(' and ')}. `}
-                                            <a
-                                                href='/admin_console/plugins/plugin_management'
-                                                rel='noreferrer'
-                                            >
-                                                {'Manage plugins'}
-                                            </a>
-                                        </span>
-                                    )}
-                                </label>
-                            </React.Fragment>
-                        );
-                    })}
+            </div>
+
+            <div className='AcademyUserAccessSetting__label'>{'Test Mode'}</div>
+            <div className='AcademyUserAccessSetting__control'>
+                <div className='AcademyUserAccessSetting__bool'>
+                    <label htmlFor={`${props.id}-test-mode-true`}>
+                        <input
+                            type='radio'
+                            id={`${props.id}-test-mode-true`}
+                            name={`${props.id}-test-mode`}
+                            checked={value.testMode}
+                            disabled={props.disabled}
+                            onChange={() => update({...value, testMode: true})}
+                        />
+                        {'True'}
+                    </label>
+                    <label htmlFor={`${props.id}-test-mode-false`}>
+                        <input
+                            type='radio'
+                            id={`${props.id}-test-mode-false`}
+                            name={`${props.id}-test-mode`}
+                            checked={!value.testMode}
+                            disabled={props.disabled}
+                            onChange={() => update({...value, testMode: false})}
+                        />
+                        {'False'}
+                    </label>
+                </div>
+                <div className='AcademyUserAccessSetting__help'>
+                    {'When enabled, Academy shows admin guides to everyone and does not hide guides whose required plugins are not running. Turn this off in production.'}
                 </div>
             </div>
         </div>

@@ -111,8 +111,7 @@ func (p *Plugin) serveSettings(w http.ResponseWriter, r *http.Request) {
 		"disabledGuideIDs":    disabled,
 		"isAdmin":             p.userIsAdmin(userID),
 		"activePluginIDs":     p.activePluginIDs(),
-
-		"showAdminGuidesToAllUsers": cfg.showAdminGuidesToAllUsers(),
+		"testMode":            cfg.testModeEnabled(),
 	})
 }
 

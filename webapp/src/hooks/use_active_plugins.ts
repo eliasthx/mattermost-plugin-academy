@@ -8,7 +8,7 @@ import {useEffect, useState} from 'react';
  * Plugin IDs currently running, or null while loading or when the server
  * could not tell us.
  */
-export function useActivePluginIDs(): string[] | null {
+export function useActivePluginIDs(): {activePluginIDs: string[] | null} {
     const [activePluginIDs, setActivePluginIDs] = useState<string[] | null>(null);
 
     useEffect(() => {
@@ -29,5 +29,5 @@ export function useActivePluginIDs(): string[] | null {
         };
     }, []);
 
-    return activePluginIDs;
+    return {activePluginIDs};
 }

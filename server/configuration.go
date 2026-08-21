@@ -25,9 +25,9 @@ type UserAccessConfig struct {
 	TeamIDs          []string        `json:"teamIDs"`
 	DisabledGuideIDs []string        `json:"disabledGuideIDs"`
 
-	// ShowAdminGuidesToAllUsers opens admin-audience guides to everyone.
-	// Off by default: those guides describe the System Console.
-	ShowAdminGuidesToAllUsers bool `json:"showAdminGuidesToAllUsers"`
+	// TestMode shows plugin-gated content and admin-audience guides to everyone.
+	// Off by default.
+	TestMode bool `json:"testMode"`
 }
 
 // UnmarshalJSON accepts a JSON object or a JSON-encoded string (Mattermost defaults).
@@ -71,11 +71,11 @@ func (c *UserAccessConfig) UnmarshalJSON(data []byte) error {
 
 func defaultUserAccessConfig() UserAccessConfig {
 	return UserAccessConfig{
-		UserAccessLevel:           UserAccessLevelAll,
-		UserIDs:                   []string{},
-		TeamIDs:                   []string{},
-		DisabledGuideIDs:          []string{},
-		ShowAdminGuidesToAllUsers: false,
+		UserAccessLevel:  UserAccessLevelAll,
+		UserIDs:          []string{},
+		TeamIDs:          []string{},
+		DisabledGuideIDs: []string{},
+		TestMode:         false,
 	}
 }
 
@@ -143,6 +143,10 @@ func (c *configuration) profileBadgesEnabled() bool {
 	return bool(*c.EnableProfileBadges)
 }
 
+func (c *configuration) testModeEnabled() bool {
+	return c.userAccess().TestMode
+}
+
 func (c *configuration) userAccess() UserAccessConfig {
 	if c == nil || c.UserAccessConfig == nil {
 		return defaultUserAccessConfig()
@@ -152,10 +156,6 @@ func (c *configuration) userAccess() UserAccessConfig {
 
 func (c *configuration) disabledGuideIDs() []string {
 	return c.userAccess().DisabledGuideIDs
-}
-
-func (c *configuration) showAdminGuidesToAllUsers() bool {
-	return c.userAccess().ShowAdminGuidesToAllUsers
 }
 
 func (c *configuration) guideEnabled(guideID string) bool {

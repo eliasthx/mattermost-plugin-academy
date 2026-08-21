@@ -22,6 +22,7 @@ const UNKNOWN: Availability = {
     disabledGuideIDs: [],
     activePluginIDs: null,
     canSeeAdminGuides: false,
+    ignorePluginRequirements: false,
     loading: true,
 };
 
@@ -36,7 +37,8 @@ function useAvailability(): Availability {
                     setAvailability({
                         disabledGuideIDs: settings.disabledGuideIDs,
                         activePluginIDs: settings.activePluginIDs,
-                        canSeeAdminGuides: settings.isAdmin || settings.showAdminGuidesToAllUsers,
+                        canSeeAdminGuides: settings.isAdmin || settings.testMode,
+                        ignorePluginRequirements: settings.testMode,
                         loading: false,
                     });
                 }
@@ -59,14 +61,14 @@ function useAvailability(): Availability {
  * so callers can use `guide.modules` without repeating the filtering.
  */
 export function useAvailableGuides(): GuidesState {
-    const {disabledGuideIDs, activePluginIDs, canSeeAdminGuides, loading} = useAvailability();
+    const {disabledGuideIDs, activePluginIDs, canSeeAdminGuides, ignorePluginRequirements, loading} = useAvailability();
 
     const guides = useMemo(
         () => GUIDE_LIST.
             filter((guide) => !disabledGuideIDs.includes(guide.id)).
-            map((guide) => resolveGuide(guide, {activePluginIDs, canSeeAdminGuides})).
+            map((guide) => resolveGuide(guide, {activePluginIDs, canSeeAdminGuides, ignorePluginRequirements})).
             filter((guide): guide is Guide => Boolean(guide)),
-        [activePluginIDs, canSeeAdminGuides, disabledGuideIDs],
+        [activePluginIDs, canSeeAdminGuides, disabledGuideIDs, ignorePluginRequirements],
     );
 
     return {guides, disabledGuideIDs, canSeeAdminGuides, loading};
@@ -74,15 +76,15 @@ export function useAvailableGuides(): GuidesState {
 
 /** Single-guide equivalent of useAvailableGuides, for the guide routes. */
 export function useAvailableGuide(guideId: string): {guide: Guide | undefined; loading: boolean} {
-    const {disabledGuideIDs, activePluginIDs, canSeeAdminGuides, loading} = useAvailability();
+    const {disabledGuideIDs, activePluginIDs, canSeeAdminGuides, ignorePluginRequirements, loading} = useAvailability();
 
     const guide = useMemo(() => {
         const found = getGuide(guideId);
         if (!found || disabledGuideIDs.includes(found.id)) {
             return undefined;
         }
-        return resolveGuide(found, {activePluginIDs, canSeeAdminGuides});
-    }, [activePluginIDs, canSeeAdminGuides, disabledGuideIDs, guideId]);
+        return resolveGuide(found, {activePluginIDs, canSeeAdminGuides, ignorePluginRequirements});
+    }, [activePluginIDs, canSeeAdminGuides, disabledGuideIDs, ignorePluginRequirements, guideId]);
 
     return {guide, loading};
 }

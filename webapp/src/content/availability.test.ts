@@ -93,6 +93,22 @@ describe('resolveGuide', () => {
         expect(resolveGuide(guide, RESTRICTED)).toBe(guide);
     });
 
+    it('shows plugin-required content when ignorePluginRequirements is set', () => {
+        const guide = makeGuide(
+            [makeModule('one'), makeModule('two', ['focalboard'])],
+            ['playbooks'],
+        );
+
+        expect(resolveGuide(guide, {...RESTRICTED, ignorePluginRequirements: true})).toBe(guide);
+    });
+
+    it('does not open admin-only guides just because plugin requirements are ignored', () => {
+        const guide = makeGuide([makeModule('one', ['focalboard'])], undefined, ['admin']);
+
+        expect(resolveGuide(guide, {...RESTRICTED, ignorePluginRequirements: true})).toBeUndefined();
+        expect(resolveGuide(guide, {...RESTRICTED, ignorePluginRequirements: true, canSeeAdminGuides: true})).toBe(guide);
+    });
+
     it('hides admin-only guides unless the viewer may see them', () => {
         const guide = makeGuide([makeModule('one')], undefined, ['admin']);
 

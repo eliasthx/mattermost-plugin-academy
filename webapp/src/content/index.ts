@@ -58,10 +58,13 @@ export function visibleModules(guide: Guide, activePluginIDs: string[] | null): 
 export type GuideAvailability = {
     activePluginIDs: string[] | null;
     canSeeAdminGuides: boolean;
+
+    /** Skip hiding content whose required plugins are not running (admin test mode). */
+    ignorePluginRequirements?: boolean;
 };
 
 /** Admin-only guides walk through the System Console, so they stay hidden
- * from everyone else unless an admin opts in. */
+ * from everyone else unless the viewer is an admin or test mode is on. */
 export function isAudienceVisible(guide: Guide, canSeeAdminGuides: boolean): boolean {
     return canSeeAdminGuides || guide.audiences.some((audience) => audience !== 'admin');
 }
@@ -71,7 +74,10 @@ export function isAudienceVisible(guide: Guide, canSeeAdminGuides: boolean): boo
  * guide itself is unavailable or has nothing left to show.
  */
 export function resolveGuide(guide: Guide, availability: GuideAvailability): Guide | undefined {
-    const {activePluginIDs, canSeeAdminGuides} = availability;
+    const {canSeeAdminGuides, ignorePluginRequirements} = availability;
+
+    // Test mode reuses fail-open: a null list means "do not filter by plugins".
+    const activePluginIDs = ignorePluginRequirements ? null : availability.activePluginIDs;
 
     if (!isAudienceVisible(guide, canSeeAdminGuides)) {
         return undefined;
