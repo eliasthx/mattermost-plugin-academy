@@ -7,6 +7,7 @@ import boards from 'content/guides/boards';
 import mattermostBasics from 'content/guides/mattermost_basics';
 import playbooks from 'content/guides/playbooks';
 import slashCommands from 'content/guides/slash_commands';
+import zeroTrust from 'content/guides/zero_trust';
 import type {Guide, Module} from 'content/types';
 import manifest from 'manifest';
 
@@ -22,6 +23,7 @@ export const GUIDES: Record<string, Guide> = {
     [advancedSearch.id]: advancedSearch,
     [boards.id]: boards,
     [playbooks.id]: playbooks,
+    [zeroTrust.id]: zeroTrust,
 };
 
 export const GUIDE_LIST: Guide[] = Object.values(GUIDES);
