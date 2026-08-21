@@ -1,13 +1,14 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
+import {PLUGIN_IDS} from 'content/plugins';
 import type {Guide} from 'content/types';
 
 const slashCommands: Guide = {
     id: 'slash-command-workflow-automation-quick-start',
     title: 'Slash Commands & Workflow Automation',
     heroTitle: 'Command your workflow',
-    subtitle: 'Five focused modules covering slash commands, scheduled messages, and Playbook automations and triggers — everything you need to become a power user.',
+    subtitle: 'Slash commands, scheduled messages, and Playbook automations and triggers — everything you need to become a power user.',
     description: 'Slash commands, scheduled messages, and Playbook automations — become a Mattermost power user.',
     icon: 'console',
     audiences: ['end-user', 'admin'],
@@ -129,6 +130,7 @@ const slashCommands: Guide = {
             navTitle: 'Workflow Automations',
             icon: 'playlist-check',
             minutes: 3,
+            requiresPlugins: [PLUGIN_IDS.playbooks],
             title: 'Workflow automations with Playbooks',
             summary: 'A Playbook is a repeatable digital checklist your team configures once and reuses. You build it once, and run it for instances of the same process.',
             steps: [
@@ -165,6 +167,7 @@ const slashCommands: Guide = {
             navTitle: 'Playbook Triggers',
             icon: 'lightning-bolt-outline',
             minutes: 2,
+            requiresPlugins: [PLUGIN_IDS.playbooks],
             title: 'Playbook triggers',
             summary: 'Playbooks can start from a slash command or a keyword in a channel. Use webhooks to stream in alert data from connected systems, then setup keywords to trigger your Playbook workflows.',
             steps: [
