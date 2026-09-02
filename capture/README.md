@@ -118,9 +118,17 @@ Without these, every re-run diffs and real changes drown in noise:
   standard deviation is under 4. A shot of the boot overlay is otherwise indistinguishable from a
   successful one, and a blank `sidebar-overview.webp` shipped that way once.
 
-Two runs in the same mode are byte-identical. Headless and headed still differ slightly — the
-headless shell and full Chromium rasterize text differently — so pick one mode for a batch. The
-default (headless) is the one to prefer; `--headed` is for watching a shot go wrong.
+Two runs in the same mode are visually identical, and almost always byte-identical. The
+exception is worth knowing before you chase it: Chromium's rasterization is not quite bit-exact
+run to run, so a shot occasionally comes back with **one** pixel different by **1/255** on one
+channel. That is invisible, but it changes the file hash, so an unrelated re-run can leave a
+one-file diff in `git status`. `search-files-tab` is the one that does it most. The WebP encoder
+itself is deterministic — re-encoding the same PNG produces identical bytes every time — so
+there is nothing to fix on our side.
+
+Headless and headed differ more than that: the headless shell and full Chromium rasterize text
+differently, so pick one mode for a batch. The default (headless) is the one to prefer;
+`--headed` is for watching a shot go wrong.
 
 ## Adding a shot
 

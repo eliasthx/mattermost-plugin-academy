@@ -51,6 +51,20 @@ const GUIDES = {
             'React instead of replying': 'emoji-reaction',
         },
     },
+    /**
+     * Two steps, out of 31, and both are the same dialog — which genuinely is the screen both
+     * point at. Update Guide is mostly CLI and process: backups, schema migrations, rollbacks.
+     * The pre-flight items that *would* suit a screenshot (plugin versions, PostgreSQL) are
+     * `ChecklistItem`s rather than `Step`s, and ChecklistItem has no `media` field, so they
+     * cannot carry art without a type and renderer change.
+     */
+    'update-guide': {
+        file: 'update_guide.ts',
+        steps: {
+            'Find the version you are running': 'about-mattermost',
+            'Confirm the version and schema version': 'about-mattermost',
+        },
+    },
     boards: {
         file: 'boards.ts',
         steps: {
@@ -92,10 +106,15 @@ const GUIDES = {
 /** id -> alt, parsed out of the shot list. */
 function altTextByShotId() {
     const source = readFileSync(path.join(HERE, 'shots.js'), 'utf8');
-    const re = /id: '([^']+)',\s*\n\s*guide: '[^']+',\s*\n\s*module: '[^']+',\s*\n\s*alt: '((?:[^'\\]|\\.)*)'/g;
+    // Keys between `module` and `alt` are optional — admin shots carry `as: 'admin'` there —
+    // so anything that is not itself an `alt:` line is skipped rather than breaking the match.
+    const re = /id: '([^']+)',\s*\n\s*guide: '[^']+',\s*\n\s*module: '[^']+',\s*\n(?:\s*(?!alt:)\w+: [^\n]*\n)*\s*alt: '((?:[^'\\]|\\.)*)'/g;
     const alts = {};
     for (let m; (m = re.exec(source));) {
-        alts[m[1]] = m[2];
+        // The captured text is still JS-escaped, because shots.js writes `plugin\\'s`. Unescape
+        // it here so the single escaping applied on output is the only one — escaping an
+        // already-escaped apostrophe produces `\\\\'` and a syntax error in the guide file.
+        alts[m[1]] = m[2].replace(/\\(['\\])/g, '$1');
     }
     return alts;
 }

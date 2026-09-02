@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-02T20:07:11.495Z",
+    "capturedAt": "2026-09-02T21:04:59.337Z",
     "serverVersion": "11.11.0.dev.531480c2b1bc9f91b8a4832e2a2c6db8d7842ff6de4bad4cf223b2fe2a410695.false",
     "activePlugins": [
         "com.mattermost.academy",
@@ -181,7 +181,7 @@
             "file": "search-results-tabs.webp",
             "width": 798,
             "height": 940,
-            "bytes": 33170
+            "bytes": 33168
         },
         "search-in-autocomplete": {
             "guide": "advanced-search",
@@ -322,6 +322,48 @@
             "width": 2284,
             "height": 586,
             "bytes": 31916
+        },
+        "admin-edition-and-license": {
+            "guide": "update-guide",
+            "file": "admin-edition-and-license.webp",
+            "width": 2440,
+            "height": 940,
+            "bytes": 104314
+        },
+        "admin-server-logs": {
+            "guide": "update-guide",
+            "file": "admin-server-logs.webp",
+            "width": 2440,
+            "height": 940,
+            "bytes": 36292
+        },
+        "admin-plugin-management": {
+            "guide": "update-guide",
+            "file": "admin-plugin-management.webp",
+            "width": 1840,
+            "height": 1212,
+            "bytes": 70968
+        },
+        "admin-database-settings": {
+            "guide": "update-guide",
+            "file": "admin-database-settings.webp",
+            "width": 2440,
+            "height": 940,
+            "bytes": 45648
+        },
+        "admin-push-notifications": {
+            "guide": "zero-trust",
+            "file": "admin-push-notifications.webp",
+            "width": 2440,
+            "height": 940,
+            "bytes": 54538
+        },
+        "about-mattermost": {
+            "guide": "update-guide",
+            "file": "about-mattermost.webp",
+            "width": 1200,
+            "height": 566,
+            "bytes": 31178
         }
     }
 }

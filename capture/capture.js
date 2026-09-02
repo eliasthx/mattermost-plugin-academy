@@ -13,6 +13,7 @@
  */
 
 import {mkdir, writeFile, readFile} from 'node:fs/promises';
+import os from 'node:os';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
@@ -143,21 +144,40 @@ async function visibleTextIn(page, rect) {
 }
 
 /**
- * Fails a shot whose clipped region shows the seeding admin's username.
+ * Things about the machine running the harness that must never reach a screenshot.
  *
- * The output ships inside an Apache-2.0 plugin, so the operator's account must not appear in it.
- * That is easy to violate by accident and hard to notice: channel intros say "created by
- * <admin>", and join messages say "<admin> added you to the channel". Both sit at the top of a
- * channel's history, exactly where a shot of the message list lands by default.
+ * The admin username is the obvious one — channel intros say "created by <admin>" and join
+ * messages say "<admin> added you to the channel", both at the top of a channel's history where
+ * a shot of the message list lands by default.
+ *
+ * The *hostname* is the less obvious one, and it is why this is a list rather than a single
+ * name: About Mattermost prints "Hostname: <your-machine>.local" a few lines under the server
+ * version, so a shot aimed at the version number quietly ships the name of the laptop that took
+ * it. Both short and fully-qualified forms are checked.
  */
-async function assertNoAdminIdentity(page, rect, username, shotId) {
-    const text = await visibleTextIn(page, rect);
-    if (text.toLowerCase().includes(username.toLowerCase())) {
-        throw new Error(
-            `${shotId} would show the seeding admin's username ("${username}") in the captured area. ` +
-            'Channel intros and join messages name whoever created the channel. Seed more history ' +
-            'so they fall out of frame, or clip a region that excludes them.',
-        );
+function operatorIdentifiers(adminUsername) {
+    const hostname = os.hostname();
+    return [
+        {label: "the seeding admin's username", value: adminUsername},
+        {label: "this machine's hostname", value: hostname},
+        {label: "this machine's short hostname", value: hostname.split('.')[0]},
+    ].filter((i) => i.value && i.value.length > 3);
+}
+
+/**
+ * Fails a shot whose clipped region shows anything identifying the machine or its operator.
+ *
+ * The output ships inside an Apache-2.0 plugin, so none of it belongs in the art.
+ */
+async function assertNoOperatorIdentity(page, rect, adminUsername, shotId) {
+    const text = (await visibleTextIn(page, rect)).toLowerCase();
+    for (const {label, value} of operatorIdentifiers(adminUsername)) {
+        if (text.includes(value.toLowerCase())) {
+            throw new Error(
+                `${shotId} would show ${label} ("${value}") in the captured area. ` +
+                'Clip a region that excludes it, or seed more history so it falls out of frame.',
+            );
+        }
     }
 }
 
@@ -390,6 +410,7 @@ async function main() {
         },
     };
 
+
     const shots = only ? SHOTS.filter((s) => s.id === only) : SHOTS;
     if (!shots.length) {
         fail(only ? `No shot with id "${only}".` : 'Shot list is empty.');
@@ -407,7 +428,7 @@ async function main() {
             await page.addStyleTag({content: DETERMINISM_CSS}).catch(() => {});
 
             const rect = await resolveClipRect(page, shot.clip);
-            await assertNoAdminIdentity(page, rect, mm.me.username, shot.id);
+            await assertNoOperatorIdentity(page, rect, mm.me.username, shot.id);
 
             const png = await clipShot(page, rect);
             await assertNotBlank(png, shot.id);

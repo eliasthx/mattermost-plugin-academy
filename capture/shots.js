@@ -167,6 +167,7 @@ async function boardViewHeaderMenu(page, name) {
     await page.waitForTimeout(700);
 }
 
+
 /** Opens the Settings dialog on a given tab. */
 async function openSettings(page, tab) {
     await page.getByRole('button', {name: 'Settings'}).first().click();
@@ -922,6 +923,33 @@ export const SHOTS = [
             await page.keyboard.type('/inv');
             await page.locator('#suggestionList').waitFor({state: 'visible', timeout: 15000});
             await page.waitForTimeout(900);
+        },
+    },
+
+    /* ================= update guide (System Console) ================= */
+
+
+    /* ================= zero trust (System Console) ================= */
+
+    {
+        id: 'about-mattermost',
+        guide: 'update-guide',
+        module: 'know-your-track',
+        alt: 'The About Mattermost dialog, showing the server version and database schema version',
+
+        // Cropped above the "Hostname:" row, which starts 285px down and prints the machine
+        // that took the screenshot. The version and schema rows sit above it.
+        // assertNoOperatorIdentity fails this shot if that row lands in frame.
+        clip: {of: '.modal-content', maxHeight: 283},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+
+            await page.locator('#product_switch_menu').click();
+            await page.getByText(/About Mattermost/i).first().click();
+            await page.locator('.modal-content').first().waitFor({state: 'visible', timeout: 20000});
+            await page.waitForTimeout(1200);
+            await page.mouse.move(0, 0);
         },
     },
 ];
