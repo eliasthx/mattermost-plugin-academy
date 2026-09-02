@@ -9,6 +9,7 @@
  * content may end up in them.
  */
 
+import {FILE_POST, fixtureFiles} from './fixture_files.js';
 import {MM} from './mm.js';
 
 export const TEAM = {name: 'academy-demo', displayName: 'Northwind'};
@@ -120,7 +121,10 @@ export const CONVERSATIONS = {
         {as: 'jordan.reyes', message: 'Reminder: sprint retro is at 3pm today.'},
     ],
     'incident-review': [
-        {as: 'maya.kessler', message: 'Writeup for the 14 August incident is ready for comment.'},
+        // The hashtag is a fixture in its own right — the advanced-search guide has a step on
+        // searching them, and a hashtag search needs a hashtag to find.
+        {as: 'maya.kessler', message: 'Writeup for the 14 August incident is ready for comment. #incident4417'},
+        {as: 'jordan.reyes', message: 'Linked it from the release notes. #incident4417'},
     ],
 };
 
@@ -164,13 +168,10 @@ export async function seed(mm, log = console.log) {
         throw new Error(`CAPTURE_AS is "${CAPTURE_AS}", which is not in USERS`);
     }
 
-    await mm.addToTeam(team.id, mm.me.id);
-
     const channels = {};
     for (const spec of CHANNELS) {
         const channel = await mm.ensureChannel(team.id, spec);
         channels[spec.name] = channel;
-        await mm.addToChannel(channel.id, mm.me.id);
         for (const user of Object.values(users)) {
             await mm.addToChannel(channel.id, user.id);
         }
@@ -234,6 +235,14 @@ export async function seed(mm, log = console.log) {
         log('  viewer follows the ops-bridge thread');
     }
 
+    // Attachments for the file-search shots, posted by a fixture user like everything else.
+    const filePost = await clients['maya.kessler'].ensurePostWithFiles(
+        channels[FILE_POST.channel].id,
+        FILE_POST.message,
+        await fixtureFiles(),
+    );
+    log(`  file attachments ensured (${filePost.file_ids?.length ?? 0} files)`);
+
     const dm = await mm.ensureDirectChannel(viewer.id, users[DIRECT_MESSAGE.with].id);
     for (const message of DIRECT_MESSAGE.messages) {
         await clients[DIRECT_MESSAGE.with].ensurePost(dm.id, message);
@@ -265,6 +274,17 @@ export async function seed(mm, log = console.log) {
 
     await clients[CAPTURE_AS].suppressOnboarding(viewer.id);
     log('  onboarding prompts suppressed');
+
+    // Last, once every admin-scoped write above is done: take the admin back out of the fixture
+    // team. Creating a channel joins you to it, and any member of the team shows up in the
+    // people autocomplete — `from:` in the search box listed the admin account, which
+    // assertNoAdminIdentity then rejected. Narrowing the query does not help, because the
+    // match is not a prefix match. The fixture world should contain only invented people.
+    //
+    // To look at the world yourself, log in as the capture user rather than rejoining: that is
+    // what the shots see anyway. Credentials are in USERS above.
+    await mm.removeFromTeam(team.id, mm.me.id);
+    log(`  admin @${mm.me.username} removed from the fixture team`);
 
     return {team, users, channels, viewer, viewerClient: clients[CAPTURE_AS], threadRoot};
 }

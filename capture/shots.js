@@ -114,6 +114,40 @@ async function openPostMenu(page, text) {
     return target;
 }
 
+/**
+ * Opens the search overlay.
+ *
+ * `#searchBox` is the overlay itself: a Messages/Files radio pair, the input, and the hint list
+ * (`#searchHints`) that turns into an autocomplete once a modifier is typed. Results are a
+ * different element entirely — `#searchContainer`, in the right-hand pane.
+ */
+async function openSearch(page) {
+    await page.locator('#searchFormContainer').click();
+    await page.locator('#searchBox').waitFor({state: 'visible'});
+    await page.waitForTimeout(300);
+}
+
+/** Opens search, runs `query`, and waits for results to land. */
+async function runSearch(page, query) {
+    await openSearch(page);
+    await page.keyboard.type(query);
+    await page.waitForTimeout(500);
+    await page.keyboard.press('Enter');
+    await page.locator('#search-items-container').waitFor({state: 'visible', timeout: 20000});
+
+    // Park the mouse and drop focus. Submitting the search leaves focus on the results pane's
+    // expand button, and its tooltip is triggered by focus as much as hover — it then hangs
+    // over the top of the shot, usually clipped to just its arrow, which reads as a rendering
+    // glitch. Blurring also removes the focus ring the button would otherwise show.
+    await page.mouse.move(0, 0);
+    await page.evaluate(() => {
+        if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+        }
+    });
+    await page.waitForTimeout(1200);
+}
+
 /** Opens the Settings dialog on a given tab. */
 async function openSettings(page, tab) {
     await page.getByRole('button', {name: 'Settings'}).first().click();
@@ -549,6 +583,169 @@ export const SHOTS = [
             await target.getByLabel(/add reaction/i).first().click();
             await page.locator('#emojiPicker').waitFor({state: 'visible'});
             await page.waitForTimeout(600);
+        },
+    },
+
+    /* ================= advanced-search ================= */
+
+    {
+        id: 'search-results-tabs',
+        guide: 'advanced-search',
+        module: 'search-basics',
+        alt: 'Search results in the right-hand pane, with Messages and Files tabs showing counts',
+        clip: {of: '#searchContainer', maxHeight: 470},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await runSearch(page, 'rollback');
+        },
+    },
+    {
+        id: 'search-from-autocomplete',
+        guide: 'advanced-search',
+        module: 'from-and-in',
+        alt: 'Typing from: in the search box, narrowing the list of people as you type',
+        clip: '#searchBox',
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await openSearch(page);
+
+            // A bare `from:` lists every member of the team, which includes the admin account
+            // that seeded the server — assertNoAdminIdentity rejects that, correctly. A letter
+            // narrows it to the fixture users and shows the type-to-filter behaviour besides.
+            await page.keyboard.type('from:m');
+            await page.waitForTimeout(900);
+        },
+    },
+    {
+        id: 'search-in-autocomplete',
+        guide: 'advanced-search',
+        module: 'from-and-in',
+        alt: 'Typing in: in the search box, with a list of channels to choose from',
+        clip: '#searchBox',
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await openSearch(page);
+            await page.keyboard.type('in:');
+            await page.waitForTimeout(800);
+        },
+    },
+    {
+        id: 'search-modifiers-combined',
+        guide: 'advanced-search',
+        module: 'from-and-in',
+        alt: 'A search combining from: and in: to narrow results to one person in one channel',
+        clip: {of: '#searchContainer', maxHeight: 470},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await runSearch(page, 'from:maya.kessler in:ops-bridge rollback');
+        },
+    },
+    {
+        id: 'search-date-picker',
+        guide: 'advanced-search',
+        module: 'date-filters',
+        alt: 'The date picker that appears after typing before: in the search box',
+        clip: '#searchBox',
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await openSearch(page);
+            await page.keyboard.type('before:');
+            await page.waitForTimeout(900);
+        },
+    },
+    {
+        id: 'search-exact-phrase',
+        guide: 'advanced-search',
+        module: 'precision',
+        alt: 'A quoted search phrase, matching only messages containing that exact wording',
+        clip: {of: '#searchContainer', maxHeight: 430},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await runSearch(page, '"rollback plan"');
+        },
+    },
+    {
+        id: 'search-hashtag',
+        guide: 'advanced-search',
+        module: 'precision',
+        alt: 'Searching a hashtag, returning every message tagged with it',
+        clip: {of: '#searchContainer', maxHeight: 430},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await runSearch(page, '#incident4417');
+        },
+    },
+    {
+        id: 'search-files-tab',
+        guide: 'advanced-search',
+        module: 'file-search',
+        alt: 'The Files tab of search results, listing matching attachments',
+
+        // Two results end around 250; the pane itself is 850 tall.
+        clip: {of: '#searchContainer', maxHeight: 265},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await runSearch(page, 'rollback');
+
+            await page.locator('#searchContainer').getByRole('tab', {name: /files/i}).click();
+            await page.waitForTimeout(1200);
+            await page.mouse.move(0, 0);
+        },
+    },
+    {
+        id: 'search-file-extension',
+        guide: 'advanced-search',
+        module: 'file-search',
+        alt: 'Filtering a file search to one extension with ext:, leaving a single PDF',
+
+        // The Files tab is the whole point of an ext: filter, and search lands on Messages.
+        clip: {of: '#searchContainer', maxHeight: 230},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await runSearch(page, 'ext:pdf rollback');
+
+            await page.locator('#searchContainer').getByRole('tab', {name: /files/i}).click();
+            await page.waitForTimeout(1200);
+            await page.mouse.move(0, 0);
+        },
+    },
+    {
+        id: 'search-recent-mentions',
+        guide: 'advanced-search',
+        module: 'channels-mentions-saved',
+        alt: 'The Recent mentions pane collecting messages that mentioned you',
+        clip: {of: '#sidebar-right', maxHeight: 235},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+
+            await page.getByRole('button', {name: 'Recent mentions'}).first().click();
+            await page.locator('#sidebar-right').waitFor({state: 'visible'});
+            await page.waitForTimeout(900);
+        },
+    },
+    {
+        id: 'search-saved-messages',
+        guide: 'advanced-search',
+        module: 'channels-mentions-saved',
+        alt: 'The Saved messages pane listing a message set aside for later',
+        clip: {of: '#sidebar-right', maxHeight: 300},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+
+            await page.getByRole('button', {name: 'Saved messages'}).first().click();
+            await page.locator('#sidebar-right').waitFor({state: 'visible'});
+            await page.waitForTimeout(900);
         },
     },
 ];

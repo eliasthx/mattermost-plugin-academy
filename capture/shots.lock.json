@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-02T18:02:31.292Z",
+    "capturedAt": "2026-09-02T19:08:55.982Z",
     "serverVersion": "11.11.0.dev.531480c2b1bc9f91b8a4832e2a2c6db8d7842ff6de4bad4cf223b2fe2a410695.false",
     "activePlugins": [
         "com.mattermost.academy",
@@ -25,21 +25,21 @@
             "file": "browse-channels.webp",
             "width": 1200,
             "height": 1164,
-            "bytes": 45266
+            "bytes": 45328
         },
         "unreads-filter": {
             "guide": "mattermost-basics",
             "file": "unreads-filter.webp",
             "width": 528,
             "height": 550,
-            "bytes": 19198
+            "bytes": 19202
         },
         "category-menu": {
             "guide": "mattermost-basics",
             "file": "category-menu.webp",
             "width": 894,
             "height": 800,
-            "bytes": 48518
+            "bytes": 47692
         },
         "channel-types": {
             "guide": "mattermost-basics",
@@ -88,7 +88,7 @@
             "file": "channel-notification-preferences.webp",
             "width": 1200,
             "height": 1484,
-            "bytes": 64078
+            "bytes": 64030
         },
         "drafts-view": {
             "guide": "mattermost-basics",
@@ -102,7 +102,7 @@
             "file": "message-priority.webp",
             "width": 388,
             "height": 362,
-            "bytes": 7608
+            "bytes": 7578
         },
         "formatting-toolbar": {
             "guide": "mattermost-basics",
@@ -144,7 +144,7 @@
             "file": "quick-switcher.webp",
             "width": 1200,
             "height": 950,
-            "bytes": 35216
+            "bytes": 35248
         },
         "recent-mentions": {
             "guide": "mattermost-basics",
@@ -165,7 +165,7 @@
             "file": "create-category.webp",
             "width": 1200,
             "height": 508,
-            "bytes": 15456
+            "bytes": 15472
         },
         "status-menu": {
             "guide": "mattermost-basics",
@@ -173,6 +173,83 @@
             "width": 528,
             "height": 816,
             "bytes": 17710
+        },
+        "search-results-tabs": {
+            "guide": "advanced-search",
+            "file": "search-results-tabs.webp",
+            "width": 798,
+            "height": 940,
+            "bytes": 33170
+        },
+        "search-in-autocomplete": {
+            "guide": "advanced-search",
+            "file": "search-in-autocomplete.webp",
+            "width": 1200,
+            "height": 1380,
+            "bytes": 42442
+        },
+        "search-modifiers-combined": {
+            "guide": "advanced-search",
+            "file": "search-modifiers-combined.webp",
+            "width": 798,
+            "height": 940,
+            "bytes": 33588
+        },
+        "search-date-picker": {
+            "guide": "advanced-search",
+            "file": "search-date-picker.webp",
+            "width": 1200,
+            "height": 940,
+            "bytes": 22692
+        },
+        "search-exact-phrase": {
+            "guide": "advanced-search",
+            "file": "search-exact-phrase.webp",
+            "width": 798,
+            "height": 860,
+            "bytes": 32610
+        },
+        "search-hashtag": {
+            "guide": "advanced-search",
+            "file": "search-hashtag.webp",
+            "width": 798,
+            "height": 860,
+            "bytes": 32638
+        },
+        "search-files-tab": {
+            "guide": "advanced-search",
+            "file": "search-files-tab.webp",
+            "width": 798,
+            "height": 530,
+            "bytes": 14322
+        },
+        "search-file-extension": {
+            "guide": "advanced-search",
+            "file": "search-file-extension.webp",
+            "width": 798,
+            "height": 460,
+            "bytes": 10664
+        },
+        "search-recent-mentions": {
+            "guide": "advanced-search",
+            "file": "search-recent-mentions.webp",
+            "width": 800,
+            "height": 470,
+            "bytes": 15562
+        },
+        "search-saved-messages": {
+            "guide": "advanced-search",
+            "file": "search-saved-messages.webp",
+            "width": 800,
+            "height": 600,
+            "bytes": 17382
+        },
+        "search-from-autocomplete": {
+            "guide": "advanced-search",
+            "file": "search-from-autocomplete.webp",
+            "width": 1200,
+            "height": 644,
+            "bytes": 16660
         }
     }
 }

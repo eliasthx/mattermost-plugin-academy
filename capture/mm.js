@@ -132,6 +132,10 @@ export class MM {
         return this.req('POST', `/teams/${teamId}/members`, {team_id: teamId, user_id: userId}, {expectStatus: [201, 400, 409]});
     }
 
+    async removeFromTeam(teamId, userId) {
+        return this.req('DELETE', `/teams/${teamId}/members/${userId}`, undefined, {expectStatus: [403, 404]});
+    }
+
     async ensureChannel(teamId, {name, displayName, purpose, type = 'O'}) {
         const existing = await this.req('GET', `/teams/${teamId}/channels/name/${name}`, undefined, {expectStatus: [404]});
         if (existing && !existing.error) {
@@ -192,6 +196,42 @@ export class MM {
             }
         }
         return removed;
+    }
+
+    /**
+     * Uploads one file and returns its id.
+     *
+     * Raw `fetch` rather than `req` because this is multipart: `req` sets a JSON content type,
+     * and setting Content-Type by hand on a FormData body omits the boundary the server needs.
+     */
+    async uploadFile(channelId, filename, buffer, contentType) {
+        const form = new FormData();
+        form.append('channel_id', channelId);
+        form.append('files', new Blob([buffer], {type: contentType}), filename);
+
+        const res = await fetch(`${this.siteURL}/api/v4/files`, {
+            method: 'POST',
+            headers: {Authorization: `Bearer ${this.token}`},
+            body: form,
+        });
+        if (!res.ok) {
+            throw new Error(`upload ${filename} -> ${res.status}: ${(await res.text()).slice(0, 200)}`);
+        }
+        const body = await res.json();
+        return body.file_infos[0].id;
+    }
+
+    /** Posts `message` with attachments, once. Keyed on the message body like ensurePost. */
+    async ensurePostWithFiles(channelId, message, files) {
+        const existing = await this.findPost(channelId, message);
+        if (existing) {
+            return existing;
+        }
+        const fileIds = [];
+        for (const file of files) {
+            fileIds.push(await this.uploadFile(channelId, file.name, file.buffer, file.type));
+        }
+        return this.req('POST', '/posts', {channel_id: channelId, message, file_ids: fileIds});
     }
 
     async listDrafts(userId, teamId) {
