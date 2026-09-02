@@ -66,6 +66,15 @@ const DETERMINISM_CSS = `
      * run until this was hidden. Named classes alone do not cover it.
      */
     time { visibility: hidden !important; }
+
+    /*
+     * Boards' "Check out what's new in this version" banner. Dismissing it writes nothing to
+     * user preferences, so there is no server-side way to suppress it, and it is a full-width
+     * bar that pushes the whole product down whenever it decides to appear. It is not the
+     * subject of any shot. The attribute-substring match is deliberate: the class name carries
+     * a CSS-module hash.
+     */
+    [class*='ersionMessage'] { display: none !important; }
 `;
 
 const args = process.argv.slice(2);
@@ -301,7 +310,7 @@ async function main() {
     const plugins = await mm.activePlugins();
 
     console.log('\nSeeding fixtures');
-    const {viewer, viewerClient} = await seed(mm, console.log);
+    const {viewer, viewerClient, team, board} = await seed(mm, console.log);
     await viewerClient.setTheme(viewer.id, THEME);
     console.log(`  capturing as @${viewer.username} (fixture user, not the admin)`);
 
@@ -370,6 +379,15 @@ async function main() {
         channelURL: (name) => `${SITE_URL}/${TEAM.name}/channels/${name}`,
         teamURL: `${SITE_URL}/${TEAM.name}`,
         siteURL: SITE_URL,
+
+        // Boards routes by id, not by name, so these are only knowable after seeding.
+        boardsURL: () => `${SITE_URL}/boards/team/${team.id}`,
+        boardURL: () => {
+            if (!board) {
+                throw new Error('no board fixture — is the focalboard plugin installed and enabled?');
+            }
+            return `${SITE_URL}/boards/team/${team.id}/${board.id}`;
+        },
     };
 
     const shots = only ? SHOTS.filter((s) => s.id === only) : SHOTS;

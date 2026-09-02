@@ -148,6 +148,25 @@ async function runSearch(page, query) {
     await page.waitForTimeout(1200);
 }
 
+/**
+ * Opens a board and waits for its cards.
+ *
+ * Boards is a separate product bundle, so it boots independently of the channels app — the
+ * page can be "loaded" with an empty board area for a second or more.
+ */
+async function settleBoard(page) {
+    await page.locator('.BoardComponent').waitFor({state: 'visible', timeout: 40000});
+    await page.locator('.KanbanCard, .TableRow').first().waitFor({state: 'visible', timeout: 40000});
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(900);
+}
+
+/** Clicks a control in the board's view header (Properties, Group by, Filter, Sort). */
+async function boardViewHeaderMenu(page, name) {
+    await page.locator('.ViewHeader').getByText(name, {exact: false}).first().click();
+    await page.waitForTimeout(700);
+}
+
 /** Opens the Settings dialog on a given tab. */
 async function openSettings(page, tab) {
     await page.getByRole('button', {name: 'Settings'}).first().click();
@@ -745,6 +764,163 @@ export const SHOTS = [
 
             await page.getByRole('button', {name: 'Saved messages'}).first().click();
             await page.locator('#sidebar-right').waitFor({state: 'visible'});
+            await page.waitForTimeout(900);
+        },
+    },
+
+    /* ================= boards ================= */
+
+    {
+        id: 'boards-kanban',
+        guide: 'boards',
+        module: 'cards-and-properties',
+        alt: 'A board in the Kanban layout, with cards grouped into Backlog, In progress, In review, and Done columns',
+        clip: {of: '.BoardComponent', maxHeight: 520},
+        async setup(page, {boardURL}) {
+            await page.goto(boardURL());
+            await settleBoard(page);
+        },
+    },
+    {
+        id: 'boards-sidebar',
+        guide: 'boards',
+        module: 'opening-boards',
+        alt: 'The Boards sidebar listing a board and its two views',
+        clip: {of: '.Sidebar', maxHeight: 250},
+        async setup(page, {boardURL}) {
+            await page.goto(boardURL());
+            await settleBoard(page);
+        },
+    },
+    {
+        id: 'boards-card-detail',
+        guide: 'boards',
+        module: 'cards-and-properties',
+        alt: 'A card opened to show its description, properties, and comment box',
+
+        // The dialog is ~756 tall but this card's content ends around 460.
+        clip: {of: '.Dialog .dialog', maxHeight: 470},
+        async setup(page, {boardURL}) {
+            await page.goto(boardURL());
+            await settleBoard(page);
+
+            await page.locator('.KanbanCard').filter({hasText: 'Rewrite the deploy pipeline'}).first().click();
+            await page.locator('.Dialog').waitFor({state: 'visible', timeout: 20000});
+            await page.waitForTimeout(1200);
+        },
+    },
+    {
+        id: 'boards-properties-menu',
+        guide: 'boards',
+        module: 'cards-and-properties',
+        alt: 'The Properties menu, choosing which card properties show on the board',
+        clip: {of: ['.ViewHeader', '.menu-contents'], all: true},
+        async setup(page, {boardURL}) {
+            await page.goto(boardURL());
+            await settleBoard(page);
+            await boardViewHeaderMenu(page, 'Properties');
+        },
+    },
+    {
+        id: 'boards-group-by',
+        guide: 'boards',
+        module: 'views',
+        alt: 'The Group by menu, choosing which property splits cards into columns',
+        clip: {of: ['.ViewHeader', '.menu-contents'], all: true},
+        async setup(page, {boardURL}) {
+            await page.goto(boardURL());
+            await settleBoard(page);
+            await boardViewHeaderMenu(page, 'Group by');
+        },
+    },
+    {
+        id: 'boards-filter',
+        guide: 'boards',
+        module: 'views',
+        alt: 'The Filter panel, narrowing a board to the cards you want',
+
+        // Filter is its own component rather than a generic menu, unlike the other three
+        // view-header controls.
+        clip: {of: ['.ViewHeader', '.FilterComponent'], all: true},
+        async setup(page, {boardURL}) {
+            await page.goto(boardURL());
+            await settleBoard(page);
+            await boardViewHeaderMenu(page, 'Filter');
+        },
+    },
+    {
+        id: 'boards-sort',
+        guide: 'boards',
+        module: 'views',
+        alt: 'The Sort menu, ordering cards by a property',
+        clip: {of: ['.ViewHeader', '.menu-contents'], all: true},
+        async setup(page, {boardURL}) {
+            await page.goto(boardURL());
+            await settleBoard(page);
+            await boardViewHeaderMenu(page, 'Sort');
+        },
+    },
+    {
+        id: 'boards-share-dialog',
+        guide: 'boards',
+        module: 'sharing-and-linking',
+        alt: 'The Share dialog for a board, with team access and role options',
+
+        // `.ShareBoardDialog` and `.Dialog` are both full-viewport wrappers; `.dialog` inside
+        // them is the card. Cropped above the "Share internally" section on purpose: that
+        // section renders the board's absolute URL, which on a capture server is
+        // http://localhost:8065/... — not something to ship in customer-facing art.
+        clip: {of: '.Dialog .dialog', maxHeight: 300},
+        async setup(page, {boardURL}) {
+            await page.goto(boardURL());
+            await settleBoard(page);
+
+            await page.getByText('Share', {exact: true}).first().click();
+            await page.waitForTimeout(1500);
+        },
+    },
+
+    /* ================= slash commands ================= */
+
+    {
+        id: 'slash-command-picker',
+        guide: 'slash-command-workflow-automation-quick-start',
+        module: 'slash-command-basics',
+        alt: 'Typing a forward slash in the message box, showing the list of available commands',
+        // `.suggestion-list` is a zero-height wrapper and never becomes "visible";
+        // `#suggestionList` is the list that actually has a box.
+        clip: {of: ['#post-create', '#suggestionList'], all: true},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+
+            // Clear first. The formatting shots type into this same channel's composer, and
+            // with server-synced drafts on, their text is still sitting there on a later page
+            // load — a slash only opens the command list as the first character of a message,
+            // so an inherited draft silently breaks this shot depending on run order.
+            await page.locator('#post_textbox').click();
+            await page.locator('#post_textbox').fill('');
+            await page.keyboard.type('/');
+            await page.locator('#suggestionList').waitFor({state: 'visible', timeout: 15000});
+            await page.waitForTimeout(900);
+        },
+    },
+    {
+        id: 'slash-command-filtered',
+        guide: 'slash-command-workflow-automation-quick-start',
+        module: 'slash-command-basics',
+        alt: 'The command list filtered as you type, narrowing to matching commands',
+        // `.suggestion-list` is a zero-height wrapper and never becomes "visible";
+        // `#suggestionList` is the list that actually has a box.
+        clip: {of: ['#post-create', '#suggestionList'], all: true},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+
+            await page.locator('#post_textbox').click();
+            await page.locator('#post_textbox').fill('');
+            await page.keyboard.type('/inv');
+            await page.locator('#suggestionList').waitFor({state: 'visible', timeout: 15000});
             await page.waitForTimeout(900);
         },
     },

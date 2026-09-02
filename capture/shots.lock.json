@@ -1,9 +1,11 @@
 {
-    "capturedAt": "2026-09-02T19:08:55.982Z",
+    "capturedAt": "2026-09-02T20:07:11.495Z",
     "serverVersion": "11.11.0.dev.531480c2b1bc9f91b8a4832e2a2c6db8d7842ff6de4bad4cf223b2fe2a410695.false",
     "activePlugins": [
         "com.mattermost.academy",
-        "github"
+        "focalboard",
+        "github",
+        "mattermost-ai"
     ],
     "browser": "chromium 131.0.6778.33",
     "theme": "denim",
@@ -81,7 +83,7 @@
             "file": "notification-keywords.webp",
             "width": 1600,
             "height": 1620,
-            "bytes": 93632
+            "bytes": 93638
         },
         "channel-notification-preferences": {
             "guide": "mattermost-basics",
@@ -109,14 +111,14 @@
             "file": "formatting-toolbar.webp",
             "width": 2252,
             "height": 244,
-            "bytes": 9818
+            "bytes": 10190
         },
         "formatting-preview": {
             "guide": "mattermost-basics",
             "file": "formatting-preview.webp",
             "width": 2252,
             "height": 420,
-            "bytes": 15060
+            "bytes": 15324
         },
         "saved-messages": {
             "guide": "mattermost-basics",
@@ -193,7 +195,7 @@
             "file": "search-modifiers-combined.webp",
             "width": 798,
             "height": 940,
-            "bytes": 33588
+            "bytes": 33260
         },
         "search-date-picker": {
             "guide": "advanced-search",
@@ -207,14 +209,14 @@
             "file": "search-exact-phrase.webp",
             "width": 798,
             "height": 860,
-            "bytes": 32610
+            "bytes": 32276
         },
         "search-hashtag": {
             "guide": "advanced-search",
             "file": "search-hashtag.webp",
             "width": 798,
             "height": 860,
-            "bytes": 32638
+            "bytes": 32274
         },
         "search-files-tab": {
             "guide": "advanced-search",
@@ -250,6 +252,76 @@
             "width": 1200,
             "height": 644,
             "bytes": 16660
+        },
+        "boards-kanban": {
+            "guide": "boards",
+            "file": "boards-kanban.webp",
+            "width": 2380,
+            "height": 1040,
+            "bytes": 70396
+        },
+        "boards-sidebar": {
+            "guide": "boards",
+            "file": "boards-sidebar.webp",
+            "width": 480,
+            "height": 500,
+            "bytes": 10746
+        },
+        "boards-card-detail": {
+            "guide": "boards",
+            "file": "boards-card-detail.webp",
+            "width": 1950,
+            "height": 940,
+            "bytes": 25242
+        },
+        "boards-properties-menu": {
+            "guide": "boards",
+            "file": "boards-properties-menu.webp",
+            "width": 2284,
+            "height": 338,
+            "bytes": 31938
+        },
+        "boards-group-by": {
+            "guide": "boards",
+            "file": "boards-group-by.webp",
+            "width": 2284,
+            "height": 274,
+            "bytes": 17834
+        },
+        "boards-sort": {
+            "guide": "boards",
+            "file": "boards-sort.webp",
+            "width": 2284,
+            "height": 338,
+            "bytes": 27370
+        },
+        "boards-share-dialog": {
+            "guide": "boards",
+            "file": "boards-share-dialog.webp",
+            "width": 1200,
+            "height": 600,
+            "bytes": 18500
+        },
+        "boards-filter": {
+            "guide": "boards",
+            "file": "boards-filter.webp",
+            "width": 2284,
+            "height": 232,
+            "bytes": 14908
+        },
+        "slash-command-picker": {
+            "guide": "slash-command-workflow-automation-quick-start",
+            "file": "slash-command-picker.webp",
+            "width": 2284,
+            "height": 850,
+            "bytes": 45604
+        },
+        "slash-command-filtered": {
+            "guide": "slash-command-workflow-automation-quick-start",
+            "file": "slash-command-filtered.webp",
+            "width": 2284,
+            "height": 586,
+            "bytes": 31916
         }
     }
 }

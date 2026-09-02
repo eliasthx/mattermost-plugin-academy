@@ -9,6 +9,7 @@
  * content may end up in them.
  */
 
+import {boardsPreferences, seedBoards} from './fixture_boards.js';
 import {FILE_POST, fixtureFiles} from './fixture_files.js';
 import {MM} from './mm.js';
 
@@ -272,6 +273,19 @@ export async function seed(mm, log = console.log) {
     await clients[CAPTURE_AS].setStatus(viewer.id, 'online');
     log('  viewer sidebar preferences and availability pinned');
 
+    // Boards has its own onboarding — a "Welcome To Boards" screen with a tour — gated on
+    // preferences in a `focalboard` category rather than the ones suppressOnboarding covers.
+    await clients[CAPTURE_AS].setPreferences(viewer.id, boardsPreferences(viewer.id));
+    log('  Boards welcome screen suppressed');
+
+    // Only when the plugin is actually installed; the guide is gated on it anyway.
+    let board = null;
+    if ((await mm.activePlugins()).includes('focalboard')) {
+        board = await seedBoards(mm.siteURL, clients[CAPTURE_AS].token, team.id, viewer.id, log);
+    } else {
+        log('  focalboard not installed — skipping board fixtures');
+    }
+
     await clients[CAPTURE_AS].suppressOnboarding(viewer.id);
     log('  onboarding prompts suppressed');
 
@@ -286,5 +300,5 @@ export async function seed(mm, log = console.log) {
     await mm.removeFromTeam(team.id, mm.me.id);
     log(`  admin @${mm.me.username} removed from the fixture team`);
 
-    return {team, users, channels, viewer, viewerClient: clients[CAPTURE_AS], threadRoot};
+    return {team, users, channels, viewer, viewerClient: clients[CAPTURE_AS], threadRoot, board};
 }
