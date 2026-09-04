@@ -22,6 +22,7 @@ import {fileURLToPath} from 'node:url';
 import {chromium} from 'playwright';
 import sharp from 'sharp';
 
+import {startMockLLM} from './fixture_ai.js';
 import {MM} from './mm.js';
 import {seed, TEAM} from './seed.js';
 import {SHOTS} from './shots.js';
@@ -233,13 +234,13 @@ async function assertNotBlank(png, shotId) {
  */
 function normalizeClip(clip) {
     if (typeof clip === 'string') {
-        return {selectors: [clip], maxHeight: null, all: false};
+        return {selectors: [clip], maxHeight: null, all: false, anchor: 'top'};
     }
     if (Array.isArray(clip)) {
-        return {selectors: clip, maxHeight: null, all: false};
+        return {selectors: clip, maxHeight: null, all: false, anchor: 'top'};
     }
-    const {of, maxHeight = null, all = false} = clip;
-    return {selectors: Array.isArray(of) ? of : [of], maxHeight, all};
+    const {of, maxHeight = null, all = false, anchor = 'top'} = clip;
+    return {selectors: Array.isArray(of) ? of : [of], maxHeight, all, anchor};
 }
 
 /**
@@ -258,7 +259,7 @@ function normalizeClip(clip) {
  * content's own extent is what buys the width back.
  */
 async function resolveClipRect(page, clip) {
-    const {selectors, maxHeight, all} = normalizeClip(clip);
+    const {selectors, maxHeight, all, anchor} = normalizeClip(clip);
 
     const boxes = [];
     for (const selector of selectors) {
@@ -290,8 +291,15 @@ async function resolveClipRect(page, clip) {
     const width = Math.min(VIEWPORT.width, right + pad) - x;
     let height = Math.min(VIEWPORT.height, bottom + pad) - y;
 
-    if (maxHeight !== null) {
-        height = Math.min(height, maxHeight);
+    if (maxHeight !== null && height > maxHeight) {
+        // `anchor: 'bottom'` keeps the *bottom* of the element and trims the top. Panes that grow
+        // upwards from their input — the Agents pane, the thread viewer — put all their content
+        // at the bottom of a full-height column, so a top-anchored crop of one photographs empty
+        // space. See the framing note in README.md.
+        if (anchor === 'bottom') {
+            return {x, y: y + (height - maxHeight), width, height: maxHeight};
+        }
+        height = maxHeight;
     }
 
     return {x, y, width, height};
@@ -442,9 +450,67 @@ async function main() {
 
     const shots = selectShots();
 
+    /*
+     * The Agents shots need a model to answer them. A live one would answer differently every
+     * run, so captures point at a local stub instead — see fixture_ai.js, and setup_agents.mjs
+     * for the one-time plugin configuration that aims Agents at it.
+     */
+    const mock = plugins.includes('mattermost-ai') ? await startMockLLM() : null;
+    if (mock) {
+        console.log(`  mock LLM on ${mock.url}`);
+    }
+
+    /*
+     * A second session, for the handful of screens a fixture user cannot reach.
+     *
+     * Agents 2.7.0 disables "Create agent" for anyone without admin rights, so the create-agent
+     * form is unreachable as the viewer — the button renders greyed out and a click never lands.
+     * Built lazily: most runs need no admin page, and opening one costs a context and a login.
+     *
+     * The identity guard is *not* relaxed for these. It still rejects the admin username inside
+     * the clip, which is the whole point: an admin-only screen is fine to show, the operator's
+     * account name is not.
+     */
+    let adminContext = null;
+    let adminPage = null;
+    const getAdminPage = async () => {
+        if (!adminPage) {
+            adminContext = await browser.newContext({
+                viewport: VIEWPORT,
+                deviceScaleFactor: SCALE,
+                reducedMotion: 'reduce',
+                locale: 'en-US',
+                timezoneId: 'UTC',
+                colorScheme: 'light',
+                permissions: ['notifications'],
+            });
+            await adminContext.addCookies([
+                {name: 'MMAUTHTOKEN', value: mm.token, domain: host, path: '/', httpOnly: true, sameSite: 'Lax'},
+                {name: 'MMUSERID', value: mm.me.id, domain: host, path: '/', sameSite: 'Lax'},
+            ]);
+            await adminContext.addInitScript(([siteURL]) => {
+                try {
+                    window.localStorage.setItem('__landingPageSeen__', 'true');
+                    window.localStorage.setItem(`__landing-preference__${siteURL}`, 'browser');
+                } catch {
+                    // Only a slowdown.
+                }
+            }, [SITE_URL]);
+            adminPage = await adminContext.newPage();
+            adminPage.on('load', () => adminPage.addStyleTag({content: DETERMINISM_CSS}).catch(() => {}));
+        }
+        return adminPage;
+    };
+
     console.log(`\nCapturing ${shots.length} shot(s)`);
-    const {written, failures} = await runShots(() => page, ctx, shots, mm.me.username);
+    const {written, failures} = await runShots(
+        (shot) => (shot.as === 'admin' ? getAdminPage() : page),
+        ctx,
+        shots,
+        mm.me.username,
+    );
     await browser.close();
+    await mock?.close();
     await writeLock({written, version, plugins, browserVersion});
     report({written, failures, version, plugins});
 }
@@ -486,7 +552,7 @@ async function runShots(getPage, ctx, shots, adminUsername) {
         const lastAttempt = attempt === SHOT_ATTEMPTS;
         let page;
         try {
-            page = await getPage();
+            page = await getPage(shot);
             await shot.setup(page, ctx);
 
             // Re-apply after any navigation inside setup.

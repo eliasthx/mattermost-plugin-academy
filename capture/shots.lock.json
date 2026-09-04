@@ -1,14 +1,12 @@
 {
-    "capturedAt": "2026-09-04T14:22:55.346Z",
-    "serverVersion": "11.5.0.22670928926.2aca1410987985a79ed5cd6e3f40a72653fb2004e0790df20508ce1ce836b22f.true",
+    "capturedAt": "2026-09-04T17:09:28.120Z",
+    "serverVersion": "11.11.0.dev.531480c2b1bc9f91b8a4832e2a2c6db8d7842ff6de4bad4cf223b2fe2a410695.false",
     "activePlugins": [
-        "com.mattermost.calls",
+        "com.mattermost.academy",
         "focalboard",
-        "jira",
-        "mattermost-ai",
-        "playbooks"
+        "github",
+        "mattermost-ai"
     ],
-    "remoteHost": "revive-trial-journey.test.mattermost.cloud",
     "browser": "chromium 131.0.6778.33",
     "theme": "denim",
     "viewport": {
@@ -127,7 +125,7 @@
             "file": "saved-messages.webp",
             "width": 800,
             "height": 600,
-            "bytes": 17382
+            "bytes": 18314
         },
         "message-actions-menu": {
             "guide": "mattermost-basics",
@@ -139,9 +137,9 @@
         "remind-menu": {
             "guide": "mattermost-basics",
             "file": "remind-menu.webp",
-            "width": 958,
+            "width": 950,
             "height": 854,
-            "bytes": 26144
+            "bytes": 26168
         },
         "quick-switcher": {
             "guide": "mattermost-basics",
@@ -155,7 +153,7 @@
             "file": "recent-mentions.webp",
             "width": 800,
             "height": 470,
-            "bytes": 15562
+            "bytes": 16406
         },
         "emoji-reaction": {
             "guide": "mattermost-basics",
@@ -176,49 +174,49 @@
             "file": "status-menu.webp",
             "width": 528,
             "height": 816,
-            "bytes": 17710
+            "bytes": 17924
         },
         "search-results-tabs": {
             "guide": "advanced-search",
             "file": "search-results-tabs.webp",
             "width": 798,
             "height": 940,
-            "bytes": 33168
+            "bytes": 33870
         },
         "search-in-autocomplete": {
             "guide": "advanced-search",
             "file": "search-in-autocomplete.webp",
             "width": 1200,
-            "height": 1380,
-            "bytes": 42442
+            "height": 1460,
+            "bytes": 44674
         },
         "search-modifiers-combined": {
             "guide": "advanced-search",
             "file": "search-modifiers-combined.webp",
             "width": 798,
             "height": 940,
-            "bytes": 33260
+            "bytes": 33990
         },
         "search-date-picker": {
             "guide": "advanced-search",
             "file": "search-date-picker.webp",
             "width": 1200,
             "height": 940,
-            "bytes": 22692
+            "bytes": 22708
         },
         "search-exact-phrase": {
             "guide": "advanced-search",
             "file": "search-exact-phrase.webp",
             "width": 798,
             "height": 860,
-            "bytes": 32276
+            "bytes": 32972
         },
         "search-hashtag": {
             "guide": "advanced-search",
             "file": "search-hashtag.webp",
             "width": 798,
             "height": 860,
-            "bytes": 32274
+            "bytes": 32980
         },
         "search-files-tab": {
             "guide": "advanced-search",
@@ -239,14 +237,14 @@
             "file": "search-recent-mentions.webp",
             "width": 800,
             "height": 470,
-            "bytes": 15562
+            "bytes": 16406
         },
         "search-saved-messages": {
             "guide": "advanced-search",
             "file": "search-saved-messages.webp",
             "width": 800,
             "height": 600,
-            "bytes": 17382
+            "bytes": 18314
         },
         "search-from-autocomplete": {
             "guide": "advanced-search",
@@ -455,8 +453,8 @@
             "guide": "ai-quick-start",
             "file": "ai-agents-pane.webp",
             "width": 800,
-            "height": 1700,
-            "bytes": 41286
+            "height": 840,
+            "bytes": 26104
         },
         "ai-agents-conversation": {
             "guide": "ai-quick-start",
@@ -471,6 +469,41 @@
             "width": 528,
             "height": 980,
             "bytes": 23390
+        },
+        "ai-agents-reply": {
+            "guide": "ai-quick-start",
+            "file": "ai-agents-reply.webp",
+            "width": 800,
+            "height": 1000,
+            "bytes": 46142
+        },
+        "ai-rewrite-menu": {
+            "guide": "ai-quick-start",
+            "file": "ai-rewrite-menu.webp",
+            "width": 1484,
+            "height": 790,
+            "bytes": 42002
+        },
+        "ai-rewrite-result": {
+            "guide": "ai-quick-start",
+            "file": "ai-rewrite-result.webp",
+            "width": 1452,
+            "height": 282,
+            "bytes": 19956
+        },
+        "ai-agents-page": {
+            "guide": "ai-quick-start",
+            "file": "ai-agents-page.webp",
+            "width": 1952,
+            "height": 660,
+            "bytes": 26510
+        },
+        "ai-agent-config": {
+            "guide": "ai-quick-start",
+            "file": "ai-agent-config.webp",
+            "width": 1920,
+            "height": 1060,
+            "bytes": 57554
         }
     }
 }

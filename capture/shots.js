@@ -194,6 +194,73 @@ const PB = {
 };
 
 /**
+ * Opens the Agents pane and waits for it.
+ *
+ * The app-bar icons on the right edge are `div`s, not buttons, so a role-based locator finds
+ * nothing — the plugin id is the stable handle.
+ */
+async function openAgentsPane(page) {
+    await page.locator('#app-bar-icon-mattermost-ai').click();
+    await page.locator('#sidebar-right').waitFor({state: 'visible', timeout: 40000});
+    await page.waitForTimeout(2500);
+    await page.mouse.move(0, 0);
+}
+
+/** Asks the agent something and waits for the stub's reply to finish rendering. */
+async function askAgent(page, question) {
+    const box = page.locator('#sidebar-right').getByPlaceholder(/Ask Agents anything/i).first();
+    await box.click();
+    await box.fill(question);
+    await page.keyboard.press('Enter');
+
+    // fixture_ai.js answers deterministically, so waiting on its text is exact rather than a
+    // guess at how long a model takes.
+    await page.locator('#sidebar-right').getByText(/Maya reported/).first()
+        .waitFor({state: 'visible', timeout: 60000});
+    await page.waitForTimeout(1500);
+    await page.mouse.move(0, 0);
+}
+
+/**
+ * Types a draft and opens AI Actions > Rewrite in the centre composer.
+ *
+ * Opening the Agents pane first is framing, not decoration: it narrows the centre channel from
+ * 1142px to 726px, and a 1142px-wide composer has to be scaled to about 60% to fit the guide's
+ * image column, at which point neither the draft nor the menu labels can be read.
+ *
+ * "Rewrite" is a submenu parent — clicking it does nothing, hovering opens the presets.
+ */
+async function openRewriteMenu(page, url) {
+    await page.goto(url);
+    await settle(page);
+    await openAgentsPane(page);
+
+    // Clear first: drafts sync server-side, so this composer can arrive holding text an earlier
+    // shot typed into it.
+    await page.locator('#post_textbox').fill('');
+    await page.locator('#post_textbox').fill(
+        'two notes on the new empty state, the picture fights the button and the words repeat the title',
+    );
+    await page.waitForTimeout(1200);
+
+    await page.locator('#post-create').getByLabel('AI Actions').click();
+    await page.locator('.MuiPopover-paper').first().waitFor({state: 'visible', timeout: 20000});
+    await page.getByText('Rewrite', {exact: true}).first().hover();
+    await page.locator('.MuiPopover-paper').last().getByText('Improve writing', {exact: true})
+        .waitFor({state: 'visible', timeout: 20000});
+    await settleMenu(page);
+}
+
+/** The Agents product page. */
+async function gotoAgentsPage(page, siteURL) {
+    await page.goto(`${siteURL}/plug/mattermost-ai/agents`);
+    await page.getByText('Agents are AI assistants').waitFor({timeout: 60000});
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(2500);
+    await page.mouse.move(0, 0);
+}
+
+/**
  * Waits for the Playbooks product area to finish booting.
  *
  * `#playbooks-backstageRoot` appears long before the run loads, so waiting on it plus a fixed
@@ -1185,6 +1252,151 @@ export const SHOTS = [
             await page.goto(playbooksURL(`/runs/${PB.runId}`));
             await settlePlaybooks(page, "[data-testid='run-finish-section']");
             await scrollToTop(page, "[data-testid='run-finish-section']");
+            await page.mouse.move(0, 0);
+        },
+    },
+
+    /* ================= AI Quick Start ================= */
+
+    /*
+     * Six shots for a twelve-illustration guide, because the rest of the guide describes an
+     * Agents UI this version does not have. Verified absent in Agents 2.7.0: there is no AI entry
+     * in the post hover toolbar or the post dot menu (Summarize Threads), none in the channel
+     * header (Summarize Channels), and the search box offers only Messages/Files and the usual
+     * modifiers (AI Search). The fixed "Summarize Thread / Find action items / Find open
+     * questions" actions the guide names have been replaced by user-defined **Custom prompts**.
+     * Summarize Calls needs the Calls plugin and ffmpeg, neither of which is present.
+     *
+     * Those steps need their *text* revisited, not just their art, so they are left alone here
+     * rather than illustrated with something that does not match what they say.
+     */
+
+    {
+        id: 'ai-agents-pane',
+        guide: 'ai-quick-start',
+        module: 'ai-chat',
+        alt: 'The Agents pane open beside a channel, showing its question box',
+
+        // The pane grows upwards from its input, so its content sits at the bottom of a
+        // full-height column: a top-anchored crop of it photographs empty white.
+        clip: {of: '#sidebar-right', maxHeight: 420, anchor: 'bottom'},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await openAgentsPane(page);
+        },
+    },
+    {
+        id: 'ai-agents-reply',
+        guide: 'ai-quick-start',
+        module: 'ai-chat',
+        alt: 'A question asked in the Agents pane and the answer the agent returned',
+
+        // Bottom-anchored for the same reason as the shot above: the conversation grows upwards
+        // from the question box, so a top crop of the pane is empty white.
+        clip: {of: '#sidebar-right', maxHeight: 500, anchor: 'bottom'},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL('ops-bridge'));
+            await settle(page);
+            await openAgentsPane(page);
+            await askAgent(page, 'Summarize this channel in two sentences.');
+        },
+    },
+    {
+        id: 'ai-rewrite-menu',
+        guide: 'ai-quick-start',
+        module: 'rewrite-with-ai',
+        alt: 'The Rewrite submenu open from the composer, listing Shorten, Elaborate, Improve ' +
+            'writing, Fix spelling and grammar, Simplify and Summarize above a box for a custom ' +
+            'instruction',
+        clip: {of: ['#post-create', '.MuiPopover-paper'], all: true},
+        async setup(page, {channelURL}) {
+            await openRewriteMenu(page, channelURL('ops-bridge'));
+        },
+    },
+    {
+        id: 'ai-rewrite-result',
+        guide: 'ai-quick-start',
+        module: 'rewrite-with-ai',
+        alt: 'The composer holding the rewritten version of the draft, ready to review and send',
+
+        // Not a union with the menu: the Rewrite submenu sits directly over the composer, so a
+        // frame that includes it hides the very text this step asks the reader to review.
+        clip: '#post-create',
+        async setup(page, {channelURL}) {
+            await openRewriteMenu(page, channelURL('ops-bridge'));
+
+            await page.locator('.MuiPopover-paper').last().getByText('Improve writing', {exact: true}).click();
+
+            // fixture_ai.js returns this exact sentence, so the wait is on the finished result
+            // rather than on a guess at how long a rewrite takes.
+            // The composer is a textarea, so the rewritten text is a *value*, not page text —
+            // getByText finds only hidden mirrors of it.
+            await page.waitForFunction(
+                () => document.querySelector('#post_textbox')?.value.includes('illustration competes'),
+                null,
+                {timeout: 60000},
+            );
+
+            // Dismiss the menus without touching Discard, which would revert the rewrite.
+            // Escape does not close these — clicking outside them does. The channel header's
+            // empty middle is the safest place to land: nothing there is clickable.
+            await page.mouse.click(640, 100);
+            await page.waitForFunction(
+                () => !document.querySelector('.MuiPopover-paper'),
+                null,
+                {timeout: 20000},
+            );
+            await page.waitForTimeout(1200);
+            await page.mouse.move(0, 0);
+
+            // Escape must not have reverted the rewrite.
+            const draft = await page.locator('#post_textbox').inputValue();
+            if (!draft.includes('illustration competes')) {
+                throw new Error('closing the menu reverted the rewrite');
+            }
+        },
+    },
+    {
+        id: 'ai-agents-page',
+        guide: 'ai-quick-start',
+        module: 'custom-agents',
+        alt: 'The Agents page, with All agents and Your agents tabs above the list of agents',
+
+        // Not `/<team>/agents`, which silently falls back to a channel. The page has no ids; its
+        // one repeated structural class is emotion-hashed, so match on the component-name prefix.
+        clip: {of: "[class*='ContentColumn']", all: true, maxHeight: 330},
+        async setup(page, {siteURL}) {
+            await gotoAgentsPage(page, siteURL);
+        },
+    },
+    {
+        id: 'ai-agent-config',
+        guide: 'ai-quick-start',
+        module: 'custom-agents',
+
+        /*
+         * The agent *configuration* form, opened from an existing agent rather than from "Create
+         * agent" — which is disabled on this server. Its tooltip explains why: "Multiple
+         * self-service agents require a qualifying Mattermost plan." That is a licence cap, not a
+         * permission, so it holds for the system admin too, and one agent already exists because
+         * setup_agents.mjs created it. The two forms carry the same fields.
+         *
+         * Admin session: a fixture user gets a read-only copy of this screen.
+         */
+        as: 'admin',
+        alt: 'The agent configuration form, with fields for the display name, agent username, ' +
+            'bot avatar, and AI service',
+
+        // The form is 896x835 — very nearly square, which renders about half size. Cropped to
+        // the fields the step names first; Custom instructions sits just below the cut.
+        clip: {of: "[class*='ContentColumn']", maxHeight: 530},
+        async setup(page, {siteURL}) {
+            await gotoAgentsPage(page, siteURL);
+            await page.getByText('Academy Agent', {exact: true}).click();
+            await page.getByText('Display name', {exact: true}).waitFor({state: 'visible', timeout: 30000});
+            await page.evaluate(() => document.fonts.ready);
+            await page.waitForTimeout(2500);
             await page.mouse.move(0, 0);
         },
     },

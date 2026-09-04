@@ -146,6 +146,50 @@ export const DRAFT = {
  *
  * Safe to run repeatedly — every helper checks before creating.
  */
+/**
+ * Clears the viewer's direct channels with bots, and takes them out of the sidebar.
+ *
+ * Two problems, one cause. Installing a plugin that owns a bot auto-creates a direct channel with
+ * it, which then appears under DIRECT MESSAGES in every sidebar shot — so whether the harness had
+ * Agents installed decided what the Mattermost Basics art looked like. Worse, the Agents pane
+ * *stores its conversations in that DM*, as ordinary searchable posts, so each capture run left
+ * another copy of the agent's answer behind: by the third run the advanced-search shots were
+ * mostly agent replies, and the Threads view had grown a thread nobody wrote.
+ *
+ * Neither is created by this seed, so neither can be fixed by not creating it — it has to be
+ * undone. `direct_channel_show: false` is what the webapp writes when you close a DM; it removes
+ * the channel from the sidebar without deleting it.
+ */
+async function resetBotDirectChannels(mm, viewerClient, viewerId) {
+    const bots = await mm.req('GET', '/bots?per_page=200').catch(() => []);
+    if (!bots.length) {
+        return {hidden: 0, posts: 0};
+    }
+
+    let posts = 0;
+    for (const bot of bots) {
+        const dm = await mm.ensureDirectChannel(viewerId, bot.user_id).catch(() => null);
+        if (!dm) {
+            continue;
+        }
+        const page = await mm.req('GET', `/channels/${dm.id}/posts?per_page=200`);
+        for (const post of Object.values(page.posts || {})) {
+            const res = await mm.deletePost(post.id);
+            if (!res?.error) {
+                posts++;
+            }
+        }
+    }
+
+    await viewerClient.setPreferences(viewerId, bots.map((bot) => ({
+        user_id: viewerId,
+        category: 'direct_channel_show',
+        name: bot.user_id,
+        value: 'false',
+    })));
+    return {hidden: bots.length, posts};
+}
+
 export async function seed(mm, log = console.log) {
     const team = await mm.ensureTeam(TEAM);
     log(`  team ${team.display_name} (${team.id})`);
@@ -270,8 +314,25 @@ export async function seed(mm, log = console.log) {
     log(`  system join messages removed (${systemRemoved})`);
 
     await clients[CAPTURE_AS].setSidebarPreferences(viewer.id);
-    await clients[CAPTURE_AS].setStatus(viewer.id, 'online');
-    log('  viewer sidebar preferences and availability pinned');
+
+    // Every fixture user, not just the viewer. Presence drifts on its own — a user the seed just
+    // posted as reads "online", and the same account reads away an hour later — and the sidebar
+    // paints a dot for each of them, so leaving the others unpinned makes any shot containing the
+    // DM list differ between runs. That went unnoticed until a re-capture rewrote seven committed
+    // images for no reason anyone had asked for.
+    for (const username of Object.keys(clients)) {
+        await clients[username].setStatus(users[username].id, 'online');
+    }
+
+    // Hide bot DMs. Installing Agents auto-creates a direct channel with its bot, which then
+    // shows up under DIRECT MESSAGES in every single sidebar shot — so whether the harness had
+    // that plugin installed decided what the Mattermost Basics art looked like. Nothing in any
+    // guide points at a bot DM, so the fixture sidebar should not have one.
+    const bots = await resetBotDirectChannels(mm, clients[CAPTURE_AS], viewer.id);
+    log(
+        `  availability pinned for ${Object.keys(clients).length} users, ` +
+        `${bots.hidden} bot DM(s) hidden (${bots.posts} post(s) cleared)`,
+    );
 
     // Boards has its own onboarding — a "Welcome To Boards" screen with a tour — gated on
     // preferences in a `focalboard` category rather than the ones suppressOnboarding covers.

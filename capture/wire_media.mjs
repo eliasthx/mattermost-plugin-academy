@@ -4,8 +4,10 @@
 /**
  * Inserts `media` blocks into a guide's content file, keyed on step title.
  *
- * Alt text is read out of shots.js rather than restated here, so the two cannot drift: the
- * capture and the guide always describe the same image with the same words.
+ * Alt text is imported from shots.js rather than restated here, so the two cannot drift: the
+ * capture and the guide always describe the same image with the same words. It used to be pulled
+ * out with a regex, which quietly stopped matching the moment a shot grew a comment between its
+ * `module` and `alt` keys, or an `alt` long enough to be written as a concatenation.
  *
  *   node wire_media.mjs <guide-id>
  *
@@ -17,6 +19,8 @@ import {readFileSync, writeFileSync} from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import {fileURLToPath} from 'node:url';
+
+import {SHOTS} from './shots.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
@@ -109,6 +113,28 @@ const GUIDES = {
             'Filter and select': 'slash-command-filtered',
         },
     },
+    /**
+     * Six shots for a guide that shipped twelve illustrations, because most of what the rest of
+     * the guide describes is not in Agents 2.7.0. Verified absent: an AI entry in the post hover
+     * toolbar or dot menu (Summarize Threads), one in the channel header (Summarize Channels),
+     * and an AI option in search (AI Search) — the fixed "Summarize Thread / Find action items /
+     * Find open questions" actions have been replaced by user-defined Custom prompts. Summarize
+     * Calls needs the Calls plugin and ffmpeg.
+     *
+     * Those steps' illustrations were removed rather than replaced with something that does not
+     * match what the step says; their text needs revisiting before they get art again.
+     */
+    'ai-quick-start': {
+        file: 'ai_quick_start.ts',
+        steps: {
+            'Open the Agents pane': 'ai-agents-pane',
+            'Ask Agents anything': 'ai-agents-reply',
+            'Start with your message draft': 'ai-rewrite-menu',
+            'Review, iterate and send': 'ai-rewrite-result',
+            'Open the Agents homepage': 'ai-agents-page',
+            'Create a new agent': 'ai-agent-config',
+        },
+    },
     'advanced-search': {
         file: 'advanced_search.ts',
         steps: {
@@ -127,20 +153,9 @@ const GUIDES = {
     },
 };
 
-/** id -> alt, parsed out of the shot list. */
+/** id -> alt, read straight off the shot list. */
 function altTextByShotId() {
-    const source = readFileSync(path.join(HERE, 'shots.js'), 'utf8');
-    // Keys between `module` and `alt` are optional — admin shots carry `as: 'admin'` there —
-    // so anything that is not itself an `alt:` line is skipped rather than breaking the match.
-    const re = /id: '([^']+)',\s*\n\s*guide: '[^']+',\s*\n\s*module: '[^']+',\s*\n(?:\s*(?!alt:)\w+: [^\n]*\n)*\s*alt: '((?:[^'\\]|\\.)*)'/g;
-    const alts = {};
-    for (let m; (m = re.exec(source));) {
-        // The captured text is still JS-escaped, because shots.js writes `plugin\\'s`. Unescape
-        // it here so the single escaping applied on output is the only one — escaping an
-        // already-escaped apostrophe produces `\\\\'` and a syntax error in the guide file.
-        alts[m[1]] = m[2].replace(/\\(['\\])/g, '$1');
-    }
-    return alts;
+    return Object.fromEntries(SHOTS.map((shot) => [shot.id, shot.alt]));
 }
 
 function wire(guideId) {
