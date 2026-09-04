@@ -65,6 +65,30 @@ const GUIDES = {
             'Confirm the version and schema version': 'about-mattermost',
         },
     },
+    /**
+     * Captured from a maintained remote test server rather than the local fixture world —
+     * Playbooks will not start on an unlicensed server. See `source: 'remote'` in shots.js.
+     *
+     * Ten steps of 34. Several of the rest are served by an image already mapped here: the
+     * update dialog covers the cadence, template and broadcast steps, and the checklist shot
+     * shows the assignee, due-date and task-action controls those steps describe. Mapping the
+     * same picture onto four adjacent steps reads as padding, so they stay text-only.
+     */
+    playbooks: {
+        file: 'playbooks.ts',
+        steps: {
+            'A playbook is the process, a run is the execution': 'pb-run-overview',
+            'Runs live in a channel': 'pb-run-channel',
+            'Find playbooks and runs': 'pb-playbooks-list',
+            'Open the run details pane': 'pb-run-info-pane',
+            'Check off tasks as you go': 'pb-checklist',
+            'Post an update': 'pb-post-update-dialog',
+            'Finish the run': 'pb-finish-run',
+            'Build the checklist first': 'pb-playbook-editor',
+            'Write the retrospective report': 'pb-retrospective',
+            'Use the timeline as your source of truth': 'pb-timeline',
+        },
+    },
     boards: {
         file: 'boards.ts',
         steps: {

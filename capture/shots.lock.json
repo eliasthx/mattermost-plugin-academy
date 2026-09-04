@@ -1,12 +1,14 @@
 {
-    "capturedAt": "2026-09-02T21:04:59.337Z",
-    "serverVersion": "11.11.0.dev.531480c2b1bc9f91b8a4832e2a2c6db8d7842ff6de4bad4cf223b2fe2a410695.false",
+    "capturedAt": "2026-09-04T13:56:11.687Z",
+    "serverVersion": "11.5.0.22670928926.2aca1410987985a79ed5cd6e3f40a72653fb2004e0790df20508ce1ce836b22f.true",
     "activePlugins": [
-        "com.mattermost.academy",
+        "com.mattermost.calls",
         "focalboard",
-        "github",
-        "mattermost-ai"
+        "jira",
+        "mattermost-ai",
+        "playbooks"
     ],
+    "remoteHost": "revive-trial-journey.test.mattermost.cloud",
     "browser": "chromium 131.0.6778.33",
     "theme": "denim",
     "viewport": {
@@ -364,6 +366,83 @@
             "width": 1200,
             "height": 566,
             "bytes": 31178
+        },
+        "pb-run-overview": {
+            "guide": "playbooks",
+            "file": "pb-run-overview.webp",
+            "width": 2746,
+            "height": 940,
+            "bytes": 110544
+        },
+        "pb-status-update": {
+            "guide": "playbooks",
+            "file": "pb-status-update.webp",
+            "width": 1386,
+            "height": 160,
+            "bytes": 7880
+        },
+        "pb-timeline": {
+            "guide": "playbooks",
+            "file": "pb-timeline.webp",
+            "width": 798,
+            "height": 806,
+            "bytes": 35538
+        },
+        "pb-run-channel": {
+            "guide": "playbooks",
+            "file": "pb-run-channel.webp",
+            "width": 1370,
+            "height": 940,
+            "bytes": 69280
+        },
+        "pb-playbook-editor": {
+            "guide": "playbooks",
+            "file": "pb-playbook-editor.webp",
+            "width": 1652,
+            "height": 826,
+            "bytes": 39482
+        },
+        "pb-playbooks-list": {
+            "guide": "playbooks",
+            "file": "pb-playbooks-list.webp",
+            "width": 2746,
+            "height": 840,
+            "bytes": 61776
+        },
+        "pb-checklist": {
+            "guide": "playbooks",
+            "file": "pb-checklist.webp",
+            "width": 1386,
+            "height": 1106,
+            "bytes": 72042
+        },
+        "pb-run-info-pane": {
+            "guide": "playbooks",
+            "file": "pb-run-info-pane.webp",
+            "width": 816,
+            "height": 472,
+            "bytes": 30622
+        },
+        "pb-retrospective": {
+            "guide": "playbooks",
+            "file": "pb-retrospective.webp",
+            "width": 1386,
+            "height": 940,
+            "bytes": 45844
+        },
+        "pb-post-update-dialog": {
+            "guide": "playbooks",
+            "file": "pb-post-update-dialog.webp",
+            "width": 1200,
+            "height": 940,
+            "bytes": 68510
+        },
+        "pb-finish-run": {
+            "guide": "playbooks",
+            "file": "pb-finish-run.webp",
+            "width": 1386,
+            "height": 112,
+            "bytes": 3818
         }
     }
 }

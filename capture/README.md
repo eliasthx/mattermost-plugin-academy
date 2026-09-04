@@ -203,6 +203,45 @@ Four of these, each of which produced a wrong-but-passing shot at some point:
 
 After capturing, `capture.js` prints ready-to-paste `media:` blocks for the guide content file.
 
+## Capturing from a remote server
+
+Some guides cover licensed products. Playbooks will not start on an unlicensed server at all —
+it exits with "this plugin requires a professional license or higher" — so its art cannot come
+from the seeded fixture world like everything else.
+
+```bash
+export MM_REMOTE_URL=https://your-test-server.example.com
+export MM_REMOTE_TOKEN=...        # Profile → Security → Personal Access Tokens
+make capture ARGS=--remote
+```
+
+`--remote` runs only the shots marked `source: 'remote'`, and a normal run skips exactly those.
+The two sets are mutually exclusive on purpose: a shot written against seeded fixtures cannot
+find its channels on another server, and a shot written against that server's content has
+nothing to match locally.
+
+**Nothing is seeded in this mode.** Seeding lives in the local branch of `capture.js` and is
+never reached, which matters because `seed.js` creates users, channels and posts — pointing it
+at a shared server would write fixture clutter into someone else's workspace.
+
+Two things differ from a local run:
+
+- **A fresh browser context per shot.** Reusing one page across a long remote run degrades: the
+  first five or six shots land and everything after them times out waiting for content that
+  loaded fine earlier. Discarding the context between shots costs a couple of seconds each and
+  removes the whole class of problem.
+- **One retry per shot.** A cold cloud server is sometimes slow to hand over a heavy run page,
+  and a shot that timed out on one pass routinely succeeds on the next. This cannot mask a
+  broken shot — a wrong selector fails every attempt.
+
+The identity guard still runs, but only checks this machine's hostname. The account on a remote
+server belongs to that server, not to whoever is running the harness, and the shared test
+account is often called `admin` — a five-character substring that matches "administrator" and
+any playbook named after its owner, so checking it there produces nothing but false positives.
+
+`shots.lock.json` records `remoteHost` next to the version, so it is always visible which shots
+came from where.
+
 ## Not yet done
 
 - **One theme only** (denim). Multi-theme capture needs the runtime theme resolver from the

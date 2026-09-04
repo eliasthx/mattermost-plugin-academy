@@ -176,6 +176,76 @@ async function openSettings(page, tab) {
     await page.waitForTimeout(300);
 }
 
+/* ---------------- remote (licensed-product) captures ---------------- */
+
+/**
+ * Fixed ids on the maintained test server the Playbooks art comes from.
+ *
+ * Playbooks will not start on an unlicensed server, so its shots cannot use the seeded fixture
+ * world like everything else — they navigate this server's existing content instead, which is
+ * why they carry `source: 'remote'`. The content there is synthetic and the server is kept
+ * around deliberately, so these are re-capturable; see capture/README.md.
+ */
+const PB = {
+    team: 'cyber-defense-hq',
+    runId: '6m1cqkri17g7dga5ac6aq4z5ka',
+    runChannel: 'inc-1281-credential-comp',
+    playbookId: 'ppsf7kwpg7rjukit1s7ngquhue',
+};
+
+/**
+ * Waits for the Playbooks product area to finish booting.
+ *
+ * `#playbooks-backstageRoot` appears long before the run loads, so waiting on it plus a fixed
+ * sleep is not enough against a cloud server — pass a selector that only exists once the real
+ * content has arrived and wait for that instead.
+ */
+async function settlePlaybooks(page, anchor) {
+    await page.locator('#playbooks-backstageRoot').waitFor({state: 'visible', timeout: 60000});
+    if (anchor) {
+        await page.locator(anchor).first().waitFor({state: 'visible', timeout: 60000});
+    }
+    await page.evaluate(() => document.fonts.ready);
+    await page.waitForTimeout(2000);
+    await page.mouse.move(0, 0);
+}
+
+/**
+ * Scrolls `selector` to the top of its scroll container.
+ *
+ * Playwright's scrollIntoViewIfNeeded waits for the element to be fully in view, which a
+ * 2700px-tall checklist section never is — it times out rather than scrolling. This only asks
+ * the browser to put the element's top edge at the top, which is what a clip anchored on that
+ * element needs anyway.
+ */
+async function scrollToTop(page, selector, block = 'start') {
+    await page.locator(selector).first().evaluate((el, where) => el.scrollIntoView({block: where, behavior: 'instant'}), block);
+    await page.waitForTimeout(900);
+}
+
+/**
+ * Marks the nearest ancestor of `selector` whose height falls in `[min, max]`, for clipping.
+ *
+ * One checklist group is a distinct container roughly 550px tall, but its class name carries a
+ * CSS-module hash that changes between builds. Walking up from a stable test id and picking the
+ * ancestor by size gets the same element without depending on that hash.
+ */
+async function markEnclosing(page, selector, min, max) {
+    const found = await page.locator(selector).first().evaluate((el, [cls, lo, hi]) => {
+        for (let n = el; n; n = n.parentElement) {
+            const h = n.getBoundingClientRect().height;
+            if (h >= lo && h <= hi) {
+                n.classList.add(cls);
+                return true;
+            }
+        }
+        return false;
+    }, [CLIP_TARGET, min, max]);
+    if (!found) {
+        throw new Error(`no ancestor of ${selector} between ${min} and ${max}px tall`);
+    }
+}
+
 export const SHOTS = [
     {
         id: 'sidebar-overview',
@@ -949,6 +1019,172 @@ export const SHOTS = [
             await page.getByText(/About Mattermost/i).first().click();
             await page.locator('.modal-content').first().waitFor({state: 'visible', timeout: 20000});
             await page.waitForTimeout(1200);
+            await page.mouse.move(0, 0);
+        },
+    },
+
+    /* ================= playbooks (remote) ================= */
+
+    {
+        id: 'pb-playbooks-list',
+        guide: 'playbooks',
+        module: 'playbooks-and-runs',
+        source: 'remote',
+        alt: 'The Playbooks list, showing available playbooks with their run counts',
+        clip: {of: '#playbooks-backstageRoot', maxHeight: 420},
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL('/playbooks'));
+            await settlePlaybooks(page, "[data-testid='playbook-title']");
+        },
+    },
+    {
+        id: 'pb-run-overview',
+        guide: 'playbooks',
+        module: 'playbooks-and-runs',
+        source: 'remote',
+        alt: 'A run in progress, with its summary and current status',
+        clip: {of: '#playbooks-backstageRoot', maxHeight: 470},
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL(`/runs/${PB.runId}`));
+            await settlePlaybooks(page, "[data-testid='run-header-section']");
+        },
+    },
+    {
+        id: 'pb-checklist',
+        guide: 'playbooks',
+        module: 'working-the-checklist',
+        source: 'remote',
+        alt: 'A run checklist with tasks checked off, each showing an assignee and a due date',
+
+        // One checklist group, not the whole section — that is ~2700px across five groups.
+        clip: `.${CLIP_TARGET}`,
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL(`/runs/${PB.runId}`));
+            await settlePlaybooks(page, "[data-testid='checkbox-item-container']");
+
+            await scrollToTop(page, "[data-testid='checklistHeader']");
+            await markEnclosing(page, "[data-testid='checklistHeader']", 200, 900);
+            await page.mouse.move(0, 0);
+        },
+    },
+    {
+        id: 'pb-post-update-dialog',
+        guide: 'playbooks',
+        module: 'status-updates',
+        source: 'remote',
+        alt: 'The status update dialog, pre-filled from the playbook\'s update template',
+
+        // The section on the page itself is a thin "Update overdue / Post update" strip — the
+        // dialog behind that button is what the step is actually describing.
+        clip: {of: '.modal-content', maxHeight: 470},
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL(`/runs/${PB.runId}`));
+            await settlePlaybooks(page, "[data-testid='post-update-button']");
+
+            await page.locator("[data-testid='post-update-button']").click();
+            await page.locator('.modal-content').first().waitFor({state: 'visible', timeout: 30000});
+            await page.waitForTimeout(2000);
+            await page.mouse.move(0, 0);
+        },
+    },
+    {
+        id: 'pb-run-info-pane',
+        guide: 'playbooks',
+        module: 'joining-a-run',
+        source: 'remote',
+        alt: 'The run details pane, listing the playbook, owner, participants, followers, and channel',
+
+        // Union of the first and last rows, which covers everything between them.
+        clip: {of: ["[data-testid='runinfo-playbook']", "[data-testid='runinfo-channel']"]},
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL(`/runs/${PB.runId}`));
+            await settlePlaybooks(page, "[data-testid='runinfo-channel']");
+        },
+    },
+    {
+        id: 'pb-timeline',
+        guide: 'playbooks',
+        module: 'retrospectives',
+        source: 'remote',
+        alt: 'The run timeline, recording each event in order as the run progressed',
+        clip: {of: "[data-testid='rhs-timeline']", maxHeight: 420},
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL(`/runs/${PB.runId}`));
+            await settlePlaybooks(page, "[data-testid='rhs-timeline']");
+            await page.mouse.move(0, 0);
+        },
+    },
+    {
+        id: 'pb-retrospective',
+        guide: 'playbooks',
+        module: 'retrospectives',
+        source: 'remote',
+        alt: 'A completed retrospective report for a run',
+        clip: {of: "[data-testid='run-retrospective-section']", maxHeight: 470},
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL(`/runs/${PB.runId}`));
+            await settlePlaybooks(page, "[data-testid='retro-report-text']");
+            await scrollToTop(page, "[data-testid='run-retrospective-section']");
+            await page.mouse.move(0, 0);
+        },
+    },
+    {
+        id: 'pb-run-channel',
+        guide: 'playbooks',
+        module: 'playbooks-and-runs',
+        source: 'remote',
+        alt: 'The channel created for a run, where the conversation happens alongside the checklist',
+        clip: {of: '#channel_view', maxHeight: 470},
+        async setup(page, {channelURL}) {
+            await page.goto(channelURL(PB.team, PB.runChannel));
+            await page.locator('#post-create').waitFor({state: 'visible', timeout: 60000});
+            await page.locator('#initialPageLoadingScreen').waitFor({state: 'hidden', timeout: 60000});
+            await page.evaluate(() => document.fonts.ready);
+            await page.waitForTimeout(2500);
+            await page.mouse.move(0, 0);
+        },
+    },
+    {
+        id: 'pb-playbook-editor',
+        guide: 'playbooks',
+        module: 'building-a-playbook',
+        source: 'remote',
+        alt: 'The Outline tab of the playbook editor, listing the checklists every run starts from',
+
+        // The editor opens on Usage — run counts and a chart — so the tab has to be switched.
+        // Then clip one checklist group out of the Outline, the same way the run's checklist
+        // shot does, rather than the page header.
+        clip: `.${CLIP_TARGET}`,
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL(`/playbooks/${PB.playbookId}`));
+            await settlePlaybooks(page, "[data-testid='playbook-editor-title']");
+
+            await page.getByText('Outline', {exact: true}).first().click();
+            await page.waitForTimeout(2500);
+
+            // Outline opens at Summary; the checklists are further down, and they are what a
+            // run of this playbook will actually contain.
+            await page.locator("[data-testid='checklistHeader']").first().waitFor({state: 'visible', timeout: 30000});
+
+            // Centred rather than pinned to the top: the editor has a sticky page header, and a
+            // clip anchored at the very top of the viewport catches a sliver of it.
+            await scrollToTop(page, "[data-testid='checklistHeader']", 'center');
+            await markEnclosing(page, "[data-testid='checklistHeader']", 200, 900);
+            await page.mouse.move(0, 0);
+        },
+    },
+
+    {
+        id: 'pb-finish-run',
+        guide: 'playbooks',
+        module: 'status-updates',
+        source: 'remote',
+        alt: 'The end of a run, where finishing it closes out the checklist and notifies followers',
+        clip: {of: "[data-testid='run-finish-section']", maxHeight: 300},
+        async setup(page, {playbooksURL}) {
+            await page.goto(playbooksURL(`/runs/${PB.runId}`));
+            await settlePlaybooks(page, "[data-testid='run-finish-section']");
+            await scrollToTop(page, "[data-testid='run-finish-section']");
             await page.mouse.move(0, 0);
         },
     },

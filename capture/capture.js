@@ -83,6 +83,21 @@ const only = args.find((a) => a.startsWith('--only='))?.split('=')[1];
 const keepPng = args.includes('--keep-png');
 const headed = args.includes('--headed');
 
+/**
+ * Capture from a remote, already-populated server instead of seeding a local one.
+ *
+ * Some guides cover licensed products — Playbooks will not even start on an unlicensed server —
+ * so their art has to come from somewhere that has them. `--remote` points the browser at
+ * MM_REMOTE_URL with MM_REMOTE_TOKEN and runs only the shots marked `source: 'remote'`.
+ *
+ * Seeding is *structurally* impossible in this mode: it lives in the local branch below and is
+ * never reached. That matters more than it looks — seed.js creates users, channels and posts,
+ * and pointing it at a shared server would write fixture clutter into someone else's workspace.
+ */
+const remote = args.includes('--remote');
+const REMOTE_URL = process.env.MM_REMOTE_URL;
+const REMOTE_TOKEN = process.env.MM_REMOTE_TOKEN;
+
 function fail(message) {
     console.error(`\n✗ ${message}\n`);
     process.exit(1);
@@ -157,11 +172,21 @@ async function visibleTextIn(page, rect) {
  */
 function operatorIdentifiers(adminUsername) {
     const hostname = os.hostname();
-    return [
-        {label: "the seeding admin's username", value: adminUsername},
+    const identifiers = [
         {label: "this machine's hostname", value: hostname},
         {label: "this machine's short hostname", value: hostname.split('.')[0]},
-    ].filter((i) => i.value && i.value.length > 3);
+    ];
+
+    // Only for local captures. On a remote server the authenticated account belongs to that
+    // server, not to whoever is running the harness, so it is not the operator's identity to
+    // protect — and the shared test account is called `admin`, a five-character substring that
+    // matches "administrator", "System Console admin", and any playbook named after its owner.
+    // Checking it there produces nothing but false positives.
+    if (!remote) {
+        identifiers.unshift({label: "the seeding admin's username", value: adminUsername});
+    }
+
+    return identifiers.filter((i) => i.value && i.value.length > 3);
 }
 
 /**
@@ -277,6 +302,10 @@ function clipShot(page, rect) {
 }
 
 async function main() {
+    if (remote) {
+        return captureRemote();
+    }
+
     if (!ADMIN_TOKEN && !(ADMIN_USER && ADMIN_PASS)) {
         fail(
             'No credentials. Either (preferred) a personal access token:\n' +
@@ -411,24 +440,60 @@ async function main() {
     };
 
 
-    const shots = only ? SHOTS.filter((s) => s.id === only) : SHOTS;
-    if (!shots.length) {
-        fail(only ? `No shot with id "${only}".` : 'Shot list is empty.');
-    }
+    const shots = selectShots();
 
     console.log(`\nCapturing ${shots.length} shot(s)`);
+    const {written, failures} = await runShots(() => page, ctx, shots, mm.me.username);
+    await browser.close();
+    await writeLock({written, version, plugins, browserVersion});
+    report({written, failures, version, plugins});
+}
+
+/**
+ * Picks the shots for this run.
+ *
+ * Remote and local shots are mutually exclusive: a shot written against a seeded fixture world
+ * cannot find its channels on someone else's server, and a shot written against that server's
+ * content has nothing to match locally. `source: 'remote'` is the switch.
+ */
+function selectShots() {
+    const pool = SHOTS.filter((s) => Boolean(s.source === 'remote') === remote);
+    const shots = only ? pool.filter((s) => s.id === only) : pool;
+    if (!shots.length) {
+        fail(only ?
+            `No ${remote ? 'remote' : 'local'} shot with id "${only}".` :
+            `No ${remote ? 'remote' : 'local'} shots in the list.`);
+    }
+    return shots;
+}
+
+/**
+ * How many times to attempt a shot before recording it as failed.
+ *
+ * Remote captures cross the network to a cloud server that is sometimes slow to hand over a
+ * heavy run page, and a shot that timed out on one pass routinely succeeds on the next. This is
+ * only about reaching the page — it cannot mask a wrong selector or wrong content, because a
+ * genuinely broken shot fails every attempt.
+ */
+const SHOT_ATTEMPTS = 2;
+
+async function runShots(getPage, ctx, shots, adminUsername) {
     const written = [];
     const failures = [];
 
     for (const shot of shots) {
+      for (let attempt = 1; attempt <= SHOT_ATTEMPTS; attempt++) {
+        const lastAttempt = attempt === SHOT_ATTEMPTS;
+        let page;
         try {
+            page = await getPage();
             await shot.setup(page, ctx);
 
             // Re-apply after any navigation inside setup.
             await page.addStyleTag({content: DETERMINISM_CSS}).catch(() => {});
 
             const rect = await resolveClipRect(page, shot.clip);
-            await assertNoOperatorIdentity(page, rect, mm.me.username, shot.id);
+            await assertNoOperatorIdentity(page, rect, adminUsername, shot.id);
 
             const png = await clipShot(page, rect);
             await assertNotBlank(png, shot.id);
@@ -449,19 +514,30 @@ async function main() {
 
             const meta = await sharp(webp).metadata();
             written.push({...shot, file, bytes: webp.length, width: meta.width, height: meta.height});
-            console.log(`  ✓ ${shot.id.padEnd(20)} ${meta.width}x${meta.height}  ${(webp.length / 1024).toFixed(1)}KB`);
+            const note = attempt > 1 ? `  (attempt ${attempt})` : '';
+            console.log(`  ✓ ${shot.id.padEnd(20)} ${meta.width}x${meta.height}  ${(webp.length / 1024).toFixed(1)}KB${note}`);
+            break;
         } catch (err) {
-            failures.push({id: shot.id, message: err.message.split('\n')[0]});
-            console.log(`  ✗ ${shot.id.padEnd(20)} ${err.message.split('\n')[0]}`);
+            const message = err.message.split('\n')[0];
+            if (!lastAttempt) {
+                console.log(`  … ${shot.id.padEnd(20)} ${message} — retrying`);
+                continue;
+            }
+
+            failures.push({id: shot.id, message});
+            console.log(`  ✗ ${shot.id.padEnd(20)} ${message}`);
 
             // A screenshot of the failure state is far more useful than the stack alone.
             await mkdir(path.join(ROOT, 'capture', 'failures'), {recursive: true}).catch(() => {});
-            await page.screenshot({path: path.join(ROOT, 'capture', 'failures', `${shot.id}.png`), fullPage: true}).catch(() => {});
+            await page?.screenshot({path: path.join(ROOT, 'capture', 'failures', `${shot.id}.png`), fullPage: true}).catch(() => {});
         }
+      }
     }
 
-    await browser.close();
+    return {written, failures};
+}
 
+async function writeLock({written, version, plugins, browserVersion, remoteHost = null}) {
     // Provenance: captures are accurate to exactly one server version.
     const lockPath = path.join(ROOT, 'capture', 'shots.lock.json');
     const previous = existsSync(lockPath) ? JSON.parse(await readFile(lockPath, 'utf8')) : {};
@@ -469,6 +545,7 @@ async function main() {
         capturedAt: new Date().toISOString(),
         serverVersion: version,
         activePlugins: plugins,
+        ...(remoteHost ? {remoteHost} : {}),
         browser: `${CHANNEL || 'chromium'} ${browserVersion}`,
         theme: THEME,
         viewport: VIEWPORT,
@@ -485,7 +562,9 @@ async function main() {
         },
     };
     await writeFile(lockPath, `${JSON.stringify(lock, null, 4)}\n`);
+}
 
+function report({written, failures, version, plugins}) {
     const totalKB = written.reduce((a, w) => a + w.bytes, 0) / 1024;
     console.log(`\n${written.length} written, ${failures.length} failed — ${totalKB.toFixed(0)}KB total`);
     console.log(`server ${version}, active plugins: ${plugins.join(', ') || 'none'}`);
@@ -505,6 +584,112 @@ async function main() {
         console.log('\nFailure screenshots in capture/failures/. Selectors most likely moved.');
         process.exit(1);
     }
+}
+
+/**
+ * Captures from a remote, already-populated server.
+ *
+ * No seeding, by construction — this function never calls seed(), so there is no path by which
+ * fixture users, channels or posts can be written into a server we do not own. The shots it
+ * runs navigate that server's existing content by name, which is why they carry
+ * `source: 'remote'` and are skipped by a normal run.
+ *
+ * The lock file records the remote host alongside the version, so it is always visible which
+ * shots came from where.
+ */
+async function captureRemote() {
+    if (!REMOTE_URL || !REMOTE_TOKEN) {
+        fail(
+            'Remote capture needs a target and a token:\n' +
+            '    export MM_REMOTE_URL=https://your-server.example.com\n' +
+            '    export MM_REMOTE_TOKEN=...      # Profile → Security → Personal Access Tokens\n' +
+            '  Used for guides covering licensed products, which cannot run on a local\n' +
+            '  unlicensed server. Nothing is seeded; the server is only read.',
+        );
+    }
+
+    const mm = new MM(REMOTE_URL);
+    await mm.useToken(REMOTE_TOKEN);
+    const {version} = await mm.serverVersion();
+    const plugins = await mm.activePlugins();
+
+    const host = new URL(REMOTE_URL).hostname;
+    console.log(`\nRemote capture from ${host}`);
+    console.log(`  authenticated as @${mm.me.username}`);
+    console.log(`  server ${version}`);
+    console.log('  seeding skipped — this server is read only');
+
+    let browser;
+    try {
+        browser = await chromium.launch({headless: !headed, ...(CHANNEL ? {channel: CHANNEL} : {})});
+    } catch (err) {
+        fail(`Could not launch ${CHANNEL || 'the bundled Chromium'}.\n\n  ${err.message.split('\n')[0]}`);
+    }
+    const browserVersion = browser.version();
+
+    /**
+     * A fresh context and page for every shot.
+     *
+     * Reusing one page across a long remote run degrades: the first five or six shots land and
+     * everything after them times out waiting for content that loaded fine earlier. Each shot
+     * navigates a heavy single-page app, and whatever accumulates across those loads — memory,
+     * service workers, websocket retries — eventually stops the app booting inside a minute.
+     * Discarding the context between shots costs a couple of seconds each and removes the
+     * whole class of problem. It also means no shot can inherit an open dialog or a scroll
+     * position from the one before it.
+     */
+    let current = null;
+    const getPage = async () => {
+        if (current) {
+            await current.context().close().catch(() => {});
+            current = null;
+        }
+
+        const context = await browser.newContext({
+            viewport: VIEWPORT,
+            deviceScaleFactor: SCALE,
+            reducedMotion: 'reduce',
+            locale: 'en-US',
+            timezoneId: 'UTC',
+            colorScheme: 'light',
+            permissions: ['notifications'],
+        });
+        await context.addCookies([
+            {name: 'MMAUTHTOKEN', value: mm.token, domain: host, path: '/', httpOnly: true, secure: true, sameSite: 'Lax'},
+            {name: 'MMUSERID', value: mm.me.id, domain: host, path: '/', secure: true, sameSite: 'Lax'},
+        ]);
+        await context.addInitScript(([siteURL]) => {
+            try {
+                window.localStorage.setItem('__landingPageSeen__', 'true');
+                window.localStorage.setItem(`__landing-preference__${siteURL}`, 'browser');
+            } catch {
+                // Only a slowdown if it throws.
+            }
+        }, [REMOTE_URL]);
+
+        const page = await context.newPage();
+        await page.addStyleTag({content: DETERMINISM_CSS}).catch(() => {});
+        page.on('load', () => page.addStyleTag({content: DETERMINISM_CSS}).catch(() => {}));
+        current = page;
+        return page;
+    };
+
+    const ctx = {
+        siteURL: REMOTE_URL,
+        teamURL: (team) => `${REMOTE_URL}/${team}`,
+        channelURL: (team, name) => `${REMOTE_URL}/${team}/channels/${name}`,
+        playbooksURL: (path = '') => `${REMOTE_URL}/playbooks${path}`,
+    };
+
+    const shots = selectShots();
+    console.log(`\nCapturing ${shots.length} shot(s)`);
+
+    // The identity guard still runs. The admin account here is generic, but the check also
+    // covers this machine's hostname, which has no business in a screenshot either way.
+    const {written, failures} = await runShots(getPage, ctx, shots, mm.me.username);
+    await browser.close();
+    await writeLock({written, version, plugins, browserVersion, remoteHost: host});
+    report({written, failures, version, plugins});
 }
 
 main().catch((err) => fail(err.stack || err.message));
