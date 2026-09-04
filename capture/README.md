@@ -3,6 +3,10 @@
 Drives a **local** Mattermost dev server with Playwright and writes clipped screenshots into
 `public/guides/assets/<guideId>/`.
 
+There is a Claude Code skill for the whole workflow — triage, fixtures, framing, wiring,
+verification — at `.claude/skills/capture-guide-art/`. This file stays the reference: shot API,
+verified selectors, determinism, and the Chromium repair.
+
 ## Why local only
 
 The output ships inside an Apache-2.0 plugin that goes to customers, so no real user, channel, or
