@@ -249,5 +249,24 @@ came from where.
   renderer can choose between them would only add unused binaries.
 - **No annotation layer.** Callout arrows and rings are meant to live as data over the image, not
   be drawn into it. That also comes from `scene-media`.
-- **AI Quick Start shots** need the Agents plugin installed and its AI service mocked for
-  deterministic replies. Upstream ships `ai_bridge.ts` in `e2e-tests/playwright/lib` for this.
+- **AI Quick Start** still uses hand-drawn SVGs, which do not match the current product. It needs
+  `--remote` against a server with Agents working; a local mock is not required and not the
+  blocker. Groundwork already established, so the next attempt does not have to rediscover it:
+
+  - The Agents pane opens from `#app-bar-icon-mattermost-ai`. The right-hand app-bar icons are
+    `div`s, not buttons, so role-based locators find nothing — that id is the stable handle.
+  - The pane's content is **bottom-anchored** inside an 850px column, the same trap as the thread
+    viewer: clipping the pane top gives a mostly empty frame. Mark the inner container instead
+    (see `markEnclosing`).
+  - The agent bot is `@mattermost-ai-agent`. `/<team>/messages/@mattermost-ai-agent` opens the
+    DM, but it lands on the "start of your direct message history" intro — the conversation is
+    below, so scroll to the last post rather than clipping `#post-list` from its top.
+  - **Two things still need finding.** The post `…` menu has no Summarize entry on that server,
+    so the thread/channel AI actions are reached some other way (most likely a hover control on
+    the post, not the dot menu). And `/<team>/agents` is not a route — it silently falls back to
+    a channel, so the Agents homepage lives somewhere else.
+  - `Summarize Calls` is likely out of reach entirely: it needs the Calls plugin plus a real
+    recording and transcription.
+
+  Replace all twelve or none — a guide showing a mix of real captures and the old illustrations
+  reads worse than one that is consistently either.

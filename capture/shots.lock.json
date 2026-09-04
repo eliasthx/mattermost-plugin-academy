@@ -1,5 +1,5 @@
 {
-    "capturedAt": "2026-09-04T13:56:11.687Z",
+    "capturedAt": "2026-09-04T14:22:55.346Z",
     "serverVersion": "11.5.0.22670928926.2aca1410987985a79ed5cd6e3f40a72653fb2004e0790df20508ce1ce836b22f.true",
     "activePlugins": [
         "com.mattermost.calls",
@@ -407,7 +407,7 @@
             "file": "pb-playbooks-list.webp",
             "width": 2746,
             "height": 840,
-            "bytes": 61776
+            "bytes": 61884
         },
         "pb-checklist": {
             "guide": "playbooks",
@@ -443,6 +443,34 @@
             "width": 1386,
             "height": 112,
             "bytes": 3818
+        },
+        "ai-agents-homepage": {
+            "guide": "ai-quick-start",
+            "file": "ai-agents-homepage.webp",
+            "width": 1330,
+            "height": 940,
+            "bytes": 82166
+        },
+        "ai-agents-pane": {
+            "guide": "ai-quick-start",
+            "file": "ai-agents-pane.webp",
+            "width": 800,
+            "height": 1700,
+            "bytes": 41286
+        },
+        "ai-agents-conversation": {
+            "guide": "ai-quick-start",
+            "file": "ai-agents-conversation.webp",
+            "width": 2130,
+            "height": 940,
+            "bytes": 28452
+        },
+        "ai-summarize-thread": {
+            "guide": "ai-quick-start",
+            "file": "ai-summarize-thread.webp",
+            "width": 528,
+            "height": 980,
+            "bytes": 23390
         }
     }
 }
