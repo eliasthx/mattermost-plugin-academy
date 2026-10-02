@@ -20,9 +20,22 @@ export type Step = {
     /** Rich. */
     description: string;
 
-    /** Rich. */
-    tip?: string;
+    /** A boxed note under the step, styled by its type. */
+    callout?: Callout;
     media?: StepMedia;
+};
+
+/**
+ * `info` for a fact or prerequisite the reader should know, `tip` for a shortcut or a better way
+ * to do the step, `warning` for something that loses data or cannot be undone.
+ */
+export type CalloutType = 'info' | 'tip' | 'warning';
+
+export type Callout = {
+    type: CalloutType;
+
+    /** Rich. */
+    text: string;
 };
 
 export type CommandItem = {

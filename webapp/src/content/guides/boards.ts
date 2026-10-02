@@ -43,7 +43,7 @@ const boards: Guide = {
                 {
                     title: 'Organize your sidebar',
                     description: 'Every board you can access is listed in the left-hand sidebar under the default <strong>Boards</strong> category. Use the menu next to a category to create, rename, or delete categories, then use <strong>Move To…</strong> on a board to file it. You can also drag boards and categories into the order you want.',
-                    tip: 'Categories are per-user. Rearranging or hiding a board in your sidebar doesn\'t change what anyone else sees.',
+                    callout: {type: 'info', text: 'Categories are per-user. Rearranging or hiding a board in your sidebar doesn\'t change what anyone else sees.'},
                 },
                 {
                     title: 'Jump straight to a board',
@@ -78,7 +78,7 @@ const boards: Guide = {
                 {
                     title: 'Turn a board you like into a template',
                     description: 'Once a board is set up the way you want, hover over its name in the sidebar, open the options menu, and select <strong>New template from board</strong>. Your custom templates appear in the template picker alongside the standard ones and stay fully editable.',
-                    tip: 'Custom templates are private to you by default. Open the template editor and select <strong>Share</strong> to set a team role of Viewer so everyone on the team can use it.',
+                    callout: {type: 'tip', text: 'Custom templates are private to you by default. Open the template editor and select <strong>Share</strong> to set a team role of Viewer so everyone on the team can use it.'},
                 },
             ],
         },
@@ -101,7 +101,7 @@ const boards: Guide = {
                 {
                     title: 'Add properties',
                     description: 'Open a card, select <strong>Add a property</strong>, then choose a type. Boards supports <strong>Text</strong>, <strong>Number</strong>, <strong>Email</strong>, <strong>Phone</strong>, <strong>URL</strong>, <strong>Select</strong>, <strong>Multi-select</strong>, <strong>Date</strong>, <strong>Person</strong>, <strong>Multi-person</strong>, and <strong>Checkbox</strong>, plus the read-only system properties <strong>Created time</strong>, <strong>Created by</strong>, <strong>Last updated time</strong>, and <strong>Last updated by</strong>.',
-                    tip: 'Properties belong to the board, not the card. Adding, renaming, retyping, or deleting a property applies to every card on that board, and changing a type can lose existing values.',
+                    callout: {type: 'warning', text: 'Properties belong to the board, not the card. Adding, renaming, retyping, or deleting a property applies to every card on that board, and changing a type can lose existing values.'},
                 },
                 {
                     title: 'Set up Select options',
@@ -166,12 +166,12 @@ const boards: Guide = {
                 {
                     title: 'Set team access and individual roles',
                     description: 'Next to the <strong>Everyone at</strong> team option, choose the minimum role for everyone on the team, then search for individual members to give them more. The roles are <strong>Admin</strong> (edit the board, its contents, and its permissions), <strong>Editor</strong> (edit the board and its contents), <strong>Commenter</strong> (comment on cards), and <strong>Viewer</strong> (read only).',
-                    tip: 'New boards start with team access set to <strong>None</strong>, so nobody else can see a board until you share it.',
+                    callout: {type: 'info', text: 'New boards start with team access set to <strong>None</strong>, so nobody else can see a board until you share it.'},
                 },
                 {
                     title: 'Link the board to a channel',
                     description: 'In the Share dialog, search for a channel name and add it. Everyone in that channel gets <strong>Editor</strong> access, and the board appears in the channel\'s Boards pane. To undo it, open the role dropdown next to the channel name and select <strong>Unlink</strong>.',
-                    tip: 'A board can be linked to one channel at a time. Linking it to another channel removes the previous link.',
+                    callout: {type: 'warning', text: 'A board can be linked to one channel at a time. Linking it to another channel removes the previous link.'},
                 },
                 {
                     title: 'Share a link to a board or a card',

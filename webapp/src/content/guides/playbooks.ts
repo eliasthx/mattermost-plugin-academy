@@ -44,7 +44,7 @@ const playbooks: Guide = {
                 {
                     title: 'Find playbooks and runs',
                     description: 'Open <strong>Product menu</strong> > <strong>Playbooks</strong> to see the playbooks you can access. Select a playbook name, then select <strong>Runs</strong> to see its runs. From a run, select <strong>Go to channel</strong> to open the run channel.',
-                    tip: 'Only public playbooks and private playbooks you\'re a member of appear in the list.',
+                    callout: {type: 'info', text: 'Only public playbooks and private playbooks you\'re a member of appear in the list.'},
                 },
             ],
         },
@@ -143,7 +143,7 @@ const playbooks: Guide = {
                 {
                     title: 'Track your own work across runs',
                     description: 'Type <strong>/playbook todo</strong> for a refreshed list of the tasks assigned to you. For a fuller view, open the task inbox from the header of the Playbooks page — it lists every task assigned to you across active runs, sorted by due date, where you can complete, skip, reassign, or reschedule them.',
-                    tip: 'The Playbooks bot also sends a daily digest listing your outstanding tasks and any status updates you owe.',
+                    callout: {type: 'tip', text: 'The Playbooks bot also sends a daily digest listing your outstanding tasks and any status updates you owe.'},
                 },
             ],
         },
@@ -212,7 +212,7 @@ const playbooks: Guide = {
                 {
                     title: 'Control who can see and change it',
                     description: 'A <strong>public</strong> playbook is visible across the team; a <strong>private</strong> playbook is limited to its members. Members work with the playbook, and playbook admins manage membership and settings. Your System Admin can tighten this further, restricting who creates playbooks, edits them, or starts runs.',
-                    tip: 'Edits apply to future runs only. Runs already in progress keep the checklist and settings they started with.',
+                    callout: {type: 'info', text: 'Edits apply to future runs only. Runs already in progress keep the checklist and settings they started with.'},
                 },
             ],
         },

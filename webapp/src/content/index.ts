@@ -102,10 +102,6 @@ export function guideAssetURL(guideId: string, file: string) {
     return `/plugins/${manifest.id}/public/guides/assets/${guideId}/${file}`;
 }
 
-export function badgeSealURL() {
-    return `/plugins/${manifest.id}/public/Badge.svg`;
-}
-
 /** Absolute browser URL path (for window.location / markdown links). */
 export function academyPath(path = '') {
     if (!path || path === '/') {
