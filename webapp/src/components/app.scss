@@ -1153,8 +1153,27 @@
         margin: 0;
     }
 
+    &__figure {
+        margin: 0;
+    }
+
+    // Labels one of several images in a step ("Table", "Gallery", …).
+    &__caption {
+        margin: 16px 0 0;
+        color: rgba(var(--center-channel-color-rgb), 0.64);
+        font-size: 12px;
+        font-weight: 600;
+
+        + .academy-step__media {
+            margin-top: 6px;
+        }
+    }
+
     &__media {
-        margin-top: 12px;
+        // Left-aligned with the step text, so the eye runs down one edge through title,
+        // description and image. `width: fit-content` shrinks the frame to the image; a
+        // full-width frame would draw its border around empty space beside a narrow shot.
+        margin: 12px 0 0;
         width: fit-content;
         max-width: 100%;
         border: 1px solid rgba(var(--center-channel-color-rgb), 0.12);
@@ -1167,7 +1186,12 @@
             width: auto;
             height: auto;
             max-width: 100%;
-            max-height: 350px;
+
+            // Real product screenshots are taller than the hand-drawn art this cap was written
+            // for — a sidebar capture is portrait, and because width scales with the capped
+            // height, 350px rendered the channel names too small to read. 480 keeps the frame
+            // from dominating the column while leaving portrait shots legible.
+            max-height: 480px;
             object-fit: contain;
         }
     }
