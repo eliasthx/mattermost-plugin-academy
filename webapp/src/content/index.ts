@@ -8,10 +8,10 @@ import mattermostBasics from 'content/guides/mattermost_basics';
 import playbooks from 'content/guides/playbooks';
 import productivityTips from 'content/guides/productivity_tips';
 import updateGuide from 'content/guides/update_guide';
-import type {Guide, Module} from 'content/types';
+import type {Guide, Module, Step, StepMedia} from 'content/types';
 import manifest from 'manifest';
 
-export type {Guide, Module, Audience, Step} from 'content/types';
+export type {Guide, Module, Audience, Step, StepMedia} from 'content/types';
 
 export const ACADEMY_BASE_PATH = '/academy';
 
@@ -100,6 +100,14 @@ export function resolveGuide(guide: Guide, availability: GuideAvailability): Gui
 
 export function guideAssetURL(guideId: string, file: string) {
     return `/plugins/${manifest.id}/public/guides/assets/${guideId}/${file}`;
+}
+
+/** A step's media as a list, whether it has none, one, or several. */
+export function mediaOf(step: Step): StepMedia[] {
+    if (!step.media) {
+        return [];
+    }
+    return Array.isArray(step.media) ? step.media : [step.media];
 }
 
 export function badgeSealURL() {
