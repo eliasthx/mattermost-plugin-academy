@@ -31,6 +31,11 @@ const boards: Guide = {
                 {
                     title: 'Open Boards from the product menu',
                     description: 'Select the <strong>product menu</strong> in the top left corner of Mattermost, then select <strong>Boards</strong> to see every board on your team.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-product-menu.webp',
+                        alt: 'The product menu open in the top-left corner, with the pointer on Boards',
+                    },
                 },
                 {
                     title: 'Open linked boards from a channel',
@@ -43,11 +48,21 @@ const boards: Guide = {
                 {
                     title: 'Organize your sidebar',
                     description: 'Every board you can access is listed in the left-hand sidebar under the default <strong>Boards</strong> category. Use the menu next to a category to create, rename, or delete categories, then use <strong>Move To…</strong> on a board to file it. You can also drag boards and categories into the order you want.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-sidebar.webp',
+                        alt: 'The Boards sidebar, with five boards filed into Planning and Platform categories',
+                    },
                     callout: {type: 'info', text: 'Categories are per-user. Rearranging or hiding a board in your sidebar doesn\'t change what anyone else sees.'},
                 },
                 {
                     title: 'Jump straight to a board',
                     description: 'Select the <strong>Find Boards</strong> field at the top of the sidebar to open the board switcher, then start typing the board name.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-find-boards.webp',
+                        alt: 'The Find Boards dialog, matching board names as you type',
+                    },
                 },
             ],
         },
@@ -62,6 +77,11 @@ const boards: Guide = {
                 {
                     title: 'Open the template picker',
                     description: 'Select the plus icon at the top of the Boards sidebar, then select <strong>Create New Board</strong>. Select any template name to preview it before you commit.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-template-picker.webp',
+                        alt: 'The template picker, listing templates beside a preview of the one selected',
+                    },
                 },
                 {
                     title: 'Choose a standard template',
@@ -78,6 +98,11 @@ const boards: Guide = {
                 {
                     title: 'Turn a board you like into a template',
                     description: 'Once a board is set up the way you want, hover over its name in the sidebar, open the options menu, and select <strong>New template from board</strong>. Your custom templates appear in the template picker alongside the standard ones and stay fully editable.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-template-from-board.webp',
+                        alt: 'A board\'s options menu in the sidebar, with the pointer on New template from board',
+                    },
                     callout: {type: 'tip', text: 'Custom templates are private to you by default. Open the template editor and select <strong>Share</strong> to set a team role of Viewer so everyone on the team can use it.'},
                 },
             ],
@@ -93,14 +118,29 @@ const boards: Guide = {
                 {
                     title: 'Add a card',
                     description: 'Select <strong>New</strong> at the top of the board and give the card a title. Open a card at any time to fill in the detail — everything you type saves as you go.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-kanban.webp',
+                        alt: 'A board in the Kanban layout, with cards grouped into Backlog, In progress, and In review columns',
+                    },
                 },
                 {
                     title: 'Write the description',
                     description: 'Open a card and select <strong>Add a description</strong> below the Comments section. Descriptions are built from content blocks: hover over the section and select <strong>Add content</strong> to insert a <strong>Text</strong>, <strong>Image</strong>, <strong>Divider</strong>, or <strong>Checkbox</strong> block. Text blocks support Markdown.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-card-detail.webp',
+                        alt: 'A card\'s description built from blocks: text, a divider, a heading, and checkboxes',
+                    },
                 },
                 {
                     title: 'Add properties',
                     description: 'Open a card, select <strong>Add a property</strong>, then choose a type. Boards supports <strong>Text</strong>, <strong>Number</strong>, <strong>Email</strong>, <strong>Phone</strong>, <strong>URL</strong>, <strong>Select</strong>, <strong>Multi-select</strong>, <strong>Date</strong>, <strong>Person</strong>, <strong>Multi-person</strong>, and <strong>Checkbox</strong>, plus the read-only system properties <strong>Created time</strong>, <strong>Created by</strong>, <strong>Last updated time</strong>, and <strong>Last updated by</strong>.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-card-properties.webp',
+                        alt: 'A card\'s properties: select, person, date, number, multi-select, URL and checkbox values',
+                    },
                     callout: {type: 'warning', text: 'Properties belong to the board, not the card. Adding, renaming, retyping, or deleting a property applies to every card on that board, and changing a type can lose existing values.'},
                 },
                 {
@@ -128,10 +168,35 @@ const boards: Guide = {
                 {
                     title: 'Add a view',
                     description: 'In the board header, select the menu next to the current view name, scroll down, and select <strong>+ Add view</strong>. Then pick the layout you want.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-view-menu.webp',
+                        alt: 'The view menu in the board header, with Add view open on Board, Table, Gallery and Calendar',
+                    },
                 },
                 {
                     title: 'Pick a layout',
                     description: '<strong>Board</strong> is a kanban layout where cards sit in columns you can drag them between. <strong>Table</strong> gives you a row per card and a column per property, editable in place. <strong>Gallery</strong> shows the first image attached to each card. <strong>Calendar</strong> places cards on dates.',
+                    media: [
+                        {
+                            type: 'image',
+                            file: 'boards-view-table.webp',
+                            alt: 'The Table layout: a row per card, a column per property',
+                            caption: 'Table',
+                        },
+                        {
+                            type: 'image',
+                            file: 'boards-view-gallery.webp',
+                            alt: 'The Gallery layout: each card shown by the first image attached to it',
+                            caption: 'Gallery',
+                        },
+                        {
+                            type: 'image',
+                            file: 'boards-view-calendar.webp',
+                            alt: 'The Calendar layout: cards placed on their due dates',
+                            caption: 'Calendar',
+                        },
+                    ],
                 },
                 {
                     title: 'Group cards',
@@ -162,6 +227,11 @@ const boards: Guide = {
                 {
                     title: 'Open the Share dialog',
                     description: 'Select <strong>Share</strong> in the top-right corner of the board. You manage all access from here, and you are an admin of any board you create.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-share-dialog.webp',
+                        alt: 'The Share dialog for a board, with team access and role options',
+                    },
                 },
                 {
                     title: 'Set team access and individual roles',
@@ -176,6 +246,11 @@ const boards: Guide = {
                 {
                     title: 'Share a link to a board or a card',
                     description: 'Select <strong>Share</strong> > <strong>Copy link</strong> and paste it into a channel or direct message — only people with permission to the board can open it. For a single card, open the card\'s options menu and select <strong>Copy link</strong>. Pasting a card link into a channel renders a preview of the card.',
+                    media: {
+                        type: 'image',
+                        file: 'boards-card-link.webp',
+                        alt: 'A card link posted in a channel, with Boards\' preview of the card beneath it',
+                    },
                 },
                 {
                     title: 'Export the board',

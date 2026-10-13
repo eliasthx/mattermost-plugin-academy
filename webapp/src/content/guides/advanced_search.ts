@@ -30,10 +30,20 @@ const advancedSearch: Guide = {
                 {
                     title: 'Choose Messages or Files',
                     description: 'Select the <strong>Search</strong> field, then select <strong>Messages</strong> to search message text or <strong>Files</strong> to search files attached to messages. The two tabs return separate result sets, so switch tabs if the first search comes up empty.',
+                    media: {
+                        type: 'image',
+                        file: 'search-results-tabs.webp',
+                        alt: 'Search results in the right-hand pane, with Messages and Files tabs showing counts',
+                    },
                 },
                 {
                     title: 'Set how many teams to search',
                     description: 'By default your results cover all channels in your current team. Select <strong>All Teams</strong> to search every team you belong to, or pick a single specific team instead.',
+                    media: {
+                        type: 'image',
+                        file: 'search-team-picker.webp',
+                        alt: 'The team picker in the search box, offering All Teams or one of your teams',
+                    },
                 },
                 {
                     title: 'Know what search matches',
@@ -42,6 +52,11 @@ const advancedSearch: Guide = {
                 {
                     title: 'Jump to a message in context',
                     description: 'Results open in the Search Results pane on the right. Select <strong>Jump</strong> on any result to move the center pane to that message in its original channel and thread.',
+                    media: {
+                        type: 'image',
+                        file: 'search-jump.webp',
+                        alt: 'A search result with the pointer on its Jump link',
+                    },
                 },
                 {
                     title: 'Keep results open while you work',
@@ -60,18 +75,38 @@ const advancedSearch: Guide = {
                 {
                     title: 'Filter by person',
                     description: 'Add <code>from:</code> and a username to return only what that person posted. For example, <code>budget from:john.smith</code> returns messages containing "budget" that John Smith wrote.',
+                    media: {
+                        type: 'image',
+                        file: 'search-from-autocomplete.webp',
+                        alt: 'Typing from: in the search box, narrowing the list of people as you type',
+                    },
                 },
                 {
                     title: 'Filter by channel',
                     description: 'Add <code>in:</code> and a channel to stay in one conversation — <code>Mattermost in:town-square</code>. <code>in:</code> also works on direct messages, group messages, and private channels you belong to, as in <code>Mattermost in:john.doe</code>.',
+                    media: {
+                        type: 'image',
+                        file: 'search-in-autocomplete.webp',
+                        alt: 'Typing in: in the search box, with a list of channels to choose from',
+                    },
                 },
                 {
                     title: 'Filter by date',
                     description: '<code>before:</code> returns content posted earlier than a date, <code>after:</code> later than a date, and <code>on:</code> that day only. For example, <code>website before:2026-03-01</code>, <code>website after:2026-02-01</code>, or <code>website on:2026-03-01</code>. Selecting a date modifier from autocomplete opens a date picker; if you type it, use <code>YYYY-MM-DD</code>.',
+                    media: {
+                        type: 'image',
+                        file: 'search-date-picker.webp',
+                        alt: 'The date picker that appears after typing before: in the search box',
+                    },
                 },
                 {
                     title: 'Combine filters',
                     description: 'Modifiers stack. <code>deploy from:john.smith in:release-discussion</code> returns only messages about "deploy" that John posted in that channel. Add dates the same way — <code>website after:2026-02-01 before:2026-03-01 from:john.smith</code> brackets a window and a person at once.',
+                    media: {
+                        type: 'image',
+                        file: 'search-modifiers-combined.webp',
+                        alt: 'A search that stacks a term with from: and in:, with the channel suggestion for in: showing',
+                    },
                 },
             ],
         },
@@ -86,6 +121,11 @@ const advancedSearch: Guide = {
                 {
                     title: 'Quote an exact phrase',
                     description: 'Wrap terms in quotation marks to match them together and in order. Searching <code>"Mattermost website"</code> returns messages containing that exact phrase, and skips messages that happen to mention "Mattermost" and "website" separately.',
+                    media: {
+                        type: 'image',
+                        file: 'search-exact-phrase.webp',
+                        alt: 'A phrase typed into the search box inside quotation marks',
+                    },
                 },
                 {
                     title: 'Exclude terms with a hyphen',
@@ -102,6 +142,11 @@ const advancedSearch: Guide = {
                 {
                     title: 'Search hashtags',
                     description: 'Hashtags are searchable labels anyone can add to a message with <code>#</code>. Select a hashtag in an existing post, or type it including the pound symbol, to find every message tagged with it.',
+                    media: {
+                        type: 'image',
+                        file: 'search-hashtag.webp',
+                        alt: 'Searching a hashtag, returning every message tagged with it',
+                    },
                 },
             ],
             commandGroups: [
@@ -155,14 +200,29 @@ const advancedSearch: Guide = {
                 {
                     title: 'Switch to the Files tab',
                     description: 'Select the <strong>Search</strong> field, then select <strong>Files</strong>. Each result shows the file name, extension, and size, plus when and where it was shared. As with messages, you can scope the search to the current team, a specific team, or all teams.',
+                    media: {
+                        type: 'image',
+                        file: 'search-files-tab.webp',
+                        alt: 'The Files tab of search results, listing matching attachments',
+                    },
                 },
                 {
                     title: 'Filter by file extension',
                     description: 'Use <code>ext:</code> followed by an extension to return only that file type, as in <code>ext:pdf</code>. The search autocomplete suggests extensions as you type, so you do not have to remember them.',
+                    media: {
+                        type: 'image',
+                        file: 'search-file-extension.webp',
+                        alt: 'Typing ext: in the Files search, with the extension suggested as you type',
+                    },
                 },
                 {
                     title: 'Filter by file category instead',
                     description: 'On the web or desktop app, select the <strong>File Type Filter</strong> option in the results header to narrow by category — documents, spreadsheets, or images — rather than by a single extension.',
+                    media: {
+                        type: 'image',
+                        file: 'search-file-type-filter.webp',
+                        alt: 'The file type filter open in the Files tab of search results, with Documents selected',
+                    },
                 },
                 {
                     title: 'Search the text inside documents',
@@ -175,6 +235,11 @@ const advancedSearch: Guide = {
                 {
                     title: 'Browse a channel\'s recent files',
                     description: 'When you know which channel a file landed in, skip search entirely. Select the channel name, select <strong>View Info</strong>, then select <strong>Files</strong> in the right pane to see what has been shared there recently.',
+                    media: {
+                        type: 'image',
+                        file: 'search-channel-files.webp',
+                        alt: 'The Files pane for a channel, listing the files recently shared there',
+                    },
                 },
             ],
         },
@@ -201,10 +266,20 @@ const advancedSearch: Guide = {
                 {
                     title: 'Review your recent mentions',
                     description: 'Select the <strong>@</strong> icon next to the search field, or press <strong>Ctrl+Shift+M</strong> on Windows or Linux, or <strong>Cmd+Shift+M</strong> on Mac. This lists recent messages that mention you or contain one of your keyword triggers. Select <strong>Jump</strong> to open any of them in context.',
+                    media: {
+                        type: 'image',
+                        file: 'search-recent-mentions.webp',
+                        alt: 'The Recent mentions pane collecting messages that mentioned you',
+                    },
                 },
                 {
                     title: 'Set messages aside and come back to them',
                     description: 'Select the <strong>Save</strong> icon next to any message to save it for yourself only — nobody else sees that you saved it. Select the <strong>Bookmark</strong> icon to the left of your profile picture to open your full list of saved messages in the right-hand pane.',
+                    media: {
+                        type: 'image',
+                        file: 'search-saved-messages.webp',
+                        alt: 'The pointer on the Save icon in a message\'s hover toolbar',
+                    },
                 },
             ],
         },

@@ -4,7 +4,7 @@
 import {existsSync} from 'fs';
 import path from 'path';
 
-import {GUIDE_LIST, guideMinutes} from 'content';
+import {GUIDE_LIST, guideMinutes, mediaOf} from 'content';
 import type {Guide, Module} from 'content/types';
 
 import {ICON_NAMES} from 'components/icons';
@@ -128,22 +128,27 @@ describe('guide media', () => {
         allModules().forEach(({guide, mod}) => {
             const steps = [...mod.steps, ...(mod.variants?.flatMap((v) => v.steps) ?? [])];
 
-            steps.forEach((step) => {
-                if (!step.media) {
-                    return;
-                }
-                const file = path.join(ASSET_ROOT, guide.id, step.media.file);
-                expect(`${guide.id}/${step.media.file} exists: ${existsSync(file)}`).toContain('true');
+            steps.flatMap(mediaOf).forEach((media) => {
+                const file = path.join(ASSET_ROOT, guide.id, media.file);
+                expect(`${guide.id}/${media.file} exists: ${existsSync(file)}`).toContain('true');
             });
         });
     });
 
     it('gives every media item alt text', () => {
         allModules().forEach(({mod}) => {
-            mod.steps.forEach((step) => {
-                if (step.media) {
-                    expect(step.media.alt.trim()).not.toBe('');
-                }
+            mod.steps.flatMap(mediaOf).forEach((media) => {
+                expect(media.alt.trim()).not.toBe('');
+            });
+        });
+    });
+
+    it('captions every image in a step that shows several', () => {
+        allModules().forEach(({mod}) => {
+            mod.steps.filter((step) => mediaOf(step).length > 1).forEach((step) => {
+                mediaOf(step).forEach((media) => {
+                    expect(`${step.title}: ${media.file} caption "${media.caption ?? ''}"`).not.toMatch(/caption ""$/);
+                });
             });
         });
     });

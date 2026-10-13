@@ -29,26 +29,56 @@ const mattermostBasics: Guide = {
                 {
                     title: 'Understand channel types',
                     description: '<strong>Public channels</strong> are open to everyone on the team and show a globe icon. <strong>Private channels</strong> are visible only to members and show a lock icon. <strong>Direct messages</strong> are between two people, and <strong>group messages</strong> hold 3 to 7 people. For a larger private conversation, use a private channel instead.',
+                    media: {
+                        type: 'image',
+                        file: 'channel-types.webp',
+                        alt: 'Public channels with globe icons, a private channel with a lock icon, a group message, and a direct message',
+                    },
                 },
                 {
                     title: 'Browse and join channels',
                     description: 'Select the <strong>plus</strong> icon at the top of the channel sidebar, then select <strong>Browse Channels</strong>. Search by name or scroll the list, and select <strong>Join</strong> next to any public channel. You can filter the list by public, private, or archived channels, and hide channels you already belong to. Private channels require an invite from an existing member.',
+                    media: {
+                        type: 'image',
+                        file: 'browse-channels.webp',
+                        alt: 'The Browse Channels dialog, with a Join button on a channel you have not joined yet',
+                    },
                 },
                 {
                     title: 'Favorite the channels you visit often',
                     description: 'Open a channel and select the <strong>star</strong> icon next to the channel name. Favorites collect in their own <strong>Favorites</strong> category at the top of your sidebar. Select the star again to remove it.',
+                    media: {
+                        type: 'image',
+                        file: 'sidebar-favorites.webp',
+                        alt: 'The Favorites category at the top of the channel sidebar, holding three favorited channels',
+                    },
                 },
                 {
                     title: 'Group channels into custom categories',
                     description: 'From the <strong>plus</strong> icon at the top of the sidebar, select <strong>Create New Category</strong> and name it — for example Projects or Customers. Drag channels and direct messages into it, and drag whole categories to reorder them. Collapsing a category hides everything except its unread channels.',
+                    media: {
+                        type: 'image',
+                        file: 'create-category.webp',
+                        alt: 'The Create New Category dialog with a name field',
+                    },
                 },
                 {
                     title: 'Sort and mute custom categories',
                     description: 'Select the <strong>category options</strong> icon, then <strong>Sort</strong> to choose <strong>Alphabetically</strong>, <strong>Recent Activity</strong>, or <strong>Manually</strong>. The same menu has <strong>Mute Category</strong>, which mutes every channel inside it. You can still unmute individual channels within a muted category.',
+                    media: {
+                        type: 'image',
+                        file: 'category-menu.webp',
+                        alt: 'The options menu of a custom Projects category, with Sort and Mute Category',
+                    },
                 },
                 {
                     title: 'Eliminate noise using the unreads filter',
                     description: 'Select the <strong>filter</strong> icon at the top of the sidebar to show only channels with unread activity, and select it again to go back. If you prefer this permanently, go to <strong>Settings</strong> > <strong>Sidebar</strong> and turn on <strong>Group unread channels separately</strong> to keep unreads in their own category at the top.',
+                    media: {
+                        type: 'image',
+                        file: 'unreads-filter.webp',
+                        alt: 'The unreads filter turned on, narrowing the sidebar to channels with unread messages',
+                    },
                 },
             ],
         },
@@ -67,22 +97,47 @@ const mattermostBasics: Guide = {
                 {
                     title: 'Use the formatting toolbar',
                     description: 'The toolbar below the message box handles bold, italic, and strikethrough text, headings, links, numbered and bulleted lists, quoted text, and code — no syntax to remember. Select the <strong>Show/Hide Formatting</strong> icon to collapse it when you don\'t need it, and <strong>Show/Hide Preview</strong> to see how the message will look before you send. With text selected, <strong>Ctrl B</strong> or <strong>⌘ B</strong> bolds it, <strong>Ctrl I</strong> or <strong>⌘ I</strong> italicizes it, and <strong>Ctrl K</strong> or <strong>⌘ K</strong> turns it into a link.',
+                    media: {
+                        type: 'image',
+                        file: 'formatting-toolbar.webp',
+                        alt: 'A message with bold, a list, code and italics written in it, and the pointer on the toolbar\'s Bulleted list button',
+                    },
                 },
                 {
                     title: 'Attach files to a message',
                     description: 'Select the <strong>Attachment</strong> icon in the compose area, drag a file into the channel, or paste from your clipboard. You can attach up to 10 files per message. To find a file later, select the <strong>Channel files</strong> icon in the channel header.',
+                    media: {
+                        type: 'image',
+                        file: 'attach-files.webp',
+                        alt: 'The message box with three files attached and a message ready to send',
+                    },
                 },
                 {
                     title: 'Add emoji to a message',
                     description: 'Select the <strong>emoji</strong> icon in the formatting toolbar to insert an emoji into your message. While typing, <strong>:</strong> followed by a few characters and then Tab autocompletes an emoji.',
+                    media: {
+                        type: 'image',
+                        file: 'emoji-picker.webp',
+                        alt: 'The emoji picker open from the emoji icon in the message box',
+                    },
                 },
                 {
                     title: 'React instead of replying',
                     description: 'Hover over a message and select the <strong>emoji</strong> icon to add a reaction. A reaction confirms you\'ve seen something without adding a reply to the thread, and it also stops persistent notifications on an urgent message.',
+                    media: {
+                        type: 'image',
+                        file: 'emoji-reaction.webp',
+                        alt: 'A message with emoji reactions beneath it, one of them your own',
+                    },
                 },
                 {
                     title: 'Leave a draft and come back to it',
                     description: 'Anything you type but don\'t send becomes a draft, collected in the <strong>Drafts</strong> view at the top of the channel sidebar. Drafts sync to the server by default, so a draft started in your browser is waiting for you in the desktop app. To keep drafts on one client only, turn off <strong>Settings</strong> > <strong>Advanced</strong> > <strong>Allow message drafts to sync with the server</strong>.',
+                    media: {
+                        type: 'image',
+                        file: 'drafts-view.webp',
+                        alt: 'The Drafts view listing an unsent message and the channel it belongs to',
+                    },
                 },
             ],
         },
@@ -153,18 +208,38 @@ const mattermostBasics: Guide = {
                 {
                     title: 'Reply in a thread',
                     description: 'Hover over a message and select the <strong>reply</strong> icon. Replies collapse under the first message of the thread, so the channel stays readable. Open an existing thread by selecting the message or its reply count.',
+                    media: {
+                        type: 'image',
+                        file: 'thread-reply.webp',
+                        alt: 'The pointer on the Reply button in a message\'s hover toolbar',
+                    },
                 },
                 {
                     title: 'Follow and unfollow',
                     description: 'You automatically follow any thread you start, reply to, or are @mentioned in. Toggle the <strong>Follow</strong> or <strong>Following</strong> indicator on a thread, or use <strong>Follow thread</strong> and <strong>Unfollow thread</strong> from the message actions menu. Following a message that has no replies yet means you\'ll hear about it if someone replies later.',
+                    media: {
+                        type: 'image',
+                        file: 'thread-follow.webp',
+                        alt: 'A message with its replies collapsed beneath it, and the Following button that toggles the thread',
+                    },
                 },
                 {
                     title: 'Work from the Threads view',
                     description: 'Select <strong>Threads</strong> at the top of the channel sidebar to see every thread you follow on the current team, with the most recent replies first. Select <strong>Unreads</strong> to narrow the list to threads with unread replies.',
+                    media: {
+                        type: 'image',
+                        file: 'threads-view.webp',
+                        alt: 'The Threads view listing followed threads, with one that has unread replies',
+                    },
                 },
                 {
                     title: 'Clear the backlog',
                     description: 'Select <strong>Mark all as read</strong> in the Threads view to clear the unread status of every thread in the list. Each thread also has its own menu for marking it read or unread, saving it, copying a link to it, or unfollowing it.',
+                    media: {
+                        type: 'image',
+                        file: 'threads-item-menu.webp',
+                        alt: 'A thread\'s menu in the Threads view, with options to mark it read, save it, copy a link, or unfollow it',
+                    },
                 },
                 {
                     title: 'Control notifications thread by thread',
