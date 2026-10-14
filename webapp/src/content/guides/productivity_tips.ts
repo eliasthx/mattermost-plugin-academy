@@ -33,6 +33,11 @@ const productivityTips: Guide = {
                 {
                     title: 'Jump anywhere with the quick switcher',
                     description: 'Press <strong>Ctrl K</strong> or <strong>⌘ K</strong> to open the channel switcher. Type a few characters to reach any channel you\'re a member of across all your teams, plus direct and group messages, unread channels, and threads. Muted channels are left out of the results.',
+                    media: {
+                        type: 'image',
+                        file: 'quick-switcher.webp',
+                        alt: 'The quick switcher open, matching channels as you type',
+                    },
                 },
                 {
                     title: 'Learn a handful of shortcuts',
@@ -52,10 +57,20 @@ const productivityTips: Guide = {
                 {
                     title: 'Open the command picker',
                     description: 'Type / to see available commands in the autocomplete list. This works in channels, DMs, and threads. The same / entry point gives you access to all built-in and Admin-configured commands in your instance.',
+                    media: {
+                        type: 'image',
+                        file: 'slash-command-picker.webp',
+                        alt: 'Typing a forward slash in the message box, showing the list of available commands',
+                    },
                 },
                 {
                     title: 'Filter and select',
                     description: 'Autocomplete filters matching commands in real time. Use the up and down arrow keys to navigate options, then press <strong>Tab</strong> or <strong>Enter</strong> to select one.',
+                    media: {
+                        type: 'image',
+                        file: 'slash-command-filtered.webp',
+                        alt: 'The command list filtered as you type, narrowing to matching commands',
+                    },
                 },
             ],
             commandGroups: [
@@ -123,8 +138,8 @@ const productivityTips: Guide = {
                     description: 'Write the message, then select the right side of the <strong>Send</strong> button. Pick a preset or a custom time — Mattermost shows both your local time and the recipient\'s.',
                     media: {
                         type: 'image',
-                        file: 'scheduled-messages-step1-9259c4fcaa.svg',
-                        alt: 'Message composer with Schedule message menu open',
+                        file: 'scheduled-message-menu.webp',
+                        alt: 'The Schedule message menu open beside the Send button, offering a preset time and a custom time',
                     },
                 },
                 {
@@ -144,14 +159,29 @@ const productivityTips: Guide = {
                 {
                     title: 'Set message priority',
                     description: 'Select the <strong>Message Priority</strong> icon in the formatting toolbar and choose <strong>Standard</strong>, <strong>Important</strong>, or <strong>Urgent</strong>. Priority applies to the first message of a thread, and the label appears next to your name in the channel and in the Threads view.',
+                    media: {
+                        type: 'image',
+                        file: 'message-priority.webp',
+                        alt: 'The message priority menu offering Standard, Important, and Urgent',
+                    },
                 },
                 {
                     title: 'Request an acknowledgement',
                     description: 'Turn on <strong>Request acknowledgement</strong> to add an <strong>Acknowledge</strong> button below your sent message. Hover the acknowledged icon to see exactly who has confirmed it. Marking a message <strong>Urgent</strong> requests an acknowledgement automatically.',
+                    media: {
+                        type: 'image',
+                        file: 'message-priority-ack.webp',
+                        alt: 'The message priority menu with Request acknowledgement turned on',
+                    },
                 },
                 {
                     title: 'Send persistent notifications when it truly cannot wait',
                     description: 'On an <strong>Urgent</strong> message that @mentions at least one person or group, select <strong>Send persistent notifications</strong>. Those people are notified repeatedly until someone replies, acknowledges, or reacts to the message. Anyone set to Do Not Disturb is not notified.',
+                    media: {
+                        type: 'image',
+                        file: 'message-priority-persistent.webp',
+                        alt: 'The message priority menu with Urgent selected and Send persistent notifications turned on',
+                    },
                 },
             ],
         },
@@ -166,6 +196,11 @@ const productivityTips: Guide = {
                 {
                     title: 'Open your notification settings',
                     description: 'Select the <strong>Settings</strong> icon in the top right of the screen, then select <strong>Notifications</strong>. One place covers desktop, mobile push, and email notifications.',
+                    media: {
+                        type: 'image',
+                        file: 'notification-settings.webp',
+                        alt: 'The Notifications tab of Settings, covering desktop, mobile, and email notifications',
+                    },
                 },
                 {
                     title: 'See what notifies you by default',
@@ -174,14 +209,29 @@ const productivityTips: Guide = {
                 {
                     title: 'Add keywords that trigger notifications',
                     description: 'In <strong>Settings</strong> > <strong>Notifications</strong>, add keywords so a project name, customer, or topic notifies you the way an @mention does. Keywords aren\'t case sensitive. Separate them with commas or by pressing Tab, and use Backspace to remove one. Depending on your plan you can also highlight keywords without triggering any notification.',
+                    media: {
+                        type: 'image',
+                        file: 'notification-keywords.webp',
+                        alt: 'The keywords section of notification settings, open for editing, with two keywords added',
+                    },
                 },
                 {
                     title: 'Override settings for a single channel',
                     description: 'Select the channel name, then <strong>Notification Preferences</strong>. You can <strong>mute the channel</strong>, choose <strong>Ignore mentions for @channel, @here and @all</strong>, change what the channel notifies you about, pick a notification sound, and auto-follow every new thread started there.',
+                    media: {
+                        type: 'image',
+                        file: 'channel-notification-preferences.webp',
+                        alt: 'The Notification Preferences dialog for a single channel, with mute and ignore-mentions options',
+                    },
                 },
                 {
                     title: 'Use Do Not Disturb and a custom status',
                     description: 'Select your profile picture to set your availability to <strong>Online</strong>, <strong>Away</strong>, <strong>Do Not Disturb</strong>, or <strong>Offline</strong>. Do Not Disturb turns off desktop, email, and push notifications, and you choose a preset expiry, a custom one, or <strong>Don\'t clear</strong>. From the same menu, <strong>Set a custom status</strong> adds an emoji and a short message next to your name, with an option for when it clears.',
+                    media: {
+                        type: 'image',
+                        file: 'status-menu.webp',
+                        alt: 'The availability menu open, showing Online, Away, Do Not Disturb, and Offline',
+                    },
                 },
             ],
         },
@@ -196,18 +246,38 @@ const productivityTips: Guide = {
                 {
                     title: 'Check your recent mentions',
                     description: 'Select the <strong>@</strong> icon near the search box to open recent mentions in the right pane. It collects every message that mentioned you or matched one of your keywords, so you can work through them without hunting channel by channel.',
+                    media: {
+                        type: 'image',
+                        file: 'recent-mentions.webp',
+                        alt: 'The Recent mentions pane collecting messages that mentioned you',
+                    },
                 },
                 {
                     title: 'Save a message for yourself',
                     description: 'Select the <strong>Save</strong> icon in the message actions to add a message to your saved list. Saved messages are private to you. Open them with the <strong>bookmark</strong> icon to the left of your profile picture, and select the Save icon again to clear one.',
+                    media: {
+                        type: 'image',
+                        file: 'saved-messages.webp',
+                        alt: 'The Saved messages pane listing a message saved for later',
+                    },
                 },
                 {
                     title: 'Pin a message for the channel',
                     description: 'From the message actions menu, select <strong>Pin to Channel</strong>. Pinned messages are visible to every channel member and open from the <strong>Pinned messages</strong> icon in the channel header. Use this for decisions, links, and standing context — not for your own to-do list.',
+                    media: {
+                        type: 'image',
+                        file: 'message-actions-menu.webp',
+                        alt: 'A message actions menu with Pin to Channel highlighted, alongside Remind and Mark as Unread',
+                    },
                 },
                 {
                     title: 'Set a reminder',
                     description: 'From the message actions menu, select <strong>Remind</strong>, then pick a preset or a custom date and time. At that moment you get a direct message containing the original. You can set one reminder per message, and recurring reminders aren\'t supported.',
+                    media: {
+                        type: 'image',
+                        file: 'remind-menu.webp',
+                        alt: 'The Remind submenu offering preset times and a custom option',
+                    },
                 },
                 {
                     title: 'Mark a message unread',

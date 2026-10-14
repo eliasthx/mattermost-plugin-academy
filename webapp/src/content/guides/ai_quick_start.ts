@@ -31,18 +31,18 @@ const aiQuickStart: Guide = {
                     title: 'Open the Agents pane',
                     description: 'In the apps sidebar on the right of the screen, select the <strong>Agents</strong> icon.',
                     media: {
-                        type: 'svg',
-                        file: 'ai-chat-step1.svg',
-                        alt: 'Mattermost channel with Agents icon in the apps sidebar',
+                        type: 'image',
+                        file: 'ai-agents-pane.webp',
+                        alt: 'The Agents pane open beside a channel, showing its question box',
                     },
                 },
                 {
                     title: 'Ask Agents anything',
                     description: 'Start with a suggested prompt or type your own question. Use the dropdown to select the Agent you want to chat with. We\'ll cover how to create Custom Agents later in this guide.',
                     media: {
-                        type: 'svg',
-                        file: 'ai-chat-step2.svg',
-                        alt: 'Mattermost Agents pane mock',
+                        type: 'image',
+                        file: 'ai-agents-reply.webp',
+                        alt: 'A question asked in the Agents pane and the answer the agent returned',
                     },
                 },
                 {
@@ -63,23 +63,28 @@ const aiQuickStart: Guide = {
                     title: 'Open the message actions toolbar',
                     description: 'Hover over a message to see the actions toolbar, and select the <strong>AI Actions</strong> option.',
                     media: {
-                        type: 'svg',
-                        file: 'summarize-threads-step1.svg',
-                        alt: 'A message about a failed staging deployment with the hover actions toolbar showing',
+                        type: 'image',
+                        file: 'ai-post-actions.webp',
+                        alt: 'The actions toolbar on a hovered message, with the AI Actions button highlighted',
                     },
                 },
                 {
                     title: 'Select Summarize Thread',
                     description: 'The summary opens in your <strong>Agents pane</strong> and is only visible to you. The AI actions menu also offers options to <strong>find action items</strong> or <strong>find open questions</strong> about the thread.',
                     media: {
-                        type: 'svg',
-                        file: 'summarize-threads-step2.svg',
-                        alt: 'AI actions menu listing Summarize Thread, Find action items, Find open questions, and React for me',
+                        type: 'image',
+                        file: 'ai-thread-menu.webp',
+                        alt: 'The AI Actions menu on a message, offering Summarize Thread, Find action items, and Find open questions',
                     },
                 },
                 {
                     title: 'Ask follow-up questions in the Agents pane',
                     description: 'Refine or query your summary by responding to the agent in the pane. Your conversation here is private to you.',
+                    media: {
+                        type: 'image',
+                        file: 'ai-thread-summary.webp',
+                        alt: 'A thread summary in the Agents pane, with a follow-up question typed into the box below it',
+                    },
                 },
             ],
         },
@@ -95,23 +100,28 @@ const aiQuickStart: Guide = {
                     title: 'Select the AI Actions button in the channel header',
                     description: 'Type a custom query about the channel, or select a date range to summarize.',
                     media: {
-                        type: 'svg',
-                        file: 'summarize-channels-step1.svg',
-                        alt: 'Channel header with AI Actions',
+                        type: 'image',
+                        file: 'ai-channel-menu.webp',
+                        alt: 'The Ask Agents menu from the channel header, with a question box and options to summarize unreads or the last 7 or 14 days',
                     },
                 },
                 {
                     title: 'Scroll to the New Messages line',
                     description: 'In a channel with unreads, find the <strong>New Messages</strong> divider. Select the <strong>Ask AI</strong> option to <strong>summarize new messages</strong>, <strong>find action items</strong>, or <strong>find open questions</strong>.',
                     media: {
-                        type: 'svg',
-                        file: 'summarize-channels-step2.svg',
-                        alt: 'A New Messages divider in a channel with an Ask AI button beside it',
+                        type: 'image',
+                        file: 'ai-new-messages.webp',
+                        alt: 'The New Messages divider in a channel with unread messages, with its Ask AI menu open',
                     },
                 },
                 {
                     title: 'Ask follow-up questions in the Agents pane',
                     description: 'Refine or query your summary by responding to the agent in the pane. Your conversation here is private to you.',
+                    media: {
+                        type: 'image',
+                        file: 'ai-thread-summary.webp',
+                        alt: 'A thread summary in the Agents pane, with a follow-up question typed into the box below it',
+                    },
                 },
             ],
         },
@@ -127,20 +137,10 @@ const aiQuickStart: Guide = {
                 {
                     title: 'Record during a Mattermost Call',
                     description: 'Start a call and begin recording.',
-                    media: {
-                        type: 'svg',
-                        file: 'summarize-calls-step1.svg',
-                        alt: 'An active call at 00:46 with a red REC indicator, four participants, and an End button',
-                    },
                 },
                 {
                     title: 'When the transcription is ready, create the summary',
                     description: 'Select <strong>Create meeting summary</strong> directly above the call transcription.',
-                    media: {
-                        type: 'svg',
-                        file: 'summarize-calls-step2.svg',
-                        alt: 'A Calls bot post with a transcription file attached and a Create meeting summary action above it',
-                    },
                 },
                 {
                     title: 'Refine and then post the summary',
@@ -160,11 +160,6 @@ const aiQuickStart: Guide = {
                 {
                     title: 'Open the Search pane',
                     description: 'Open the <strong>Search</strong> pane and select the <strong>Agents</strong> option to use semantic search.',
-                    media: {
-                        type: 'svg',
-                        file: 'ai-search-step1.svg',
-                        alt: 'Search pane with Agents option',
-                    },
                 },
                 {
                     title: 'Type in natural language',
@@ -184,9 +179,9 @@ const aiQuickStart: Guide = {
                     title: 'Start with your message draft',
                     description: 'Type your draft, then select <strong>AI Actions</strong> > <strong>Rewrite</strong> in the composer. Choose a built-in preset, or type a custom instruction for your rewrite.',
                     media: {
-                        type: 'svg',
-                        file: 'rewrite-with-ai-step1.svg',
-                        alt: 'Rewrite menu from the composer sparkle button',
+                        type: 'image',
+                        file: 'ai-rewrite-menu.webp',
+                        alt: 'The Rewrite submenu open from the composer, listing Shorten, Elaborate, Improve writing, Fix spelling and grammar, Simplify and Summarize above a box for a custom instruction',
                     },
                 },
                 {
@@ -207,18 +202,18 @@ const aiQuickStart: Guide = {
                     title: 'Open the Agents homepage',
                     description: 'Select <strong>Agents</strong> from the main menu. Use the tabs to view <strong>All Agents</strong> your team has access to, or <strong>Your Agents</strong> for a filtered list of just personally created agents.',
                     media: {
-                        type: 'svg',
-                        file: 'custom-agents-step1.svg',
-                        alt: 'Mattermost product menu with Agents selected',
+                        type: 'image',
+                        file: 'ai-agents-page.webp',
+                        alt: 'The Agents page, with All agents and Your agents tabs above the list of agents',
                     },
                 },
                 {
                     title: 'Create a new agent',
                     description: 'Select <strong>Create agent</strong>, then define the username, avatar and AI service. Add your <strong>custom instructions</strong> to give the agent additional context or tune how it behaves.',
                     media: {
-                        type: 'svg',
-                        file: 'custom-agents-step2.svg',
-                        alt: 'A Create agent form filled in with the username secops-bot, an AI service, and custom instructions',
+                        type: 'image',
+                        file: 'ai-create-agent.webp',
+                        alt: 'The new agent form filled in with a display name, username, avatar, and AI service',
                     },
                 },
             ],

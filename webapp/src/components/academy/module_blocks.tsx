@@ -1,12 +1,23 @@
 // Copyright (c) 2015-present Mattermost, Inc. All Rights Reserved.
 // See LICENSE.txt for license information.
 
-import {guideAssetURL} from 'content';
+import {guideAssetURL, mediaOf} from 'content';
 import type {ChecklistItem, CommandGroup, CommandHeaders, Step, Tier, Variant} from 'content/types';
 import React, {useState} from 'react';
 
 import RichText from 'components/academy/rich_text';
 import {AcademyIcon} from 'components/icons';
+
+/**
+ * Screenshot step art is captured at 2x (capture/capture.js, `deviceScaleFactor: 2`). Without a
+ * density hint the browser treats every pixel as one CSS pixel, so a 600px-wide dialog displays
+ * at 1200px until the column cap stops it — step art rendered up to 2.6x larger than the product
+ * it shows. The `2x` descriptor makes it render at true size. SVG art is resolution-independent
+ * and carries its own dimensions, so it gets no descriptor.
+ */
+function stepImageSrcSet(guideId: string, file: string): string | undefined {
+    return (/\.(webp|png|jpe?g)$/i).test(file) ? `${guideAssetURL(guideId, file)} 2x` : undefined;
+}
 
 export function StepList({guideId, keyPrefix, steps}: {guideId: string; keyPrefix: string; steps: Step[]}) {
     if (steps.length === 0) {
@@ -26,14 +37,23 @@ export function StepList({guideId, keyPrefix, steps}: {guideId: string; keyPrefi
                         <p className='academy-step__desc'>
                             <RichText text={step.description}/>
                         </p>
-                        {step.media ? (
-                            <div className='academy-step__media'>
-                                <img
-                                    src={guideAssetURL(guideId, step.media.file)}
-                                    alt={step.media.alt || ''}
-                                />
-                            </div>
-                        ) : null}
+                        {mediaOf(step).map((media) => (
+                            <figure
+                                className='academy-step__figure'
+                                key={media.file}
+                            >
+                                {media.caption ? (
+                                    <figcaption className='academy-step__caption'>{media.caption}</figcaption>
+                                ) : null}
+                                <div className='academy-step__media'>
+                                    <img
+                                        src={guideAssetURL(guideId, media.file)}
+                                        srcSet={stepImageSrcSet(guideId, media.file)}
+                                        alt={media.alt || ''}
+                                    />
+                                </div>
+                            </figure>
+                        ))}
                         {step.tip ? (
                             <div className='academy-step__tip'>
                                 <RichText text={step.tip}/>

@@ -12,6 +12,9 @@ export type StepMedia = {
     type: 'svg' | 'image';
     file: string;
     alt: string;
+
+    /** A short visible label above the image, for steps that show several side by side. */
+    caption?: string;
 };
 
 export type Step = {
@@ -22,7 +25,9 @@ export type Step = {
 
     /** Rich. */
     tip?: string;
-    media?: StepMedia;
+
+    /** One image, or several shown in order — e.g. one per layout a step lists. */
+    media?: StepMedia | StepMedia[];
 };
 
 export type CommandItem = {
