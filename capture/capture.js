@@ -27,7 +27,7 @@ import {MM} from './mm.js';
 import {seed, TEAM} from './seed.js';
 import {SHOTS} from './shots.js';
 
-// import.meta.dirname needs Node 20.11+; derive it so older Node 18 still works.
+// import.meta.dirname needs Node 20.11+; derive it so Node 20.9 and 20.10 still work.
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '..');
 const ASSET_ROOT = path.join(ROOT, 'public', 'guides', 'assets');
@@ -1213,6 +1213,19 @@ async function captureRemote() {
             '  Used for guides covering licensed products, which cannot run on a local\n' +
             '  unlicensed server. Nothing is seeded; the server is only read.',
         );
+    }
+
+    // The token is a personal access token, often a system admin's: never send it in the clear.
+    // A typo'd http:// would otherwise hand it to anyone on the path before the first request
+    // even fails.
+    let remoteURL;
+    try {
+        remoteURL = new URL(REMOTE_URL);
+    } catch {
+        fail(`MM_REMOTE_URL is not a URL: "${REMOTE_URL}"`);
+    }
+    if (remoteURL.protocol !== 'https:') {
+        fail('MM_REMOTE_URL must use https:// to protect the access token.');
     }
 
     const mm = new MM(REMOTE_URL);

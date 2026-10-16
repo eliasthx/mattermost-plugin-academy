@@ -19,7 +19,7 @@ looks like; it is not a capture source.
 
 - A local dev server running (`cd ~/Projects/mattermost/server && make run`)
 - Plugin uploads enabled, and an admin account
-- Node 18+ (for global `fetch`)
+- Node 20.9 or newer (Playwright 1.64 needs 20, sharp 0.35 needs 20.9)
 
 ## Run
 
@@ -48,7 +48,9 @@ Do not wrap values in angle brackets. `<` is a redirection operator in zsh and b
 inside them expands before the script sees it — the script rejects such values with an explanation
 rather than a bare 401.
 
-First run installs Playwright and downloads Chromium (~150MB).
+First run installs Playwright and downloads Chromium (~150MB). After upgrading Playwright, run
+`npx playwright install chromium` in `capture/` — `npm install <package>` does not re-run the
+postinstall that fetches the browser, and the new version needs its own build.
 
 ### If Chromium will not launch
 
@@ -59,17 +61,18 @@ but is not: the downloaded zip is intact and still sitting in `$TMPDIR`. Unpack 
 than re-downloading 200MB:
 
 ```bash
-unzip -t $TMPDIR/playwright-download-chromium-mac15-arm64-*.zip   # confirm it is intact
-D=~/Library/Caches/ms-playwright/chromium-1148
+B=1248    # the build number in the launch error — it changes with the Playwright version
+unzip -t $TMPDIR/playwright-download-chromium-mac*-arm64-*.zip   # confirm it is intact
+D=~/Library/Caches/ms-playwright/chromium-$B
 rm -rf "$D" && mkdir -p "$D"
-unzip -q $TMPDIR/playwright-download-chromium-mac15-arm64-*.zip -d "$D"
+unzip -q $TMPDIR/playwright-download-chromium-mac*-arm64-*.zip -d "$D"
 touch "$D/INSTALLATION_COMPLETE"
 ```
 
 Headless runs need the *headless shell*, a second package — repeat the above with
-`playwright-download-chromium-headless-shell-mac15-arm64-*.zip` into
-`chromium_headless_shell-1148`. Both directory names must match the build Playwright expects; it
-is printed in the launch error. `PW_CHANNEL=chrome make capture` sidesteps the bundled browser
+`playwright-download-chromium-headless-shell-mac*-arm64-*.zip` into
+`chromium_headless_shell-$B`. Both directory names must match the build Playwright expects; it
+is printed in the launch error. Playwright 1.64.1 uses build 1248. `PW_CHANNEL=chrome make capture` sidesteps the bundled browser
 entirely by driving a locally installed Chrome, at the cost of a floating version.
 
 Useful flags, passed through `ARGS`:

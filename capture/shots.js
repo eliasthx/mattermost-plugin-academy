@@ -1235,6 +1235,10 @@ export const SHOTS = [
             await settle(page);
             await openSearch(page);
             await page.locator('#searchBox').getByText('Files', {exact: true}).first().click();
+
+            // Selecting the tab takes focus off the input (Chromium 156 onward), so put it back
+            // before typing, or the keystrokes go nowhere.
+            await page.locator('#searchBox input').first().focus();
             await page.keyboard.type('ext:pd');
             await page.locator('#searchBox').getByText('(.pdf)', {exact: false}).first().waitFor({state: 'visible'});
             await page.waitForTimeout(500);
