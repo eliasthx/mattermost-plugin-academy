@@ -55,7 +55,7 @@ func seedCompletedGuide(t *testing.T) *Store {
 	t.Helper()
 	kv := newMemKV()
 	store := newTestStore(kv)
-	require.NoError(t, kv.Set(progressKey("user1", "ai-quick-start"), Record{
+	require.NoError(t, kv.Set(progressKey(testUserID, "ai-quick-start"), Record{
 		V:                  1,
 		GuideID:            "ai-quick-start",
 		CompletedModuleIDs: []string{"chat"},
@@ -82,12 +82,18 @@ func TestAdminCompletionsOverTime(t *testing.T) {
 	assert.Equal(t, int64(1), total)
 }
 
+func TestAdminCompletionsOverTimeRejectsHugeRange(t *testing.T) {
+	h := newAdminHandler(seedCompletedGuide(t), stubPlatform{})
+	w := serveAdmin(h.CompletionsOverTime, http.MethodGet, "/api/v1/admin/stats/completions-over-time?from=0&to=1000000000000000", "admin")
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
+
 func TestAdminCompletionsExport(t *testing.T) {
 	store := seedCompletedGuide(t)
 
 	h := newAdminHandler(store, stubPlatform{
 		users: map[string]*model.User{
-			"user1": {Id: "user1", Username: "=cmd", Email: "a@example.com", FirstName: "Ada", LastName: "Lovelace"},
+			testUserID: {Id: testUserID, Username: "=cmd", Email: "a@example.com", FirstName: "Ada", LastName: "Lovelace"},
 		},
 	})
 	w := serveAdmin(h.CompletionsExport, http.MethodGet, "/api/v1/admin/stats/completions.csv", "admin")
@@ -96,4 +102,11 @@ func TestAdminCompletionsExport(t *testing.T) {
 	assert.Contains(t, w.Body.String(), "'=cmd")
 	assert.Contains(t, w.Body.String(), "ai-quick-start")
 	assert.NotContains(t, w.Body.String(), ",=cmd,")
+}
+
+func TestAdminCompletionsExportAllowsFullHistory(t *testing.T) {
+	h := newAdminHandler(seedCompletedGuide(t), stubPlatform{})
+	w := serveAdmin(h.CompletionsExport, http.MethodGet, "/api/v1/admin/stats/completions.csv?from=0", "admin")
+	require.Equal(t, http.StatusOK, w.Code)
+	assert.Contains(t, w.Body.String(), "ai-quick-start")
 }
